@@ -1,0 +1,6 @@
+database:
+  host: localhost
+  port: 1337
+  name: postgresdb
+  user: postgresdb
+  password: postgresdb
