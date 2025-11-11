@@ -1,11 +1,9 @@
-//go:build server
-
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/labstack/echo/v4"
 	"github.com/spf13/cobra"
+	"scrum.com/internal/service"
 )
 
 func init() {
@@ -15,7 +13,13 @@ func init() {
 		Short: "Run Go Echo server",
 		Run: func(cmd *cobra.Command, args []string) {
 
-			fmt.Println("Ran Server")
+			e := echo.New()
+			e.GET("/", service.Hello)
+
+			e.Logger.Fatal(e.Start(":8080"))
+
+			// TODO Introduce Logger
+			// TODO Introduce graceful shutdown
 
 		},
 	})
