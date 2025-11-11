@@ -1,5 +1,3 @@
-//go:build cli
-
 package cmd
 
 import (
@@ -8,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"scrum.com/internal/client"
-	"scrum.com/internal/models"
+	"scrum.com/types/models"
 )
 
 func init() {
