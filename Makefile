@@ -6,3 +6,6 @@ migrate:
 
 env:
 	podman-compose up -d postgres
+
+down:
+	podman-compose down
