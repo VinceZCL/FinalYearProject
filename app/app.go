@@ -84,6 +84,4 @@ func SetupApp(c echo.Context) {
 		User: *service.NewUserService(contextApp.Repos.User),
 	}
 	WithApp(c, contextApp)
-
-	// ! Repos and Services both nil
 }

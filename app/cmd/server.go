@@ -25,10 +25,15 @@ func init() {
 
 			e := echo.New()
 
-			app.SetupApp(e.AcquireContext())
-
 			e.Use(middleware.Logger())
 			e.Use(middleware.Recover())
+
+			e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+				return func(c echo.Context) error {
+					app.SetupApp(c) // Run setup logic
+					return next(c)  // Continue with the request handling
+				}
+			})
 
 			e.Logger.SetLevel(log.INFO)
 
