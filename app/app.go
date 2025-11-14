@@ -1,25 +1,27 @@
 package app
 
 import (
-	"context"
-
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 	"scrum.com/internal/client"
+	"scrum.com/internal/interfaces"
+	"scrum.com/internal/repository"
+	"scrum.com/internal/service"
 )
 
-const appContextKey = "scrum:app"
+const AppContextKey = "scrum:app"
 
 type AppOption func(*appClient)
 
 type app struct {
-	Client *appClient
+	Client   *appClient
+	Repos    *interfaces.Repositories
+	Services *interfaces.Services
 }
 
 type appClient struct {
 	DB       *gorm.DB
 	DBClient *client.PostgresClient
-	Logger   echo.Logger
 }
 
 func New(opts ...AppOption) *app {
@@ -37,39 +39,33 @@ func newAppClient(opts ...AppOption) *appClient {
 	return a
 }
 
-func (a *appClient) getDBClient() *client.PostgresClient {
+func (a *appClient) getDBClient(c echo.Context) *client.PostgresClient {
 	if a.DBClient == nil {
 		var err error
-		a.Logger.Info("Initializing to postgres")
+		c.Logger().Info("Initializing to postgres")
 		a.DBClient, err = client.NewPostgres()
 		if err != nil {
-			a.Logger.Fatal("Unable to connect to postgres")
+			c.Logger().Fatal("Unable to connect to postgres")
 			panic(err)
 		}
-		a.Logger.Info("Connected to postgres")
+		c.Logger().Info("Connected to postgres")
 	}
 	return a.DBClient
 }
 
-func (a *appClient) getDB() *gorm.DB {
+func (a *appClient) getDB(c echo.Context) *gorm.DB {
 	if a.DB == nil {
-		a.DB = a.getDBClient().DB
+		a.DB = a.getDBClient(c).DB
 	}
 	return a.DB
 }
 
-func WithApp(ctx context.Context, a *app) context.Context {
-	return context.WithValue(ctx, appContextKey, a)
+func WithApp(ctx echo.Context, a *app) {
+	ctx.Set(AppContextKey, a)
 }
 
-func WithLogger(logger echo.Logger) AppOption {
-	return func(c *appClient) {
-		c.Logger = logger
-	}
-}
-
-func FromContext(ctx context.Context) *app {
-	a := ctx.Value(appContextKey)
+func FromContext(ctx echo.Context) *app {
+	a := ctx.Get(AppContextKey)
 	if a != nil {
 		return a.(*app)
 	}
@@ -77,8 +73,17 @@ func FromContext(ctx context.Context) *app {
 	return New()
 }
 
-func SetupApp(ctx context.Context) {
-	contextApp := FromContext(ctx)
-	contextApp.Client.getDB()
-	contextApp.Client.getDBClient()
+func SetupApp(c echo.Context) {
+	contextApp := FromContext(c)
+	contextApp.Client.getDB(c)
+	contextApp.Client.getDBClient(c)
+	contextApp.Repos = &interfaces.Repositories{
+		User: repository.NewUserRepository(contextApp.Client.DBClient),
+	}
+	contextApp.Services = &interfaces.Services{
+		User: *service.NewUserService(contextApp.Repos.User),
+	}
+	WithApp(c, contextApp)
+
+	// ! Repos and Services both nil
 }
