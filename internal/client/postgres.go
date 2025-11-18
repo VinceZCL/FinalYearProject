@@ -7,7 +7,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"scrum.com/app/config"
+	"github.com/VinceZCL/FinalYearProject/app/config"
 )
 
 type PostgresClient struct {

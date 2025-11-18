@@ -1,8 +1,8 @@
 package interfaces
 
 import (
-	"scrum.com/internal/repository"
-	"scrum.com/internal/service"
+	"github.com/VinceZCL/FinalYearProject/internal/repository"
+	"github.com/VinceZCL/FinalYearProject/internal/service"
 )
 
 type Repositories struct {

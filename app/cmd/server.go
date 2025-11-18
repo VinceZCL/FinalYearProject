@@ -8,12 +8,12 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/VinceZCL/FinalYearProject/app"
+	"github.com/VinceZCL/FinalYearProject/internal/endpoint"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	"github.com/spf13/cobra"
-	"scrum.com/app"
-	"scrum.com/internal/endpoint"
 )
 
 func init() {
@@ -34,6 +34,8 @@ func init() {
 					return next(c)  // Continue with the request handling
 				}
 			})
+
+			app.SetupApp(e.AcquireContext())
 
 			e.Logger.SetLevel(log.INFO)
 

@@ -1,6 +1,6 @@
 package main
 
-import "scrum.com/app/cmd"
+import "github.com/VinceZCL/FinalYearProject/app/cmd"
 
 func main() {
 	cmd.Execute()
