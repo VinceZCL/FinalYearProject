@@ -1,9 +1,9 @@
 package service
 
 import (
+	"github.com/VinceZCL/FinalYearProject/internal/repository"
+	"github.com/VinceZCL/FinalYearProject/types/models/dto"
 	"github.com/labstack/echo/v4"
-	"scrum.com/internal/repository"
-	"scrum.com/types/models/dto"
 )
 
 type UserService struct {

@@ -1,15 +1,15 @@
 package app
 
 import (
+	"github.com/VinceZCL/FinalYearProject/internal/client"
+	"github.com/VinceZCL/FinalYearProject/internal/interfaces"
+	"github.com/VinceZCL/FinalYearProject/internal/repository"
+	"github.com/VinceZCL/FinalYearProject/internal/service"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
-	"scrum.com/internal/client"
-	"scrum.com/internal/interfaces"
-	"scrum.com/internal/repository"
-	"scrum.com/internal/service"
 )
 
-const AppContextKey = "scrum:app"
+const AppContextKey = "fyp:app"
 
 type AppOption func(*appClient)
 
@@ -24,10 +24,15 @@ type appClient struct {
 	DBClient *client.PostgresClient
 }
 
+var AppClientInstance *appClient
+
 func New(opts ...AppOption) *app {
-	appClient := newAppClient(opts...)
+
+	if AppClientInstance == nil {
+		AppClientInstance = newAppClient(opts...)
+	}
 	return &app{
-		Client: appClient,
+		Client: AppClientInstance,
 	}
 }
 

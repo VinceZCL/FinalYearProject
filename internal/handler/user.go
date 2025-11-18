@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/VinceZCL/FinalYearProject/app"
 	"github.com/labstack/echo/v4"
-	"scrum.com/app"
 )
 
 func GetMembers(c echo.Context) error {

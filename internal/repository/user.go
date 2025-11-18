@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"scrum.com/internal/client"
-	"scrum.com/types/models"
+	"github.com/VinceZCL/FinalYearProject/internal/client"
+	"github.com/VinceZCL/FinalYearProject/types/models"
 )
 
 type UserRepository interface {

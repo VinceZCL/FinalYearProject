@@ -1,4 +1,4 @@
-module scrum.com
+module github.com/VinceZCL/FinalYearProject
 
 go 1.25.1
 
