@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/VinceZCL/FinalYearProject/internal/client"
+	"github.com/VinceZCL/FinalYearProject/types/models"
 	"github.com/spf13/cobra"
-	"scrum.com/internal/client"
-	"scrum.com/types/models"
 )
 
 func init() {

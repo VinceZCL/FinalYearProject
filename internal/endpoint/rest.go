@@ -1,8 +1,8 @@
 package endpoint
 
 import (
+	"github.com/VinceZCL/FinalYearProject/internal/handler"
 	"github.com/labstack/echo/v4"
-	"scrum.com/internal/handler"
 )
 
 func RegisterRoutes(e echo.Echo) {
