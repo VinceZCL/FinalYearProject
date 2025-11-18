@@ -25,8 +25,10 @@ func (s *UserService) GetMembers(c echo.Context, teamID int) ([]dto.Member, erro
 	dtos := make([]dto.Member, len(users))
 	for i, u := range users {
 		dtos[i] = dto.Member{
+			UserID:   u.User.ID,
 			Name:     u.User.Name,
 			Email:    u.User.Email,
+			TeamID:   u.Team.ID,
 			TeamName: u.Team.Name,
 			Role:     u.Role,
 		}
