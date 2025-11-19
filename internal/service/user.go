@@ -14,23 +14,20 @@ func NewUserService(repo repository.UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
-func (s *UserService) GetMembers(c echo.Context, teamID int) ([]dto.Member, error) {
-
-	users, err := s.repo.GetMembers(teamID)
+func (s *UserService) GetUsers(c echo.Context) ([]dto.User, error) {
+	users, err := s.repo.GetUsers()
 	if err != nil {
-		c.Logger().Errorf("Service | UserService | GetMembers: %v", err)
+		c.Logger().Errorf("Service | UserService | GetUsers: %v", err)
 		return nil, err
 	}
 
-	dtos := make([]dto.Member, len(users))
+	dtos := make([]dto.User, len(users))
 	for i, u := range users {
-		dtos[i] = dto.Member{
-			UserID:   u.User.ID,
-			Name:     u.User.Name,
-			Email:    u.User.Email,
-			TeamID:   u.Team.ID,
-			TeamName: u.Team.Name,
-			Role:     u.Role,
+		dtos[i] = dto.User{
+			UserID: u.ID,
+			Name:   u.Name,
+			Email:  u.Email,
+			Type:   u.Type,
 		}
 	}
 	return dtos, nil

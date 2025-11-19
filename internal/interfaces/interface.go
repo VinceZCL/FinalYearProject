@@ -6,9 +6,13 @@ import (
 )
 
 type Repositories struct {
-	User repository.UserRepository
+	User     repository.UserRepository
+	UserTeam repository.UserTeamRepository
+	Team     repository.TeamRepository
 }
 
 type Services struct {
-	User service.UserService
+	User     service.UserService
+	UserTeam service.UserTeamService
+	Team     service.TeamService
 }

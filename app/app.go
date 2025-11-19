@@ -83,10 +83,14 @@ func SetupApp(c echo.Context) {
 	contextApp.Client.getDB(c)
 	contextApp.Client.getDBClient(c)
 	contextApp.Repos = &interfaces.Repositories{
-		User: repository.NewUserRepository(contextApp.Client.DBClient),
+		User:     repository.NewUserRepository(contextApp.Client.DBClient),
+		UserTeam: repository.NewUserTeamRepository(contextApp.Client.DBClient),
+		Team:     repository.NewTeamRepository(contextApp.Client.DBClient),
 	}
 	contextApp.Services = &interfaces.Services{
-		User: *service.NewUserService(contextApp.Repos.User),
+		User:     *service.NewUserService(contextApp.Repos.User),
+		UserTeam: *service.NewUserTeamService(contextApp.Repos.UserTeam),
+		Team:     *service.NewTeamRepository(contextApp.Repos.Team),
 	}
 	WithApp(c, contextApp)
 }
