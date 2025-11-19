@@ -2,26 +2,17 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/VinceZCL/FinalYearProject/app"
 	"github.com/labstack/echo/v4"
 )
 
-func GetMembers(c echo.Context) error {
+func GetUsers(c echo.Context) error {
 	app := app.FromContext(c)
-
-	teamID, err := strconv.Atoi(c.Param("id"))
+	users, err := app.Services.User.GetUsers(c)
 	if err != nil {
-		c.Logger().Errorf("Handler | UserHandler | Invalid Params: %v", err)
-		return err
+		c.Logger().Errorf("Handler | UserHandler | GetUsers: %v", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Faied to get users"})
 	}
-
-	members, err := app.Services.User.GetMembers(c, teamID)
-	if err != nil {
-		c.Logger().Errorf("Handler | UserHandler | GetMembers: %v", err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to get members"})
-	}
-	return c.JSON(http.StatusOK, members)
-
+	return c.JSON(http.StatusOK, users)
 }

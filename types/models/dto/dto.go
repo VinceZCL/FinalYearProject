@@ -1,5 +1,12 @@
 package dto
 
+type User struct {
+	UserID uint   `json:"userID"`
+	Name   string `json:"name"`
+	Email  string `json:"email"`
+	Type   string `json:"type"`
+}
+
 type Member struct {
 	UserID   uint   `json:"userID"`
 	Name     string `json:"name"`
