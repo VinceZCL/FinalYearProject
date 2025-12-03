@@ -18,7 +18,7 @@ func (s *UserTeamService) GetMembers(c echo.Context, teamID int) ([]dto.Member, 
 
 	members, err := s.repo.GetMembers(teamID)
 	if err != nil {
-		c.Logger().Errorf("Service | UserTeamService | GetMembers: %v", err)
+		c.Logger().Errorf("Service | UserTeamService | GetMembers: %w", err)
 		return nil, err
 	}
 

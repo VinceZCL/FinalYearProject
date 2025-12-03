@@ -17,7 +17,7 @@ func NewTeamRepository(repo repository.TeamRepository) *TeamService {
 func (s *TeamService) GetTeams(c echo.Context) ([]dto.Team, error) {
 	teams, err := s.repo.GetTeams()
 	if err != nil {
-		c.Logger().Errorf("Service | TeamService | GetTeams: %v", err)
+		c.Logger().Errorf("Service | TeamService | GetTeams: %w", err)
 		return nil, err
 	}
 

@@ -19,7 +19,7 @@ func NewTeamRepository(dbclient *client.PostgresClient) TeamRepository {
 
 func (r *teamRepository) GetTeams() ([]models.Team, error) {
 	var teams []models.Team
-	err := r.client.DB.Find(&teams).Error
+	err := r.client.DB.Preload("Creator").Find(&teams).Error
 	if err != nil {
 		return nil, err
 	}
