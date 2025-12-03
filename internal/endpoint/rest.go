@@ -10,4 +10,6 @@ func RegisterRoutes(e echo.Echo) {
 	e.GET("/members/:id", handler.GetMembers)
 	e.GET("/users", handler.GetUsers)
 	e.GET("/teams", handler.GetTeams)
+	e.GET("/checkins/user/:id", handler.GetUserCheckIns)
+	e.GET("/checkins/team/:id", handler.GetTeamCheckIns)
 }

@@ -17,7 +17,7 @@ func NewUserService(repo repository.UserRepository) *UserService {
 func (s *UserService) GetUsers(c echo.Context) ([]dto.User, error) {
 	users, err := s.repo.GetUsers()
 	if err != nil {
-		c.Logger().Errorf("Service | UserService | GetUsers: %v", err)
+		c.Logger().Errorf("Service | UserService | GetUsers: %w", err)
 		return nil, err
 	}
 

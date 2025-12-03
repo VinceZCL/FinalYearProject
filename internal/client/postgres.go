@@ -3,9 +3,12 @@ package client
 import (
 	"fmt"
 	"log"
+	"os"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"github.com/VinceZCL/FinalYearProject/app/config"
 )
@@ -31,9 +34,17 @@ func NewPostgres() (*PostgresClient, error) {
 	dsn := fmt.Sprintf("host=%s user=%s password='%s' dbname=%s port=%d sslmode=disable",
 		host, user, password, name, port)
 
+	gormLogger := logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold: time.Millisecond * 200,
+			LogLevel:      logger.Info,
+			Colorful:      true,
+		},
+	)
+
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN: dsn,
-	}), &gorm.Config{})
+	}), &gorm.Config{Logger: gormLogger})
 
 	if err != nil {
 		return nil, err

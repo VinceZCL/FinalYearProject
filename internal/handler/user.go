@@ -11,7 +11,7 @@ func GetUsers(c echo.Context) error {
 	app := app.FromContext(c)
 	users, err := app.Services.User.GetUsers(c)
 	if err != nil {
-		c.Logger().Errorf("Handler | UserHandler | GetUsers: %v", err)
+		c.Logger().Errorf("Handler | UserHandler | GetUsers: %w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Faied to get users"})
 	}
 	return c.JSON(http.StatusOK, users)

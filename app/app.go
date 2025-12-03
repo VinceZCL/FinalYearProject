@@ -86,11 +86,13 @@ func SetupApp(c echo.Context) {
 		User:     repository.NewUserRepository(contextApp.Client.DBClient),
 		UserTeam: repository.NewUserTeamRepository(contextApp.Client.DBClient),
 		Team:     repository.NewTeamRepository(contextApp.Client.DBClient),
+		CheckIn:  repository.NewCheckInRepository(contextApp.Client.DBClient),
 	}
 	contextApp.Services = &interfaces.Services{
 		User:     *service.NewUserService(contextApp.Repos.User),
 		UserTeam: *service.NewUserTeamService(contextApp.Repos.UserTeam),
 		Team:     *service.NewTeamRepository(contextApp.Repos.Team),
+		CheckIn:  *service.NewCheckInService(contextApp.Repos.CheckIn),
 	}
 	WithApp(c, contextApp)
 }
