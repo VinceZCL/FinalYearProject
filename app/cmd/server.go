@@ -28,6 +28,8 @@ func init() {
 			e.Use(middleware.Logger())
 			e.Use(middleware.Recover())
 
+			e.Use(middleware.CORS()) // ? middleware.CORSWithConfig(middleware.CORSConfig{})
+
 			e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 				return func(c echo.Context) error {
 					app.SetupApp(c) // Run setup logic

@@ -12,7 +12,7 @@ func GetTeams(c echo.Context) error {
 
 	teams, err := app.Services.Team.GetTeams(c)
 	if err != nil {
-		c.Logger().Errorf("Handler | TeamHandler | GetTeams: %v", err)
+		c.Logger().Errorf("Handler | TeamHandler | GetTeams: %w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to get teams"})
 	}
 	return c.JSON(http.StatusOK, teams)

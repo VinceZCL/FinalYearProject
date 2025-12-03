@@ -13,13 +13,13 @@ func GetMembers(c echo.Context) error {
 
 	teamID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.Logger().Errorf("Handler | UserTeamHandler | Invalid Params: %v", err)
+		c.Logger().Errorf("Handler | UserTeamHandler | Invalid Params: %w", err)
 		return err
 	}
 
 	members, err := app.Services.UserTeam.GetMembers(c, teamID)
 	if err != nil {
-		c.Logger().Errorf("Handler | UserTeamHandler | GetMembers: %v", err)
+		c.Logger().Errorf("Handler | UserTeamHandler | GetMembers: %w", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to get members"})
 	}
 	return c.JSON(http.StatusOK, members)

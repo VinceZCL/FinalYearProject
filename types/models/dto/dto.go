@@ -1,5 +1,7 @@
 package dto
 
+import "time"
+
 type User struct {
 	UserID uint   `json:"userID"`
 	Name   string `json:"name"`
@@ -21,4 +23,16 @@ type Team struct {
 	TeamName    string `json:"team_name"`
 	CreatorID   uint   `json:"creatorID"`
 	CreatorName string `json:"creator_name"`
+}
+
+type CheckIn struct {
+	CheckInID  uint      `json:"checkinID"`
+	Type       string    `json:"type"`
+	Item       string    `json:"item"`
+	Jira       string    `json:"jira"`
+	Visibility string    `json:"visibility"`
+	TeamID     *uint     `json:"teamID"`
+	UserID     uint      `json:"userID"`
+	Username   string    `json:"user_name"`
+	CreatedAt  time.Time `json:"created_at"`
 }
