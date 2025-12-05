@@ -23,6 +23,8 @@ func init() {
 		Short: "Run Go Echo server",
 		Run: func(cmd *cobra.Command, args []string) {
 
+			globalApp := app.SetupApp(app.New())
+
 			e := echo.New()
 
 			e.Use(middleware.Logger())
@@ -32,16 +34,15 @@ func init() {
 
 			e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 				return func(c echo.Context) error {
-					app.SetupApp(c) // Run setup logic
-					return next(c)  // Continue with the request handling
+					// app.SetupApp(c) // Run setup logic
+					c.Set(app.AppContextKey, globalApp)
+					return next(c) // Continue with the request handling
 				}
 			})
 
-			app.SetupApp(e.AcquireContext())
-
 			e.Logger.SetLevel(log.INFO)
 
-			endpoint.RegisterRoutes(*e.AcquireContext().Echo())
+			endpoint.RegisterRoutes(*e)
 
 			go func() {
 				if err := e.Start(":8080"); err != nil && err != http.ErrServerClosed {

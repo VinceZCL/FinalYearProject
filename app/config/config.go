@@ -1,12 +1,15 @@
 package config
 
 import (
+	"fmt"
+
 	"github.com/spf13/viper"
 )
 
-var cfg *viper.Viper
+var instance *ConfigStruct
 
 type ConfigStruct struct {
+	cfg *viper.Viper `yaml:"-"`
 	// Database configuration settings.
 	Database struct {
 		// Database host address.
@@ -22,24 +25,27 @@ type ConfigStruct struct {
 	}
 }
 
-func LoadConfig() (*ConfigStruct, error) {
-	cfg = viper.New()
+func Get() *ConfigStruct {
+	if instance != nil {
+		return instance
+	}
+
+	cfg := viper.New()
 
 	cfg.SetConfigName("config")
 	cfg.SetConfigType("yaml")
 	cfg.AddConfigPath("./config")
 
 	if err := cfg.ReadInConfig(); err != nil {
-		return nil, err
+		fmt.Printf("Config | Read Error: %w", err)
 	}
 
-	var config ConfigStruct
-	if err := cfg.Unmarshal(&config); err != nil {
-		return nil, err
+	instance = &ConfigStruct{
+		cfg: cfg,
 	}
-	return &config, nil
-}
 
-func Viper() *viper.Viper {
-	return cfg
+	if err := cfg.Unmarshal(instance); err != nil {
+		panic(err)
+	}
+	return instance
 }
