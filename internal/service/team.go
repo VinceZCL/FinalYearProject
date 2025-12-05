@@ -10,7 +10,7 @@ type TeamService struct {
 	repo repository.TeamRepository
 }
 
-func NewTeamRepository(repo repository.TeamRepository) *TeamService {
+func NewTeamService(repo repository.TeamRepository) *TeamService {
 	return &TeamService{repo: repo}
 }
 
