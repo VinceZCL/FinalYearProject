@@ -19,17 +19,11 @@ type PostgresClient struct {
 
 func NewPostgres() (*PostgresClient, error) {
 
-	conf, err := config.LoadConfig()
-
-	if err != nil {
-		log.Fatalf("Failed to load config: %v", err)
-	}
-
-	host := conf.Database.Host
-	port := conf.Database.Port
-	name := conf.Database.Name
-	user := conf.Database.User
-	password := conf.Database.Password
+	host := config.Get().Database.Host
+	port := config.Get().Database.Port
+	name := config.Get().Database.Name
+	user := config.Get().Database.User
+	password := config.Get().Database.Password
 
 	dsn := fmt.Sprintf("host=%s user=%s password='%s' dbname=%s port=%d sslmode=disable",
 		host, user, password, name, port)
