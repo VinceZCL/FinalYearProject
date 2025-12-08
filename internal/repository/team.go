@@ -2,12 +2,13 @@ package repository
 
 import (
 	"github.com/VinceZCL/FinalYearProject/internal/client"
-	"github.com/VinceZCL/FinalYearProject/types/models"
+	"github.com/VinceZCL/FinalYearProject/types/model"
 )
 
 type TeamRepository interface {
-	GetTeams() ([]models.Team, error)
-	GetTeam(teamID int) (*models.Team, error)
+	GetTeams() ([]model.Team, error)
+	GetTeam(teamID uint) (*model.Team, error)
+	NewTeam(team model.Team) (*model.Team, error)
 }
 
 type teamRepository struct {
@@ -18,8 +19,8 @@ func NewTeamRepository(dbclient *client.PostgresClient) TeamRepository {
 	return &teamRepository{client: dbclient}
 }
 
-func (r *teamRepository) GetTeams() ([]models.Team, error) {
-	var teams []models.Team
+func (r *teamRepository) GetTeams() ([]model.Team, error) {
+	var teams []model.Team
 	err := r.client.DB.Preload("Creator").Find(&teams).Error
 	if err != nil {
 		return nil, err
@@ -27,11 +28,22 @@ func (r *teamRepository) GetTeams() ([]models.Team, error) {
 	return teams, nil
 }
 
-func (r *teamRepository) GetTeam(teamID int) (*models.Team, error) {
-	var team *models.Team
-	err := r.client.DB.Preload("Creator").Where("id = ?", teamID).First(&team).Error
+func (r *teamRepository) GetTeam(teamID uint) (*model.Team, error) {
+	var team *model.Team
+	err := r.client.DB.Preload("Creator").First(&team, teamID).Error
 	if err != nil {
 		return nil, err
 	}
 	return team, nil
+}
+
+func (r *teamRepository) NewTeam(team model.Team) (*model.Team, error) {
+	err := r.client.DB.Create(&team).Error
+	if err != nil {
+		return nil, err
+	}
+	if err := r.client.DB.Preload("Creator").First(&team, team.ID).Error; err != nil {
+		return nil, err
+	}
+	return &team, err
 }
