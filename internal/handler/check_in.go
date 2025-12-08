@@ -17,10 +17,10 @@ func GetUserCheckIns(c echo.Context) error {
 		return err
 	}
 
-	checkIns, err := app.Services.CheckIn.GetUserCheckIns(c, userID)
+	checkIns, err := app.Services.CheckIn.GetUserCheckIns(c, uint(userID))
 	if err != nil {
 		c.Logger().Errorf("Handler | CheckInHandler | GetUserCheckIns: %w", err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to get User Check Ins"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to get User Check Ins"})
 	}
 
 	return c.JSON(http.StatusOK, checkIns)
@@ -35,10 +35,10 @@ func GetTeamCheckIns(c echo.Context) error {
 		return err
 	}
 
-	checkIns, err := app.Services.CheckIn.GetUserCheckIns(c, userID)
+	checkIns, err := app.Services.CheckIn.GetUserCheckIns(c, uint(userID))
 	if err != nil {
 		c.Logger().Errorf("Handler | CheckInHandler | GetTeamCheckIns: %w", err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to get Team Check Ins"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to get Team Check Ins"})
 	}
 
 	return c.JSON(http.StatusOK, checkIns)
@@ -50,13 +50,13 @@ func GetCheckIn(c echo.Context) error {
 	checkInID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.Logger().Errorf("Handler | CheckInHandler | Invalid Params: %w", err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Invalid route param"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Invalid route param"})
 	}
 
-	checkIn, err := app.Services.CheckIn.GetCheckIn(c, checkInID)
+	checkIn, err := app.Services.CheckIn.GetCheckIn(c, uint(checkInID))
 	if err != nil {
 		c.Logger().Errorf("Handler | CheckInHandler | GetCheckIn: %w", err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to get Check In"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to get Check In"})
 	}
 	return c.JSON(http.StatusOK, checkIn)
 }

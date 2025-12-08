@@ -2,6 +2,7 @@ dev:
 	go run -tags server -race main.go server
 
 migrate:
+	podman-compose up -d postgres
 	go run -tags cli -race main.go migrate
 
 env:
