@@ -2,7 +2,9 @@ package service
 
 import (
 	"github.com/VinceZCL/FinalYearProject/internal/repository"
+	"github.com/VinceZCL/FinalYearProject/types/model"
 	"github.com/VinceZCL/FinalYearProject/types/model/dto"
+	"github.com/VinceZCL/FinalYearProject/types/model/param"
 	"github.com/labstack/echo/v4"
 )
 
@@ -25,7 +27,7 @@ func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint) ([]dto.Che
 	dtos := make([]dto.CheckIn, len(checkIns))
 	for i, u := range checkIns {
 		dtos[i] = dto.CheckIn{
-			CheckInID:  u.ID,
+			ID:         u.ID,
 			Type:       u.Type,
 			Item:       u.Item,
 			Jira:       u.Jira,
@@ -50,7 +52,7 @@ func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint) ([]dto.Che
 	dtos := make([]dto.CheckIn, len(checkIns))
 	for i, u := range checkIns {
 		dtos[i] = dto.CheckIn{
-			CheckInID:  u.ID,
+			ID:         u.ID,
 			Type:       u.Type,
 			Item:       u.Item,
 			Jira:       u.Jira,
@@ -72,7 +74,37 @@ func (s *CheckInService) GetCheckIn(c echo.Context, checkInID uint) (*dto.CheckI
 	}
 
 	dto := &dto.CheckIn{
-		CheckInID:  checkIn.ID,
+		ID:         checkIn.ID,
+		Type:       checkIn.Type,
+		Item:       checkIn.Item,
+		Jira:       checkIn.Jira,
+		Visibility: checkIn.Visibility,
+		TeamID:     checkIn.TeamID,
+		UserID:     checkIn.UserID,
+		Username:   checkIn.User.Name,
+		CreatedAt:  checkIn.CreatedAt,
+	}
+	return dto, nil
+}
+
+func (s *CheckInService) NewCheckIn(c echo.Context, req param.NewCheckIn) (*dto.CheckIn, error) {
+	input := model.CheckIn{
+		UserID:     req.UserID,
+		Type:       req.Type,
+		Item:       req.Item,
+		Jira:       req.Jira,
+		Visibility: req.Visibility,
+		TeamID:     req.TeamID,
+	}
+
+	checkIn, err := s.repo.NewCheckIn(input)
+	if err != nil {
+		c.Logger().Errorf("Service | CheckInService | NewCheckIn: %w", err)
+		return nil, err
+	}
+
+	dto := &dto.CheckIn{
+		ID:         checkIn.ID,
 		Type:       checkIn.Type,
 		Item:       checkIn.Item,
 		Jira:       checkIn.Jira,

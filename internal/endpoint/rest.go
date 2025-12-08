@@ -22,7 +22,5 @@ func RegisterRoutes(e echo.Echo) {
 	e.POST("/users", handler.NewUser)
 	e.POST("/teams", handler.NewTeam)
 	e.POST("/members", handler.NewMember)
-
-	// ! POST
-	// e.POST("/checkins")
+	e.POST("/checkins", handler.NewCheckIn)
 }

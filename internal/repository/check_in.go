@@ -9,6 +9,7 @@ type CheckInRepository interface {
 	GetUserCheckIns(userID uint) ([]model.CheckIn, error)
 	GetTeamCheckIns(teamID uint) ([]model.CheckIn, error)
 	GetCheckIn(checkInID uint) (*model.CheckIn, error)
+	NewCheckIn(input model.CheckIn) (*model.CheckIn, error)
 }
 
 type checkInRepository struct {
@@ -44,4 +45,15 @@ func (r *checkInRepository) GetCheckIn(checkInID uint) (*model.CheckIn, error) {
 		return nil, err
 	}
 	return checkIn, nil
+}
+
+func (r *checkInRepository) NewCheckIn(input model.CheckIn) (*model.CheckIn, error) {
+	err := r.client.DB.Create(&input).Error
+	if err != nil {
+		return nil, err
+	}
+	if err := r.client.DB.Preload("User").Preload("Team").First(&input, input.ID).Error; err != nil {
+		return nil, err
+	}
+	return &input, nil
 }

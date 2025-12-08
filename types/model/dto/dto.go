@@ -26,10 +26,10 @@ type Team struct {
 }
 
 type CheckIn struct {
-	CheckInID  uint      `json:"id"`
+	ID         uint      `json:"id"`
 	Type       string    `json:"type"`
 	Item       string    `json:"item"`
-	Jira       string    `json:"jira"`
+	Jira       *string   `json:"jira"`
 	Visibility string    `json:"visibility"`
 	TeamID     *uint     `json:"teamID"`
 	UserID     uint      `json:"userID"`
