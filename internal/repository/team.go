@@ -7,6 +7,7 @@ import (
 
 type TeamRepository interface {
 	GetTeams() ([]models.Team, error)
+	GetTeam(teamID int) (*models.Team, error)
 }
 
 type teamRepository struct {
@@ -24,4 +25,13 @@ func (r *teamRepository) GetTeams() ([]models.Team, error) {
 		return nil, err
 	}
 	return teams, nil
+}
+
+func (r *teamRepository) GetTeam(teamID int) (*models.Team, error) {
+	var team *models.Team
+	err := r.client.DB.Preload("Creator").Where("id = ?", teamID).First(&team).Error
+	if err != nil {
+		return nil, err
+	}
+	return team, nil
 }

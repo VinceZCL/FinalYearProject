@@ -32,3 +32,19 @@ func (s *UserService) GetUsers(c echo.Context) ([]dto.User, error) {
 	}
 	return dtos, nil
 }
+
+func (s *UserService) GetUser(c echo.Context, userID int) (*dto.User, error) {
+	user, err := s.repo.GetUser(userID)
+	if err != nil {
+		c.Logger().Errorf("Service | UserService | GetUser (%d): %w", userID, err)
+		return nil, err
+	}
+
+	dto := &dto.User{
+		UserID: user.ID,
+		Name:   user.Name,
+		Email:  user.Email,
+		Type:   user.Type,
+	}
+	return dto, nil
+}

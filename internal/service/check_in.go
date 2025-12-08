@@ -63,3 +63,24 @@ func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID int) ([]dto.Chec
 	}
 	return dtos, nil
 }
+
+func (s *CheckInService) GetCheckIn(c echo.Context, checkInID int) (*dto.CheckIn, error) {
+	checkIn, err := s.repo.GetCheckIn(checkInID)
+	if err != nil {
+		c.Logger().Errorf("Service | CheckInService | GetCheckIn (%d): %w", checkInID, err)
+		return nil, err
+	}
+
+	dto := &dto.CheckIn{
+		CheckInID:  checkIn.ID,
+		Type:       checkIn.Type,
+		Item:       checkIn.Item,
+		Jira:       checkIn.Jira,
+		Visibility: checkIn.Visibility,
+		TeamID:     checkIn.TeamID,
+		UserID:     checkIn.UserID,
+		Username:   checkIn.User.Name,
+		CreatedAt:  checkIn.CreatedAt,
+	}
+	return dto, nil
+}

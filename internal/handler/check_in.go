@@ -43,3 +43,20 @@ func GetTeamCheckIns(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, checkIns)
 }
+
+func GetCheckIn(c echo.Context) error {
+	app := app.FromContext(c)
+
+	checkInID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Logger().Errorf("Handler | CheckInHandler | Invalid Params: %w", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Invalid route param"})
+	}
+
+	checkIn, err := app.Services.CheckIn.GetCheckIn(c, checkInID)
+	if err != nil {
+		c.Logger().Errorf("Handler | CheckInHandler | GetCheckIn: %w", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to get Check In"})
+	}
+	return c.JSON(http.StatusOK, checkIn)
+}
