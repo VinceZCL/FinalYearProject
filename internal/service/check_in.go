@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/VinceZCL/FinalYearProject/internal/repository"
-	"github.com/VinceZCL/FinalYearProject/types/models/dto"
+	"github.com/VinceZCL/FinalYearProject/types/model/dto"
 	"github.com/labstack/echo/v4"
 )
 
@@ -14,7 +14,7 @@ func NewCheckInService(repo repository.CheckInRepository) *CheckInService {
 	return &CheckInService{repo: repo}
 }
 
-func (s *CheckInService) GetUserCheckIns(c echo.Context, userID int) ([]dto.CheckIn, error) {
+func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint) ([]dto.CheckIn, error) {
 
 	checkIns, err := s.repo.GetUserCheckIns(userID)
 	if err != nil {
@@ -39,7 +39,7 @@ func (s *CheckInService) GetUserCheckIns(c echo.Context, userID int) ([]dto.Chec
 	return dtos, nil
 }
 
-func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID int) ([]dto.CheckIn, error) {
+func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint) ([]dto.CheckIn, error) {
 
 	checkIns, err := s.repo.GetUserCheckIns(teamID)
 	if err != nil {
@@ -64,7 +64,7 @@ func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID int) ([]dto.Chec
 	return dtos, nil
 }
 
-func (s *CheckInService) GetCheckIn(c echo.Context, checkInID int) (*dto.CheckIn, error) {
+func (s *CheckInService) GetCheckIn(c echo.Context, checkInID uint) (*dto.CheckIn, error) {
 	checkIn, err := s.repo.GetCheckIn(checkInID)
 	if err != nil {
 		c.Logger().Errorf("Service | CheckInService | GetCheckIn (%d): %w", checkInID, err)

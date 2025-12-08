@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/VinceZCL/FinalYearProject/internal/client"
-	"github.com/VinceZCL/FinalYearProject/types/models"
+	"github.com/VinceZCL/FinalYearProject/types/model"
 	"github.com/spf13/cobra"
 )
 
@@ -23,10 +23,10 @@ func init() {
 			db := pg.DB
 
 			if err := db.AutoMigrate(
-				&models.User{},
-				&models.Team{},
-				&models.UserTeam{},
-				&models.CheckIn{},
+				&model.User{},
+				&model.Team{},
+				&model.UserTeam{},
+				&model.CheckIn{},
 			); err != nil {
 				log.Fatalf("Migration failed: %v", err)
 			}

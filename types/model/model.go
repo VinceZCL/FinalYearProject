@@ -1,4 +1,4 @@
-package models
+package model
 
 import "gorm.io/gorm"
 
@@ -13,8 +13,8 @@ type User struct {
 
 type Team struct {
 	gorm.Model
-	Name      string `gorm:"size:100;not null;index" json:"name"`
-	CreatorID uint   `gorm:"not null;index" json:"creatorID"`
+	Name      string `gorm:"size:100;not null;index:idx_name_creator,unique" json:"name"`
+	CreatorID uint   `gorm:"not null;index:idx_name_creator,unique" json:"creatorID"`
 	Creator   User   `gorm:"foreignKey:CreatorID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"creator"`
 }
 

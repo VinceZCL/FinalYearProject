@@ -3,10 +3,10 @@ package dto
 import "time"
 
 type User struct {
-	UserID uint   `json:"userID"`
-	Name   string `json:"name"`
-	Email  string `json:"email"`
-	Type   string `json:"type"`
+	ID    uint   `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Type  string `json:"type"`
 }
 
 type Member struct {
@@ -19,14 +19,14 @@ type Member struct {
 }
 
 type Team struct {
-	TeamID      uint   `json:"teamID"`
-	TeamName    string `json:"team_name"`
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
 	CreatorID   uint   `json:"creatorID"`
 	CreatorName string `json:"creator_name"`
 }
 
 type CheckIn struct {
-	CheckInID  uint      `json:"checkinID"`
+	CheckInID  uint      `json:"id"`
 	Type       string    `json:"type"`
 	Item       string    `json:"item"`
 	Jira       string    `json:"jira"`

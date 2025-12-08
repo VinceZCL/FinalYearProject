@@ -2,12 +2,13 @@ package repository
 
 import (
 	"github.com/VinceZCL/FinalYearProject/internal/client"
-	"github.com/VinceZCL/FinalYearProject/types/models"
+	"github.com/VinceZCL/FinalYearProject/types/model"
 )
 
 type UserRepository interface {
-	GetUsers() ([]models.User, error)
-	GetUser(userID int) (*models.User, error)
+	GetUsers() ([]model.User, error)
+	GetUser(userID uint) (*model.User, error)
+	NewUser(model.User) (*model.User, error)
 }
 
 type userRepository struct {
@@ -18,8 +19,8 @@ func NewUserRepository(dbclient *client.PostgresClient) UserRepository {
 	return &userRepository{client: dbclient}
 }
 
-func (r *userRepository) GetUsers() ([]models.User, error) {
-	var users []models.User
+func (r *userRepository) GetUsers() ([]model.User, error) {
+	var users []model.User
 	err := r.client.DB.Find(&users).Error
 	if err != nil {
 		return nil, err
@@ -27,11 +28,20 @@ func (r *userRepository) GetUsers() ([]models.User, error) {
 	return users, nil
 }
 
-func (r *userRepository) GetUser(userID int) (*models.User, error) {
-	var user *models.User
-	err := r.client.DB.Where("id = ?", userID).First(&user).Error
+func (r *userRepository) GetUser(userID uint) (*model.User, error) {
+	var user *model.User
+	err := r.client.DB.First(&user, userID).Error
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (r *userRepository) NewUser(user model.User) (*model.User, error) {
+	err := r.client.DB.Create(&user).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
