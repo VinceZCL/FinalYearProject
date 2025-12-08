@@ -45,5 +45,5 @@ func (r *teamRepository) NewTeam(team model.Team) (*model.Team, error) {
 	if err := r.client.DB.Preload("Creator").First(&team, team.ID).Error; err != nil {
 		return nil, err
 	}
-	return &team, err
+	return &team, nil
 }
