@@ -32,3 +32,19 @@ func (s *TeamService) GetTeams(c echo.Context) ([]dto.Team, error) {
 	}
 	return dtos, nil
 }
+
+func (s *TeamService) GetTeam(c echo.Context, teamID int) (*dto.Team, error) {
+	team, err := s.repo.GetTeam(teamID)
+	if err != nil {
+		c.Logger().Errorf("Service | TeamService | GetTeam (%d): %w", teamID, err)
+		return nil, err
+	}
+
+	dto := &dto.Team{
+		TeamID:      team.ID,
+		TeamName:    team.Name,
+		CreatorID:   team.CreatorID,
+		CreatorName: team.Creator.Name,
+	}
+	return dto, nil
+}

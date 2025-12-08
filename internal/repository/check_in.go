@@ -8,6 +8,7 @@ import (
 type CheckInRepository interface {
 	GetUserCheckIns(userID int) ([]models.CheckIn, error)
 	GetTeamCheckIns(teamID int) ([]models.CheckIn, error)
+	GetCheckIn(checkInID int) (*models.CheckIn, error)
 }
 
 type checkInRepository struct {
@@ -34,4 +35,13 @@ func (r *checkInRepository) GetTeamCheckIns(teamID int) ([]models.CheckIn, error
 		return nil, err
 	}
 	return checkIns, nil
+}
+
+func (r *checkInRepository) GetCheckIn(checkInID int) (*models.CheckIn, error) {
+	var checkIn *models.CheckIn
+	err := r.client.DB.Preload("User").Preload("Team").Where("id = ?", checkInID).First(&checkIn).Error
+	if err != nil {
+		return nil, err
+	}
+	return checkIn, nil
 }

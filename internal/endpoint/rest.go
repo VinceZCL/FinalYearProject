@@ -7,9 +7,13 @@ import (
 
 func RegisterRoutes(e echo.Echo) {
 	e.GET("/", handler.Hello)
-	e.GET("/members/:id", handler.GetMembers)
+	e.GET("/members/team/:id", handler.GetMembers)
 	e.GET("/users", handler.GetUsers)
 	e.GET("/teams", handler.GetTeams)
 	e.GET("/checkins/user/:id", handler.GetUserCheckIns)
 	e.GET("/checkins/team/:id", handler.GetTeamCheckIns)
+
+	e.GET("/users/:id", handler.GetUser)
+	e.GET("/teams/:id", handler.GetTeam)
+	e.GET("/checkins/:id", handler.GetCheckIn)
 }
