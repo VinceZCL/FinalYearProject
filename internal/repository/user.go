@@ -7,6 +7,7 @@ import (
 
 type UserRepository interface {
 	GetUsers() ([]models.User, error)
+	GetUser(userID int) (*models.User, error)
 }
 
 type userRepository struct {
@@ -24,4 +25,13 @@ func (r *userRepository) GetUsers() ([]models.User, error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+func (r *userRepository) GetUser(userID int) (*models.User, error) {
+	var user *models.User
+	err := r.client.DB.Where("id = ?", userID).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
