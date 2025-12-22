@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/VinceZCL/FinalYearProject/app"
 	"github.com/VinceZCL/FinalYearProject/types/model/param"
@@ -15,9 +16,19 @@ func GetUserCheckIns(c echo.Context) error {
 		c.Logger().Errorf("Handler | CheckInHandler | Invalid Params: %w", err)
 		return err
 	}
+	date := ""
+	dateParam := c.QueryParam("date")
+	if dateParam != "" {
+		datetime, err := time.Parse(time.DateOnly, dateParam)
+		date = datetime.Format(time.DateOnly)
+		if err != nil {
+			c.Logger().Errorf("Handler | CheckInHandler | Invalid Params: %w", err)
+			return err
+		}
+	}
 
 	app := app.FromContext(c)
-	checkIns, err := app.Services.CheckIn.GetUserCheckIns(c, uint(userID))
+	checkIns, err := app.Services.CheckIn.GetUserCheckIns(c, uint(userID), date)
 	if err != nil {
 		c.Logger().Errorf("Handler | CheckInHandler | GetUserCheckIns: %w", err)
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to get User Check Ins"})
@@ -32,9 +43,19 @@ func GetTeamCheckIns(c echo.Context) error {
 		c.Logger().Errorf("Handler | CheckInHandler | Invalid Params: %w", err)
 		return err
 	}
+	date := ""
+	dateParam := c.QueryParam("date")
+	if dateParam != "" {
+		datetime, err := time.Parse(time.DateOnly, dateParam)
+		date = datetime.Format(time.DateOnly)
+		if err != nil {
+			c.Logger().Errorf("Handler | CheckInHandler | Invalid Params: %w", err)
+			return err
+		}
+	}
 
 	app := app.FromContext(c)
-	checkIns, err := app.Services.CheckIn.GetUserCheckIns(c, uint(userID))
+	checkIns, err := app.Services.CheckIn.GetTeamCheckIns(c, uint(userID), date)
 	if err != nil {
 		c.Logger().Errorf("Handler | CheckInHandler | GetTeamCheckIns: %w", err)
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to get Team Check Ins"})
