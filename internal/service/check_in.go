@@ -16,9 +16,9 @@ func NewCheckInService(repo repository.CheckInRepository) *CheckInService {
 	return &CheckInService{repo: repo}
 }
 
-func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint) ([]dto.CheckIn, error) {
+func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint, date string) ([]dto.CheckIn, error) {
 
-	checkIns, err := s.repo.GetUserCheckIns(userID)
+	checkIns, err := s.repo.GetUserCheckIns(userID, date)
 	if err != nil {
 		c.Logger().Errorf("Service | CheckInService | GetUserCheckIns: %w", err)
 		return nil, err
@@ -41,9 +41,9 @@ func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint) ([]dto.Che
 	return dtos, nil
 }
 
-func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint) ([]dto.CheckIn, error) {
+func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint, date string) ([]dto.CheckIn, error) {
 
-	checkIns, err := s.repo.GetUserCheckIns(teamID)
+	checkIns, err := s.repo.GetTeamCheckIns(teamID, date)
 	if err != nil {
 		c.Logger().Errorf("Service | CheckInService | GetTeamCheckIns: %w", err)
 		return nil, err
