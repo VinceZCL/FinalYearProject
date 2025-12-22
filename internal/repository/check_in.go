@@ -1,13 +1,15 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/VinceZCL/FinalYearProject/internal/client"
 	"github.com/VinceZCL/FinalYearProject/types/model"
 )
 
 type CheckInRepository interface {
-	GetUserCheckIns(userID uint) ([]model.CheckIn, error)
-	GetTeamCheckIns(teamID uint) ([]model.CheckIn, error)
+	GetUserCheckIns(userID uint, date string) ([]model.CheckIn, error)
+	GetTeamCheckIns(teamID uint, date string) ([]model.CheckIn, error)
 	GetCheckIn(checkInID uint) (*model.CheckIn, error)
 	NewCheckIn(input model.CheckIn) (*model.CheckIn, error)
 }
@@ -20,18 +22,41 @@ func NewCheckInRepository(dbclient *client.PostgresClient) CheckInRepository {
 	return &checkInRepository{client: dbclient}
 }
 
-func (r *checkInRepository) GetUserCheckIns(userID uint) ([]model.CheckIn, error) {
+func (r *checkInRepository) GetUserCheckIns(userID uint, date string) ([]model.CheckIn, error) {
 	var checkIns []model.CheckIn
-	err := r.client.DB.Preload("User").Preload("Team").Where("user_id = ?", userID).Find(&checkIns).Error
+	start, end, err := getTimes(date)
+	if err != nil {
+		return nil, err
+	}
+	err = r.client.DB.Preload("User").Preload("Team").
+		Where("user_id = ?", userID).
+		Where("created_at >= ? AND created_at < ?", start, end).
+		Find(&checkIns).Error
 	if err != nil {
 		return nil, err
 	}
 	return checkIns, nil
 }
 
-func (r *checkInRepository) GetTeamCheckIns(teamID uint) ([]model.CheckIn, error) {
+func (r *checkInRepository) GetTeamCheckIns(teamID uint, date string) ([]model.CheckIn, error) {
 	var checkIns []model.CheckIn
-	err := r.client.DB.Preload("User").Preload("Team").Where("team_id = ?", teamID).Find(&checkIns).Error
+	start, end, err := getTimes(date)
+	if err != nil {
+		return nil, err
+	}
+	err = r.client.DB.Model(&model.CheckIn{}).Joins("JOIN user_teams ut ON ut.user_id = check_ins.user_id").
+		Where("ut.team_id = ?", teamID).
+		Where("created_at >= ? AND created_at < ?", start, end).
+		Where(`
+			check_ins.visibility = 'all'
+			OR (
+				check_ins.visibility = 'team'
+				AND check_ins.team_id = ?
+			)
+		`, teamID).
+		Preload("User").
+		Preload("Team").
+		Find(&checkIns).Error
 	if err != nil {
 		return nil, err
 	}
@@ -56,4 +81,26 @@ func (r *checkInRepository) NewCheckIn(input model.CheckIn) (*model.CheckIn, err
 		return nil, err
 	}
 	return &input, nil
+}
+
+func getTimes(dateStr string) (start, end time.Time, err error) {
+
+	var day time.Time
+	if dateStr == "" {
+		day = time.Now()
+	} else {
+		day, err = time.ParseInLocation(time.DateOnly, dateStr, time.Local)
+		if err != nil {
+			return time.Time{}, time.Time{}, err
+		}
+	}
+	start = time.Date(
+		day.Year(),
+		day.Month(),
+		day.Day(),
+		0, 0, 0, 0,
+		day.Location(),
+	)
+	end = start.Add(24 * time.Hour)
+	return
 }
