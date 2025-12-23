@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -23,6 +24,12 @@ type ConfigStruct struct {
 		// Database password.
 		Password string
 	}
+
+	// Security configuration settings
+	Security struct {
+		// jwt secret key
+		Secretkey string
+	}
 }
 
 func Get() *ConfigStruct {
@@ -35,6 +42,8 @@ func Get() *ConfigStruct {
 	cfg.SetConfigName("config")
 	cfg.SetConfigType("yaml")
 	cfg.AddConfigPath("./config")
+	cfg.AutomaticEnv()
+	cfg.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	if err := cfg.ReadInConfig(); err != nil {
 		fmt.Printf("Config | Read Error: %w", err)

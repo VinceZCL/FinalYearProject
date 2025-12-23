@@ -10,6 +10,7 @@ type Repositories struct {
 	UserTeam repository.UserTeamRepository
 	Team     repository.TeamRepository
 	CheckIn  repository.CheckInRepository
+	Auth     repository.AuthRepository
 }
 
 type Services struct {
@@ -17,4 +18,5 @@ type Services struct {
 	UserTeam service.UserTeamService
 	Team     service.TeamService
 	CheckIn  service.CheckInService
+	Auth     service.AuthService
 }
