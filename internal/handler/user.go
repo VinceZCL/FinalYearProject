@@ -36,6 +36,7 @@ func GetUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
+// unused, migrate to auth.Register
 func NewUser(c echo.Context) error {
 	var req param.NewUser
 
