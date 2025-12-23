@@ -55,3 +55,8 @@ func Login(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, echo.Map{"Status": "Success", "Token": token})
 }
+
+func Logout(c echo.Context) error {
+	c.Set("user", nil)
+	return c.JSON(http.StatusOK, echo.Map{"Status": "Success", "details": "Successfully logged out"})
+}

@@ -14,9 +14,9 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-var jwtSecretKey = []byte(config.Get().Security.Secretkey)
+var JWTSecretKey = []byte(config.Get().Security.Secretkey)
 
-type claims struct {
+type Claims struct {
 	UserID   uint   `json:"userID"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
@@ -95,7 +95,7 @@ func (s *AuthService) Login(c echo.Context, param param.Login) (string, error) {
 func tokenGen(c echo.Context, user *model.User) (string, error) {
 	expire := time.Now().Add(24 * time.Hour)
 
-	claims := claims{
+	claims := Claims{
 		UserID:   user.ID,
 		Username: user.Name,
 		Email:    user.Email,
@@ -109,7 +109,7 @@ func tokenGen(c echo.Context, user *model.User) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString(jwtSecretKey)
+	tokenString, err := token.SignedString(JWTSecretKey)
 	if err != nil {
 		c.Logger().Errorf("Service | AuthService | tokenGen: %w", err)
 		return "", err
