@@ -4,3 +4,6 @@ database:
   name: postgresdb
   user: postgresdb
   password: postgresdb
+
+security:
+  secretkey: <redacted>

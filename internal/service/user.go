@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/VinceZCL/FinalYearProject/internal/repository"
+	"github.com/VinceZCL/FinalYearProject/tools"
 	"github.com/VinceZCL/FinalYearProject/types/model"
 	"github.com/VinceZCL/FinalYearProject/types/model/dto"
 	"github.com/VinceZCL/FinalYearProject/types/model/param"
@@ -51,6 +52,7 @@ func (s *UserService) GetUser(c echo.Context, userID uint) (*dto.User, error) {
 	return dto, nil
 }
 
+// unused, migrate to auth.Register
 func (s *UserService) NewUser(c echo.Context, req param.NewUser) (*dto.User, error) {
 	var userType string
 	if req.Type != "" {
@@ -58,10 +60,14 @@ func (s *UserService) NewUser(c echo.Context, req param.NewUser) (*dto.User, err
 	} else {
 		userType = "user"
 	}
+	hashed, err := tools.HashPass(req.Password)
+	if err != nil {
+		return nil, err
+	}
 	input := model.User{
 		Name:     req.Name,
 		Email:    req.Email,
-		Password: req.Password,
+		Password: hashed,
 		Type:     userType,
 		Status:   "active",
 	}
