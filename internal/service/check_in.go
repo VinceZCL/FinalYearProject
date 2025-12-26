@@ -41,7 +41,7 @@ func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint, date strin
 	return dtos, nil
 }
 
-func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint, date string) ([]dto.CheckIn, error) {
+func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint, date string) ([]dto.DailyCheckIn, error) {
 
 	checkIns, err := s.repo.GetTeamCheckIns(teamID, date)
 	if err != nil {
@@ -49,19 +49,42 @@ func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint, date strin
 		return nil, err
 	}
 
-	dtos := make([]dto.CheckIn, len(checkIns))
-	for i, u := range checkIns {
-		dtos[i] = dto.CheckIn{
-			ID:         u.ID,
-			Type:       u.Type,
-			Item:       u.Item,
-			Jira:       u.Jira,
-			Visibility: u.Visibility,
-			TeamID:     u.TeamID,
-			UserID:     u.UserID,
-			Username:   u.User.Name,
-			CreatedAt:  u.CreatedAt,
+	grouped := make(map[uint]*dto.DailyCheckIn)
+
+	for _, ci := range checkIns {
+		if _, ok := grouped[ci.UserID]; !ok {
+			grouped[ci.UserID] = &dto.DailyCheckIn{
+				UserID:    ci.UserID,
+				Username:  ci.User.Name,
+				CreatedAt: ci.CreatedAt,
+			}
 		}
+
+		single := &dto.CheckIn{
+			ID:         ci.ID,
+			Type:       ci.Type,
+			Item:       ci.Item,
+			Jira:       ci.Jira,
+			Visibility: ci.Visibility,
+			TeamID:     ci.TeamID,
+			UserID:     ci.UserID,
+			Username:   ci.User.Name,
+			CreatedAt:  ci.CreatedAt,
+		}
+
+		switch ci.Type {
+		case "yesterday":
+			grouped[ci.UserID].Yesterday = single
+		case "today":
+			grouped[ci.UserID].Today = single
+		case "blockers":
+			grouped[ci.UserID].Blockers = single
+		}
+	}
+
+	dtos := make([]dto.DailyCheckIn, 0, len(grouped))
+	for _, v := range grouped {
+		dtos = append(dtos, *v)
 	}
 	return dtos, nil
 }
