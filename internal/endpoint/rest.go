@@ -10,7 +10,6 @@ func RegisterRoutes(e echo.Echo) {
 	e.GET("/", handler.Hello)
 	e.POST("/auth/register", handler.Register)
 	e.POST("/auth/login", handler.Login)
-	e.POST("/auth/logout", handler.Logout)
 
 	protected := e.Group("")
 	protected.Use(middlewares.AuthMiddleware())

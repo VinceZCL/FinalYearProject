@@ -1,6 +1,8 @@
 package dto
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	ID    uint   `json:"id"`
@@ -33,6 +35,15 @@ type CheckIn struct {
 	Visibility string    `json:"visibility"`
 	TeamID     *uint     `json:"teamID"`
 	UserID     uint      `json:"userID"`
-	Username   string    `json:"user_name"`
+	Username   string    `json:"username"`
 	CreatedAt  time.Time `json:"created_at"`
+}
+
+type DailyCheckIn struct {
+	UserID    uint      `json:"userID"`
+	Username  string    `json:"username"`
+	CreatedAt time.Time `json:"created_at"`
+	Yesterday *CheckIn  `json:"yesterday,omitempty"`
+	Today     *CheckIn  `json:"today,omitempty"`
+	Blockers  *CheckIn  `json:"blockers,omitempty"`
 }
