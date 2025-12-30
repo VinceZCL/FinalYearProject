@@ -40,10 +40,10 @@ type CheckIn struct {
 }
 
 type DailyCheckIn struct {
-	UserID    uint      `json:"userID"`
-	Username  string    `json:"username"`
-	CreatedAt time.Time `json:"created_at"`
-	Yesterday *CheckIn  `json:"yesterday,omitempty"`
-	Today     *CheckIn  `json:"today,omitempty"`
-	Blockers  *CheckIn  `json:"blockers,omitempty"`
+	UserID    uint       `json:"userID"`
+	Username  string     `json:"username"`
+	CreatedAt time.Time  `json:"created_at"`
+	Yesterday []*CheckIn `json:"yesterday,omitempty"`
+	Today     []*CheckIn `json:"today,omitempty"`
+	Blockers  []*CheckIn `json:"blockers,omitempty"`
 }

@@ -16,7 +16,7 @@ func NewCheckInService(repo repository.CheckInRepository) *CheckInService {
 	return &CheckInService{repo: repo}
 }
 
-func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint, date string) ([]dto.CheckIn, error) {
+func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint, date string) (*dto.DailyCheckIn, error) {
 
 	checkIns, err := s.repo.GetUserCheckIns(userID, date)
 	if err != nil {
@@ -24,21 +24,36 @@ func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint, date strin
 		return nil, err
 	}
 
-	dtos := make([]dto.CheckIn, len(checkIns))
-	for i, u := range checkIns {
-		dtos[i] = dto.CheckIn{
-			ID:         u.ID,
-			Type:       u.Type,
-			Item:       u.Item,
-			Jira:       u.Jira,
-			Visibility: u.Visibility,
-			TeamID:     u.TeamID,
-			UserID:     u.UserID,
-			Username:   u.User.Name,
-			CreatedAt:  u.CreatedAt,
+	dailyCheckIn := &dto.DailyCheckIn{
+		UserID:    userID,
+		Username:  checkIns[0].User.Name, // Assuming all check-ins belong to the same user
+		CreatedAt: checkIns[0].CreatedAt, // Assuming created_at is the same for all check-ins
+	}
+
+	for _, ci := range checkIns {
+		single := &dto.CheckIn{
+			ID:         ci.ID,
+			Type:       ci.Type,
+			Item:       ci.Item,
+			Jira:       ci.Jira,
+			Visibility: ci.Visibility,
+			TeamID:     ci.TeamID,
+			UserID:     ci.UserID,
+			Username:   ci.User.Name,
+			CreatedAt:  ci.CreatedAt,
+		}
+
+		switch ci.Type {
+		case "yesterday":
+			dailyCheckIn.Yesterday = append(dailyCheckIn.Yesterday, single)
+		case "today":
+			dailyCheckIn.Today = append(dailyCheckIn.Today, single)
+		case "blockers":
+			dailyCheckIn.Blockers = append(dailyCheckIn.Blockers, single)
 		}
 	}
-	return dtos, nil
+
+	return dailyCheckIn, nil
 }
 
 func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint, date string) ([]dto.DailyCheckIn, error) {
@@ -74,11 +89,11 @@ func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint, date strin
 
 		switch ci.Type {
 		case "yesterday":
-			grouped[ci.UserID].Yesterday = single
+			grouped[ci.UserID].Yesterday = append(grouped[ci.UserID].Yesterday, single)
 		case "today":
-			grouped[ci.UserID].Today = single
+			grouped[ci.UserID].Today = append(grouped[ci.UserID].Today, single)
 		case "blockers":
-			grouped[ci.UserID].Blockers = single
+			grouped[ci.UserID].Blockers = append(grouped[ci.UserID].Blockers, single)
 		}
 	}
 
@@ -138,4 +153,50 @@ func (s *CheckInService) NewCheckIn(c echo.Context, req param.NewCheckIn) (*dto.
 		CreatedAt:  checkIn.CreatedAt,
 	}
 	return dto, nil
+}
+
+func (s *CheckInService) BulkCheckIn(c echo.Context, req param.BulkCheckIn) ([]*dto.CheckIn, error) {
+	var result []*dto.CheckIn
+
+	// Validate the bulk check-in request
+	if err := req.Validate(); err != nil {
+		return nil, err // Return error if bulk validation fails
+	}
+
+	// Iterate through each NewCheckIn and process it
+	for _, checkInReq := range req.CheckIns {
+		input := model.CheckIn{
+			UserID:     checkInReq.UserID,
+			Type:       checkInReq.Type,
+			Item:       checkInReq.Item,
+			Jira:       checkInReq.Jira,
+			Visibility: checkInReq.Visibility,
+			TeamID:     checkInReq.TeamID,
+		}
+
+		// Call repo to create the check-in in the database
+		checkIn, err := s.repo.NewCheckIn(input)
+		if err != nil {
+			c.Logger().Errorf("Service | CheckInService | NewBulkCheckIn: %w", err)
+			continue // Proceed with next check-in even if one fails
+		}
+
+		// Map the database model to the DTO
+		dto := &dto.CheckIn{
+			ID:         checkIn.ID,
+			Type:       checkIn.Type,
+			Item:       checkIn.Item,
+			Jira:       checkIn.Jira,
+			Visibility: checkIn.Visibility,
+			TeamID:     checkIn.TeamID,
+			UserID:     checkIn.UserID,
+			Username:   checkIn.User.Name,
+			CreatedAt:  checkIn.CreatedAt,
+		}
+
+		// Add the created check-in DTO to the result slice
+		result = append(result, dto)
+	}
+
+	return result, nil
 }
