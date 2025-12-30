@@ -99,3 +99,31 @@ func NewCheckIn(c echo.Context) error {
 	}
 	return c.JSON(http.StatusCreated, echo.Map{"check_in": checkIn})
 }
+
+func BulkCheckIn(c echo.Context) error {
+	// Bind the request to BulkCheckIn
+	var req param.BulkCheckIn
+	if err := c.Bind(&req); err != nil {
+		c.Logger().Errorf("Handler | CheckInHandler | Invalid Request: %w", err)
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid JSON Body"})
+	}
+
+	// Validate the bulk check-in request
+	if err := req.Validate(); err != nil {
+		c.Logger().Errorf("Handler | CheckInHandler | Invalid Request: %w", err)
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid check-in data"})
+	}
+
+	// Get the service instance from the context
+	app := app.FromContext(c)
+
+	// Call the BulkCheckIn service
+	checkIns, err := app.Services.CheckIn.BulkCheckIn(c, req)
+	if err != nil {
+		c.Logger().Errorf("Handler | CheckInHandler | BulkCheckIn: %w", err)
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to process bulk check-ins"})
+	}
+
+	// Return the successful response with the check-ins grouped by user
+	return c.JSON(http.StatusCreated, echo.Map{"check_ins": checkIns})
+}

@@ -35,6 +35,7 @@ func RegisterRoutes(e echo.Echo) {
 	protected.POST("/teams", handler.NewTeam)
 	protected.POST("/members", handler.NewMember)
 	protected.POST("/checkins", handler.NewCheckIn)
+	protected.POST("/checkins/bulk", handler.BulkCheckIn)
 
 	// TODO PUT METHODS
 }
