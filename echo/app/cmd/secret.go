@@ -18,7 +18,7 @@ func init() {
 		Short: "Generate secret",
 		Run: func(cmd *cobra.Command, args []string) {
 			key := generateJWTSecretKey()
-			fmt.Println("Add this into `.env.local`")
+			fmt.Println("Add this into `./echo/.env.local`")
 			fmt.Printf("export SECURITY_SECRETKEY=%s\n", key)
 		},
 	})

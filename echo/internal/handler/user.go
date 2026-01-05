@@ -14,9 +14,16 @@ func GetUsers(c echo.Context) error {
 	users, err := app.Services.User.GetUsers(c)
 	if err != nil {
 		c.Logger().Errorf("Handler | UserHandler | GetUsers: %w", err)
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to get users"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"status":  "failure",
+			"error":   "get users failed",
+			"details": err.Error(),
+		})
 	}
-	return c.JSON(http.StatusOK, users)
+	return c.JSON(http.StatusOK, echo.Map{
+		"status": "success",
+		"users":  users,
+	})
 }
 
 func GetUser(c echo.Context) error {
@@ -25,15 +32,26 @@ func GetUser(c echo.Context) error {
 	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.Logger().Errorf("Handler | UserHandler | Invalid Params: %w", err)
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid route param"})
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"status":  "failure",
+			"error":   "invalid param",
+			"details": "Invalid route param id",
+		})
 	}
 
 	user, err := app.Services.User.GetUser(c, uint(userID))
 	if err != nil {
 		c.Logger().Errorf("Handler | UserHandler | GetUser (%d): %w", userID, err)
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to get user"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"status":  "failure",
+			"error":   "get user failed",
+			"details": err.Error(),
+		})
 	}
-	return c.JSON(http.StatusOK, user)
+	return c.JSON(http.StatusOK, echo.Map{
+		"status": "success",
+		"user":   user,
+	})
 }
 
 // unused, migrate to auth.Register
@@ -42,12 +60,20 @@ func NewUser(c echo.Context) error {
 
 	if err := c.Bind(&req); err != nil {
 		c.Logger().Errorf("Handler | UserHandler | Invalid Request: %w", err)
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid JSON Body"})
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"status":  "failure",
+			"error":   "malformed JSON",
+			"details": err.Error(),
+		})
 	}
 
 	if err := req.Validate(); err != nil {
 		c.Logger().Errorf("Handler | UserHandler | Invalid Request: %w", err)
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid JSON Body"})
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"status":  "failure",
+			"error":   "malformed JSON",
+			"details": err.Error(),
+		})
 	}
 
 	app := app.FromContext(c)
@@ -55,7 +81,14 @@ func NewUser(c echo.Context) error {
 	user, err := app.Services.User.NewUser(c, req)
 	if err != nil {
 		c.Logger().Errorf("Handler | UserHandler | NewUser: %w", err)
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to create user"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"status":  "failure",
+			"error":   "create user failed",
+			"details": err.Error(),
+		})
 	}
-	return c.JSON(http.StatusCreated, user)
+	return c.JSON(http.StatusCreated, echo.Map{
+		"status": "success",
+		"user":   user,
+	})
 }

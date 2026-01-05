@@ -8,10 +8,16 @@ import (
 
 func RegisterRoutes(e echo.Echo) {
 	e.GET("/", handler.Hello)
-	e.POST("/auth/register", handler.Register)
-	e.POST("/auth/login", handler.Login)
 
-	protected := e.Group("")
+	api := e.Group("/api")
+
+	// api/auth/*
+	auth := api.Group("/auth")
+	auth.POST("/register", handler.Register)
+	auth.POST("/login", handler.Login)
+
+	// api/*
+	protected := api.Group("")
 	protected.Use(middlewares.AuthMiddleware())
 
 	// GET ALL

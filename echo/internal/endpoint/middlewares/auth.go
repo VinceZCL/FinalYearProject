@@ -18,7 +18,9 @@ func AuthMiddleware() echo.MiddlewareFunc {
 			authHeader := c.Request().Header.Get("Authorization")
 			if authHeader == "" {
 				return c.JSON(http.StatusUnauthorized, echo.Map{
-					"error": "Missing Authorization header",
+					"status":  "failure",
+					"error":   "authorization",
+					"details": "Missing Authorization header",
 				})
 			}
 
@@ -27,7 +29,9 @@ func AuthMiddleware() echo.MiddlewareFunc {
 			if len(authParts) != 2 || authParts[0] != "Bearer" {
 				// Invalid format, return Unauthorized
 				return c.JSON(http.StatusUnauthorized, echo.Map{
-					"error": "Invalid Authorization header format. Expected 'Bearer <token>'",
+					"status":  "failure",
+					"error":   "authorization",
+					"details": "Invalid Authorization header format. Expected 'Bearer <token>'",
 				})
 			}
 
@@ -45,7 +49,9 @@ func AuthMiddleware() echo.MiddlewareFunc {
 			// If parsing fails or the token is invalid, return Unauthorized
 			if err != nil || !token.Valid {
 				return c.JSON(http.StatusUnauthorized, echo.Map{
-					"error": "Invalid or expired token",
+					"status":  "failure",
+					"error":   "token",
+					"details": "Invalid or expired token",
 				})
 			}
 
@@ -53,20 +59,26 @@ func AuthMiddleware() echo.MiddlewareFunc {
 			claims, ok := token.Claims.(*service.Claims)
 			if !ok {
 				return c.JSON(http.StatusUnauthorized, echo.Map{
-					"error": "Invalid token claims",
+					"status":  "failure",
+					"error":   "token",
+					"details": "Invalid token claims",
 				})
 			}
 
 			// Optionally, check claims like expiration and issuer
 			if claims.ExpiresAt.Time.Before(time.Now()) {
 				return c.JSON(http.StatusUnauthorized, echo.Map{
-					"error": "Token has expired",
+					"status":  "failure",
+					"error":   "token",
+					"details": "Token has expired",
 				})
 			}
 
 			if claims.Issuer != "github.com/VinceZCL/FinalYearProject" {
 				return c.JSON(http.StatusUnauthorized, echo.Map{
-					"error": "Invalid issuer",
+					"status":  "failure",
+					"error":   "token",
+					"details": "Invalid issuer",
 				})
 			}
 

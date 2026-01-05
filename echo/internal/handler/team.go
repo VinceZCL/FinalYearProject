@@ -15,9 +15,16 @@ func GetTeams(c echo.Context) error {
 	teams, err := app.Services.Team.GetTeams(c)
 	if err != nil {
 		c.Logger().Errorf("Handler | TeamHandler | GetTeams: %w", err)
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to get teams"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"status":  "failure",
+			"error":   "get teams failed",
+			"details": err.Error(),
+		})
 	}
-	return c.JSON(http.StatusOK, teams)
+	return c.JSON(http.StatusOK, echo.Map{
+		"status": "success",
+		"teams":  teams,
+	})
 }
 
 func GetTeam(c echo.Context) error {
@@ -26,15 +33,26 @@ func GetTeam(c echo.Context) error {
 	teamID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.Logger().Errorf("Handler | TeamHandler | Invalid Params: %w", err)
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid route param"})
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"status":  "failure",
+			"error":   "invalid param",
+			"details": "Invalid route param id",
+		})
 	}
 
 	team, err := app.Services.Team.GetTeam(c, uint(teamID))
 	if err != nil {
 		c.Logger().Errorf("Handler | TeamHandler | GetTeam (%d): %w", teamID, err)
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to get teams"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"status":  "failure",
+			"error":   "get teams failed",
+			"details": err.Error(),
+		})
 	}
-	return c.JSON(http.StatusOK, team)
+	return c.JSON(http.StatusOK, echo.Map{
+		"status": "success",
+		"team":   team,
+	})
 }
 
 func NewTeam(c echo.Context) error {
@@ -42,12 +60,20 @@ func NewTeam(c echo.Context) error {
 
 	if err := c.Bind(&req); err != nil {
 		c.Logger().Errorf("Handler | TeamHandler | Invalid Request: %w", err)
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid JSON Body"})
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"status":  "failure",
+			"error":   "malformed JSON",
+			"details": err.Error(),
+		})
 	}
 
 	if err := req.Validate(); err != nil {
 		c.Logger().Errorf("Handler | UserHandler | Invalid Request: %w", err)
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid JSON Body"})
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"status":  "failure",
+			"error":   "malformed JSON",
+			"details": err.Error(),
+		})
 	}
 
 	app := app.FromContext(c)
@@ -55,7 +81,11 @@ func NewTeam(c echo.Context) error {
 	team, err := app.Services.Team.NewTeam(c, req)
 	if err != nil {
 		c.Logger().Errorf("Handler | TeamHandler | NewTeam: %w", err)
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to create team"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"status":  "failure",
+			"error":   "create team failed",
+			"details": err.Error(),
+		})
 	}
 
 	memberReq := param.NewMember{
@@ -67,9 +97,17 @@ func NewTeam(c echo.Context) error {
 	member, err := app.Services.UserTeam.NewMember(c, memberReq)
 	if err != nil {
 		c.Logger().Errorf("Handler | TeamHandler | NewTeam: %w", err)
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to create member"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"status":  "failure",
+			"error":   "create member failed",
+			"details": err.Error(),
+		})
 	}
 
-	return c.JSON(http.StatusCreated, echo.Map{"team": team, "member": member})
+	return c.JSON(http.StatusCreated, echo.Map{
+		"status": "success",
+		"team":   team,
+		"member": member,
+	})
 
 }
