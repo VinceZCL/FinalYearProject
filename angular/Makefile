@@ -1,2 +1,0 @@
-serve:
-	npx ng serve
