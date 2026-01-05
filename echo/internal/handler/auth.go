@@ -85,3 +85,9 @@ func Login(c echo.Context) error {
 		"token":  token,
 	})
 }
+
+func Verify(c echo.Context) error {
+	return c.JSON(http.StatusOK, echo.Map{
+		"status": "success",
+	})
+}

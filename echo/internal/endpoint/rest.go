@@ -16,6 +16,8 @@ func RegisterRoutes(e echo.Echo) {
 	auth.POST("/register", handler.Register)
 	auth.POST("/login", handler.Login)
 
+	auth.GET("/verify", handler.Verify, middlewares.AuthMiddleware())
+
 	// api/*
 	protected := api.Group("")
 	protected.Use(middlewares.AuthMiddleware())
