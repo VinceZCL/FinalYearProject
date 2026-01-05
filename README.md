@@ -20,7 +20,7 @@
 .
 ├── Makefile
 ├── README.md
-├── angular/             # Angular Frontend
+├── angular/                # Angular Frontend
 │   ├── angular.json
 │   ├── node_modules
 │   ├── package-lock.json
@@ -31,7 +31,7 @@
 │   ├── tsconfig.json
 │   └── tsconfig.spec.json
 ├── docker-compose.yml
-├── echo/                # Echo Backend
+├── echo/                   # Echo Backend
 │   ├── app
 │   ├── config
 │   ├── go.mod
