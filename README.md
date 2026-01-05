@@ -20,41 +20,29 @@
 .
 ├── Makefile
 ├── README.md
-├── angular             # Angular Frontend
+├── angular/             # Angular Frontend
+│   ├── angular.json
+│   ├── node_modules
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   ├── src
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   └── tsconfig.spec.json
 ├── docker-compose.yml
-├── echo                # Echo Backend
+├── echo/                # Echo Backend
+│   ├── app
+│   ├── config
+│   ├── go.mod
+│   ├── go.sum
+│   ├── internal
+│   ├── main.go
+│   ├── tools
+│   └── types
 ├── node_modules
 ├── package-lock.json
 └── package.json
-```
-
-### Echo Backend
-
-```text
-.
-├── app
-├── config
-├── go.mod
-├── go.sum
-├── internal
-├── main.go
-├── tools
-└── types
-```
-
-### Angular Frontend
-
-```text
-.
-├── angular.json
-├── node_modules
-├── package-lock.json
-├── package.json
-├── public
-├── src
-├── tsconfig.app.json
-├── tsconfig.json
-└── tsconfig.spec.json
 ```
 
 ## QuickStart
