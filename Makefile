@@ -14,8 +14,7 @@ deps: go-deps npm-deps
 dev: go-deps
 	go -C server run -tags server -race main.go server
 
-migrate: go-deps
-	podman-compose up -d postgres
+migrate: go-deps env
 	go -C server run -tags cli -race main.go migrate
 
 secret: go-deps

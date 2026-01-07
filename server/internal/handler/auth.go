@@ -87,7 +87,11 @@ func Login(c echo.Context) error {
 }
 
 func Verify(c echo.Context) error {
+
+	claims := c.Get("user")
+
 	return c.JSON(http.StatusOK, echo.Map{
 		"status": "success",
+		"claims": claims,
 	})
 }
