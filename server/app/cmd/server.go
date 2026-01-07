@@ -33,7 +33,11 @@ func init() {
 			e.Use(middleware.Logger())
 			e.Use(middleware.Recover())
 
-			e.Use(middleware.CORS()) // ? middleware.CORSWithConfig(middleware.CORSConfig{})
+			e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+				AllowOrigins: []string{"http://localhost:4200"},
+				AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+				AllowHeaders: []string{"Origin", "Content-Type", "Accept", "Authorization"},
+			}))
 
 			e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 				return func(c echo.Context) error {

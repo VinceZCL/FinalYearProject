@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
 import { AuthApi, Claims, Login } from '../models/auth.model';
 import { Error } from '../models/error.model';
 
@@ -14,6 +14,9 @@ export class Auth {
 
   private logged = new BehaviorSubject<boolean>(this.hasToken())
   isLogged = this.logged.asObservable();
+
+  claims? : Claims;
+  private current = new BehaviorSubject<Claims | undefined>(this.claims);
 
   getToken() : string | null {
     return localStorage.getItem("token");
@@ -31,17 +34,16 @@ export class Auth {
     localStorage.removeItem("token");
   }
 
-  getClaims() : Observable<Claims> {
-    return this.http.get<AuthApi>(`${this.url}/verify`)
-      .pipe(map(
-        (response : AuthApi) => new Claims(response.claims)
-      ));
+  getClaims() : Observable<Claims | undefined> {
+    return this.current.asObservable();
   }
 
   testToken() : Observable<AuthApi | Error> {
     return this.http.get<AuthApi>(`${this.url}/verify`)
       .pipe(map(
         (response : AuthApi) => {
+          this.claims = response.claims;
+          this.current.next(this.claims);
           return response
         }
       ),
