@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, throwError } from 'rxjs';
 import { AuthApi, Claims, Login } from '../models/auth.model';
 import { Error } from '../models/error.model';
 
@@ -31,6 +31,7 @@ export class Auth {
   }
 
   logout() : void {
+    this.logged.next(false);
     localStorage.removeItem("token");
   }
 
@@ -38,7 +39,7 @@ export class Auth {
     return this.current.asObservable();
   }
 
-  testToken() : Observable<AuthApi | Error> {
+  testToken() : Observable<AuthApi> {
     return this.http.get<AuthApi>(`${this.url}/verify`)
       .pipe(map(
         (response : AuthApi) => {
@@ -54,16 +55,17 @@ export class Auth {
             error: error.error.error,
             details: error.error.details
           };
-          return of(err);
+          return throwError(() => err);
       })
     )
   }
 
-  login(cred: {email:string, password:string}) : Observable<Login | Error> {
+  login(cred: {email:string, password:string}) : Observable<Login> {
     return this.http.post<Login>(`${this.url}/login`, cred, {responseType:"json"})
       .pipe(map(
         (response : Login) => {
           this.setToken(response.token);
+          this.logged.next(true);
           return response;
         }
       ),
@@ -74,7 +76,7 @@ export class Auth {
             error: error.error.error,
             details: error.error.details
           };
-          return of(err);
+          return throwError(() => err);
         }
       )
     )

@@ -80,10 +80,10 @@ func (s *AuthService) Login(c echo.Context, param param.Login) (string, error) {
 	user, err := s.authRepo.GetCredentials(param.Email)
 	if err != nil {
 		c.Logger().Errorf("Service | AuthService | GetCredentials (%s): %w", param.Email, err)
-		return "", err
+		return "", fmt.Errorf("Email not found")
 	}
 	if !tools.ComparePass(user.Password, param.Password) {
-		return "", fmt.Errorf("Unmatched credentials")
+		return "", fmt.Errorf("Incorrect Password")
 	}
 	token, err := tokenGen(c, user)
 	if err != nil {

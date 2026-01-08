@@ -5,9 +5,9 @@
         <li><a href="#" routerLink="/profile" routerLinkActive="activelink">Profile</a></li>    
         <li class="logout"><a href="#" (click)="logout()">Logout</a></li>
     </ul>
-} @else {
-    <h1>Welcome to Scrum Management Tool!</h1>
-    <h2>Login or Register to Start!</h2>
 }
-
-<router-outlet />
+<div class="app-shell">
+  <main class="app-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

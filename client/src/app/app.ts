@@ -2,7 +2,6 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Auth } from './services/auth';
 import { Error } from './models/error.model';
-import { AuthApi } from './models/auth.model';
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
@@ -24,7 +23,7 @@ export class App implements OnInit {
     this.auth.isLogged.subscribe((status) => {
       if (status) {
         this.auth.testToken().subscribe({
-          next: (val: AuthApi | Error) => {
+          next: () => {
             this.log = true;
             this.cd.detectChanges();
           },

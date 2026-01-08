@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+/* src/styles.css or styles.scss */
+:root {
+  /* Background colors */
+  --bg-main: #0b1026;
+  --bg-soft: #121742;
+  --bg-panel: rgba(255, 255, 255, 0.05);
+
+  /* Accent colors */
+  --accent-primary: #ff6f91;
+  --accent-secondary: #4dd599;
+
+  /* Text colors */
+  --text-main: #f5f7ff;
+  --text-muted: rgba(245, 247, 255, 0.7);
+
+  /* Borders */
+  --border-soft: rgba(255, 255, 255, 0.12);
+}

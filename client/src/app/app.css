@@ -1,0 +1,157 @@
+:host {
+  /* Global theme variables */
+  --bg-main: #0b1026;
+  --bg-soft: #121742;
+  --bg-panel: rgba(255, 255, 255, 0.05);
+
+  --accent-primary: #ff6f91;
+  --accent-secondary: #4dd599;
+
+  --text-main: #f5f7ff;
+  --text-muted: rgba(245, 247, 255, 0.7);
+
+  --border-soft: rgba(255, 255, 255, 0.12);
+
+  display: block;
+  min-height: 100vh;
+  width: 100%;
+
+  background:
+    radial-gradient(circle at top, #1a1f4a, var(--bg-main));
+
+  color: var(--text-main);
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Optional: subtle background texture */
+:host::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1px 1px at 15% 20%, #ffffff, transparent),
+    radial-gradient(1px 1px at 80% 60%, #ffffff, transparent),
+    radial-gradient(1px 1px at 40% 90%, #ffffff, transparent);
+  opacity: 0.15;
+  z-index: -1;
+}
+
+/* Layout helper for pages */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content area */
+.app-content {
+  flex: 1;
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+/* Card / panel style */
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  padding: 1.25rem;
+  backdrop-filter: blur(8px);
+}
+
+/* Global link style */
+a {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Muted text utility */
+.text-muted {
+  color: var(--text-muted);
+}
+
+/* Accent helpers */
+.text-accent {
+  color: var(--accent-primary);
+}
+
+.text-accent-secondary {
+  color: var(--accent-secondary);
+}
+
+/* Motion safety */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Reset */
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar container */
+ul {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: rgba(255, 255, 255, 0.05); /* glassy panel style */
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+}
+
+/* Links */
+ul li a {
+    text-decoration: none;
+    color: var(--text-main); /* match main text color */
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif; /* main theme font */
+}
+
+/* Hover effect */
+ul li a:hover {
+    background: rgba(255, 111, 145, 0.15); /* soft accent glow */
+    color: var(--accent-primary);
+    transform: translateY(-2px);
+}
+
+/* Active router link */
+.activelink {
+    background: var(--accent-primary);
+    color: #000; /* text contrast for neon accent */
+}
+
+/* Push logout to the right */
+ul li.logout {
+    margin-left: auto;
+}
+
+/* Logout link styling */
+ul li.logout a {
+    color: var(--accent-secondary);
+}
+
+/* Logout hover */
+ul li.logout a:hover {
+    background: rgba(77, 213, 153, 0.15);
+    color: var(--accent-secondary);
+}
+
+/* Optional: subtle shadow for links */
+ul li a {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}

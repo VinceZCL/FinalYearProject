@@ -1,0 +1,84 @@
+/* Login form container */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 400px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: var(--bg-panel); /* glassy dark panel */
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    color: var(--text-main);
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Inputs */
+form input {
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-soft);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+/* Input focus */
+form input:focus {
+    border-color: var(--accent-secondary);
+    box-shadow: 0 0 6px rgba(77, 213, 153, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Invalid input using NgClass 'invalid' */
+form input.invalid {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 8px rgba(255, 111, 145, 0.5);
+}
+
+/* Submit button */
+form button {
+    padding: 0.9rem 1.6rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: #000;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* Button hover */
+form button:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* Error message */
+form p {
+    color: var(--accent-primary);
+    font-size: 0.9rem;
+    opacity: 0.85;
+    margin-top: 0.5rem;
+}
+
+/* Placeholder text */
+form input::placeholder {
+    color: rgba(245, 247, 255, 0.6);
+}
+
+/* Optional: subtle input transition for invalid -> valid */
+form input:not(.invalid):focus {
+    border-color: var(--accent-secondary);
+}
+
+/* Ensure vertical spacing between input fields */
+form br {
+    display: none; /* remove default <br> spacing */
+}
