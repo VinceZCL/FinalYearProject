@@ -5,11 +5,11 @@
   --text: #f5f7ff;
 
   display: block;
-  min-height: 100vh;
+  height: 80vh;  /* Ensures the host component height is strictly limited to the viewport height */
   width: 100%;
   background: radial-gradient(circle at top, #1a1f4a, var(--bg));
   color: var(--text);
-  overflow: hidden;
+  overflow: hidden;  /* Hide overflow to prevent vertical scrolling */
 
   display: flex;
   align-items: center;
@@ -45,8 +45,10 @@
 .container {
   position: relative;
   text-align: center;
-  padding: 2rem;
+  padding: 1rem; /* Reduced padding to ensure no overflow */
   max-width: 600px;
+  box-sizing: border-box; /* Ensures padding is part of the total width/height */
+  overflow: hidden;  /* Prevent any overflow within the container */
 }
 
 /* 404 heading */
@@ -84,10 +86,11 @@ h1 span {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translateY(-10px); /* Adjusted to keep the astronaut within bounds */
   }
 }
 
+/* Adjust subtitle and joke styles */
 .subtitle {
   font-size: 1.2rem;
   opacity: 0.9;
@@ -97,7 +100,7 @@ h1 span {
 .joke {
   font-size: 1rem;
   opacity: 0.75;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem; /* Reduced margin to prevent excessive space */
 }
 
 /* Button */

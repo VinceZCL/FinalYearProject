@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Auth } from './services/auth';
 import { Error } from './models/error.model';
 import { ChangeDetectorRef } from '@angular/core';
+import { AuthApi, Claims } from './models/auth.model';
 
 @Component({
   selector: 'app-root',
@@ -14,17 +15,21 @@ export class App implements OnInit {
   protected readonly title = signal('angular');
 
   log : boolean = false;
+  admin : boolean = false;
 
   private auth = inject(Auth);
   private cd = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     
-    this.auth.isLogged.subscribe((status) => {
+    this.auth.getStatus().subscribe((status) => {
       if (status) {
         this.auth.testToken().subscribe({
-          next: () => {
+          next: (resp : AuthApi) => {
             this.log = true;
+            if (resp.claims.type == "admin") {
+              this.admin = true;
+            }
             this.cd.detectChanges();
           },
           error: (err : Error) => {

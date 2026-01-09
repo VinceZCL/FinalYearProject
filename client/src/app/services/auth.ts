@@ -13,11 +13,9 @@ export class Auth {
   private http = inject(HttpClient)
 
   private logged = new BehaviorSubject<boolean>(this.hasToken())
-  isLogged = this.logged.asObservable();
 
-  claims? : Claims;
-  private current = new BehaviorSubject<Claims | undefined>(this.claims);
-
+  claims! : Claims;
+  
   getToken() : string | null {
     return localStorage.getItem("token");
   }
@@ -35,16 +33,20 @@ export class Auth {
     localStorage.removeItem("token");
   }
 
-  getClaims() : Observable<Claims | undefined> {
-    return this.current.asObservable();
+  getStatus() : Observable<boolean> {
+    return this.logged.asObservable();
   }
 
+  getClaims() : Observable<Claims> {
+    let current = new BehaviorSubject<Claims>(this.claims);
+    return current.asObservable();
+  }
+  
   testToken() : Observable<AuthApi> {
     return this.http.get<AuthApi>(`${this.url}/verify`)
       .pipe(map(
         (response : AuthApi) => {
           this.claims = response.claims;
-          this.current.next(this.claims);
           return response
         }
       ),
