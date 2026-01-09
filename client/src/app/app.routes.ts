@@ -7,6 +7,7 @@ import { Profile } from './components/profile/profile';
 import { Admin } from './components/admin/admin';
 import { UserList } from './components/admin/user-list/user-list';
 import { UserCreate } from './components/admin/user-create/user-create';
+import { adminGuard } from './guards/admin-guard';
 
 export const routes: Routes = [
     {path: "login", component: Login},
@@ -16,9 +17,9 @@ export const routes: Routes = [
 
     // TODO setup admin page
 
-    {path: "admin", component: Admin, canActivate: [authGuard], children: [
-        {path: "users", component: UserList, canActivate: [authGuard]},
-        {path: "users/create", component: UserCreate, canActivate: [authGuard]}
+    {path: "admin", component: Admin, canActivate: [adminGuard], children: [
+        {path: "users", component: UserList, canActivate: [adminGuard]},
+        {path: "users/create", component: UserCreate, canActivate: [adminGuard]}
     ]},
 
     {path: "", redirectTo: "home", pathMatch: "full"},
