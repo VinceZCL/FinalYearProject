@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Auth } from './services/auth';
 import { Error } from './models/error.model';
 import { ChangeDetectorRef } from '@angular/core';
-import { AuthApi, Claims } from './models/auth.model';
+import { AuthApi } from './models/auth.model';
 
 @Component({
   selector: 'app-root',

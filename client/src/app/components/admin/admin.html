@@ -1,0 +1,18 @@
+@if (!sub) {
+    <div class="app-shell">
+        <div class="app-content">
+            <div class="panel">
+                <button (click)="navClick('/admin/users')" class="btn">
+                    <img src="/assets/images/list-100.png" alt="User List" class="btn-icon" />
+                    <span class="btn-text">User List</span>
+                </button>
+                <button (click)="navClick('/admin/users/create')" class="btn">
+                    <img src="/assets/images/create-100.png" alt="Create User" class="btn-icon" />
+                    <span class="btn-text">Create User</span>
+                </button>
+            </div>
+        </div>
+    </div>
+} @else {
+    <router-outlet></router-outlet>
+}

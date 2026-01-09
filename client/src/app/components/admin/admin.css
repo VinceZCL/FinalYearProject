@@ -1,0 +1,140 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    width: 100%;
+    background: radial-gradient(circle at top, #1a1f4a, var(--bg-main));
+    color: var(--text-main);
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Optional: Subtle background texture */
+:host::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(1px 1px at 15% 20%, #ffffff, transparent),
+        radial-gradient(1px 1px at 80% 60%, #ffffff, transparent),
+        radial-gradient(1px 1px at 40% 90%, #ffffff, transparent);
+    opacity: 0.1;
+    z-index: -1;
+}
+
+/* Layout container for the entire page */
+.app-shell {
+    display: flex;
+    min-height: 100vh;
+    justify-content: center;
+    /* Centers horizontally */
+    align-items: center;
+    /* Centers vertically */
+    flex-direction: column;
+    /* Stack content vertically */
+    gap: 3rem;
+    /* Add some gap between the panel and buttons */
+}
+
+/* Main content area */
+.app-content {
+    display: flex;
+    justify-content: center;
+    /* Centers content horizontally */
+    align-items: center;
+    /* Centers content vertically */
+    flex-direction: column;
+    /* Stack content vertically */
+}
+
+/* Panel Style - for card-like containers */
+.panel {
+    padding: 3rem 4rem;
+    /* Huge padding for larger buttons and space */
+    display: flex;
+    flex-direction: row;
+    /* Change to horizontal layout */
+    justify-content: space-between;
+    /* Space out the buttons */
+    align-items: center;
+    /* Align vertically in the center */
+    gap: 20rem;
+    /* Space between the buttons */
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 900px;
+    /* Limit the panel's max width */
+}
+
+/* Updated Button Styling */
+.btn {
+    padding: 1.2rem 2rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: #000;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column; /* Stack image and text vertically */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1rem; /* Space between the image and the text */
+    width: 200px; /* Fixed width */
+    height: 200px; /* Fixed height */
+}
+
+/* Button Hover Effect */
+.btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Adjust the size of the icon */
+.btn-icon {
+    width: 80px; /* Set to your preferred icon size */
+    height: 80px;
+    object-fit: contain; /* Ensure the image does not distort */
+}
+/* Style for Button Text */
+.btn-text {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #000;
+}
+
+/* Router outlet container styling */
+router-outlet {
+    display: block;
+    flex: 1;
+}
+
+/* Responsive Design for smaller screens */
+@media (max-width: 768px) {
+    .panel {
+        padding: 2rem 3rem;
+    }
+
+    .btn {
+        font-size: 1rem;
+        padding: 1rem 2rem;
+        width: 200px; /* Fixed width */
+        height: 200px; /* Fixed height */
+    }
+
+    .panel {
+        flex-direction: column;
+        /* Stack the buttons vertically on smaller screens */
+        gap: 1.5rem;
+        /* Adjust gap between stacked buttons */
+    }
+
+    .btn-icon {
+        width: 70px; /* Adjust icon size on mobile */
+        height: 70px;
+    }
+}
