@@ -1,6 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { Auth } from '../../services/auth';
-import { Claims } from '../../models/auth.model';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { User } from '../../models/user.model';
+import { UserService } from '../../services/user';
+import { ActivatedRoute } from '@angular/router';
+import { Error } from '../../models/error.model';
 
 @Component({
   selector: 'app-profile',
@@ -10,17 +12,34 @@ import { Claims } from '../../models/auth.model';
 })
 export class Profile implements OnInit {
 
-  private auth = inject(Auth);
-  claims! : Claims;
+  private userSvc = inject(UserService);
+  private cd = inject(ChangeDetectorRef);
+  private route = inject(ActivatedRoute);
+  uid!: number;
+  user!: User;
 
-  ngOnInit() : void {
-    this.auth.getClaims().subscribe({
-      next: (claim : Claims) => {
-        this.claims = claim;
+  ngOnInit(): void {
+
+    this.route.queryParams.subscribe(
+      (params) => {
+        let param = params["id"];
+        this.uid = param !== null ? parseInt(param) : 0;
+        this.update();
       }
-    });
+    )
+
   }
 
-
+  update(): void {
+    this.userSvc.getUser(this.uid).subscribe({
+      next: (resp: User) => {
+        this.user = resp;
+        this.cd.detectChanges();
+      },
+      error: (err: Error) => {
+        console.log(err.details);
+      }
+    })
+  }
 
 }

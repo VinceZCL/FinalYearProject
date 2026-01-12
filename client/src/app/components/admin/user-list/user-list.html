@@ -1,1 +1,31 @@
-<p>user-list works!</p>
+<div class="users-container">
+  <div class="users-header">
+    <h1>Users</h1>
+    <p class="subtitle">Registered Users</p>
+  </div>
+
+  <div class="users-grid">
+    @for (user of users; track user;) {
+
+      <a
+        class="user-link"
+        href="#"
+        [routerLink]="['/profile']"
+        [queryParams]="{ id: user.id }"
+      >
+        <div class="user-card">
+          <div class="avatar">
+            {{ user.name.charAt(0) | uppercase }}
+          </div>
+
+          <div class="user-info">
+            <h2>{{ user.name }}</h2>
+            <p class="email">{{ user.email }}</p>
+            <span class="type">{{ user.type }}</span>
+          </div>
+        </div>
+      </a>
+
+    }
+  </div>
+</div>

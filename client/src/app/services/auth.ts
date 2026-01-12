@@ -7,7 +7,7 @@ import { Error } from '../models/error.model';
 @Injectable({
   providedIn: 'root',
 })
-export class Auth {
+export class AuthService {
 
   private url: string = "http://localhost:8080/api/auth";
   private http = inject(HttpClient)

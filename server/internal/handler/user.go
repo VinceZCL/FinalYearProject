@@ -45,7 +45,7 @@ func GetUser(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"status":  "failure",
 			"error":   "get user failed",
-			"details": err.Error(),
+			"details": "User not found",
 		})
 	}
 	return c.JSON(http.StatusOK, echo.Map{

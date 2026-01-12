@@ -5,19 +5,19 @@
       <div class="profile-image">
         <img src="/assets/images/profile-100.png" alt="Profile Picture" />
       </div>
-      <h1>{{ claims.username }}</h1>
-      <p class="user-type">{{ claims.type }}</p>
+      <h1>{{ user.name }}</h1>
+      <p class="user-type">{{ user.type }}</p>
     </div>
 
     <!-- Profile Details -->
     <div class="profile-details">
       <div class="profile-item">
         <label>User ID:</label>
-        <span>{{ claims.userID }}</span>
+        <span>{{ user.id }}</span>
       </div>
       <div class="profile-item">
         <label>Email:</label>
-        <span>{{ claims.email }}</span>
+        <span>{{ user.email }}</span>
       </div>
 
     </div>
