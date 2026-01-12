@@ -51,14 +51,11 @@
 # download dependencies
 make deps
 
-# run migration
-make migrate
-
 # generate secret
 make secret
 
-# start database container
-make env
+# run migration
+make migrate
 
 # start backend server
 make dev
