@@ -46,7 +46,7 @@ func Get() *ConfigStruct {
 	cfg.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	if err := cfg.ReadInConfig(); err != nil {
-		fmt.Printf("Config | Read Error: %w", err)
+		fmt.Printf("Config | Read Error: %s", err)
 	}
 
 	instance = &ConfigStruct{

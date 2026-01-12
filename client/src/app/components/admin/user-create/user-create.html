@@ -1,1 +1,23 @@
-<p>user-create works!</p>
+<div class="formContainer">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <input type="text" formControlName="name" placeholder="Name" [ngClass]="{'invalid':invalidInp('name')}"/><br>
+        <input type="email" formControlName="email" placeholder="Email" [ngClass]="{'invalid':invalidInp('email')}"/><br>
+        <input type="password" formControlName="password" placeholder="Password" [ngClass]="{'invalid':invalidInp('password')}"/><br>
+        <div class="radio-group">
+            <label>
+                <input type="radio" formControlName="type" value="user" />
+                User
+            </label>
+
+            <label>
+                <input type="radio" formControlName="type" value="admin" />
+                Admin
+            </label>
+        </div>
+        <br>
+        <button type="submit">Create User</button>
+        @if (error) {
+            <p>{{error}}</p>
+        }
+    </form>
+</div>

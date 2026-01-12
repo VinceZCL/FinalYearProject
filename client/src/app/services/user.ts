@@ -9,11 +9,11 @@ import { Error } from '../models/error.model';
 })
 export class UserService {
 
-  private url: string = "http://localhost:8080/api";
+  private url: string = "http://localhost:8080/api/users";
   private http = inject(HttpClient);
 
   getUsers(): Observable<User[]> {
-    return this.http.get<UsersAPI>(`${this.url}/users`)
+    return this.http.get<UsersAPI>(`${this.url}`)
       .pipe(map(
         (response: UsersAPI) => {
           return response.users;
@@ -33,7 +33,7 @@ export class UserService {
   }
 
   getUser(id: number): Observable<User> {
-    return this.http.get<UserAPI>(`${this.url}/users/${id}`)
+    return this.http.get<UserAPI>(`${this.url}/${id}`)
       .pipe(map(
         (response: UserAPI) => {
           return response.user;
@@ -52,6 +52,24 @@ export class UserService {
       )
   }
 
-  // TODO create user (expose backend)
+  newUser(cred: { name: string, email: string, password: string, type: string }): Observable<UserAPI> {
+    return this.http.post<UserAPI>(`${this.url}`, cred, { responseType: "json" })
+      .pipe(map(
+        (resp: UserAPI) => {
+          return resp;
+        }
+      ),
+        catchError(
+          (error) => {
+            let err: Error = {
+              status: error.error.status,
+              error: error.error.error,
+              details: error.error.details
+            };
+            return throwError(() => err);
+          }
+        )
+      );
+  }
 
 }

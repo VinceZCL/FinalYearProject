@@ -4,9 +4,18 @@
     <p class="subtitle">Registered Users</p>
   </div>
 
+  <!-- Create button -->
+  <div class="users-actions">
+    <a
+      class="btn-create-user"
+      [routerLink]="['/admin/users/create']"
+    >
+      + Create User
+    </a>
+  </div>
+
   <div class="users-grid">
     @for (user of users; track user;) {
-
       <a
         class="user-link"
         href="#"
@@ -25,7 +34,7 @@
           </div>
         </div>
       </a>
-
     }
   </div>
 </div>
+
