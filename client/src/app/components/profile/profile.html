@@ -1,4 +1,13 @@
 <div class="profile-container">
+
+
+  @if (showback) {
+    <a class="back-button" [routerLink]="['/admin/users']">
+      ← Back to Users
+    </a>
+  }
+
+
   <div class="profile-card">
     <!-- Profile Picture Section -->
     <div class="profile-header">

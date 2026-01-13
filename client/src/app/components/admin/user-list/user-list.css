@@ -148,3 +148,69 @@
   transform: translateY(0);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
 }
+
+/* Search container aligns with grid */
+.users-search {
+  max-width: 1100px;
+  margin: 0 auto 2.2rem;
+  display: flex;
+}
+
+/* Search input */
+.users-search input {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  border-radius: 14px;
+  border: 1px solid var(--border-soft);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  font-size: 1rem;
+  backdrop-filter: blur(10px);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.users-search input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Focus state */
+.users-search input:focus {
+  border-color: var(--accent-secondary);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(100, 120, 255, 0.25);
+}
+
+.users-header {
+  text-align: center;
+  margin-bottom: 3.2rem;
+}
+
+.users-actions {
+  margin-bottom: 2.2rem;
+}
+
+.user-card {
+  position: relative;
+}
+
+.user-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
+  opacity: 0;
+  z-index: -1;
+  filter: blur(18px);
+  transition: opacity 0.3s ease;
+}
+
+.user-card:hover::after {
+  opacity: 0.25;
+}

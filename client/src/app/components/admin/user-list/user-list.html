@@ -4,37 +4,40 @@
     <p class="subtitle">Registered Users</p>
   </div>
 
+
+  <div class="users-search">
+    <input type="text" placeholder="Search users by name, email, or type…" [formControl]="searchCtrl" />
+  </div>
+
+
+
   <!-- Create button -->
   <div class="users-actions">
-    <a
-      class="btn-create-user"
-      [routerLink]="['/admin/users/create']"
-    >
+    <a class="btn-create-user" [routerLink]="['/admin/users/create']">
       + Create User
     </a>
   </div>
 
   <div class="users-grid">
-    @for (user of users; track user;) {
-      <a
-        class="user-link"
-        href="#"
-        [routerLink]="['/profile']"
-        [queryParams]="{ id: user.id }"
-      >
-        <div class="user-card">
-          <div class="avatar">
-            {{ user.name.charAt(0) | uppercase }}
-          </div>
 
-          <div class="user-info">
-            <h2>{{ user.name }}</h2>
-            <p class="email">{{ user.email }}</p>
-            <span class="type">{{ user.type }}</span>
-          </div>
+
+    <!-- @for (user of users; track user;) { -->
+    @for (user of filteredUsers$ | async; track user;) {
+    <a class="user-link" href="#" [routerLink]="['/profile']" [queryParams]="{ id: user.id }" [state]="{from: 'list'}">
+      <div class="user-card">
+        <div class="avatar">
+          {{ user.name.charAt(0) | uppercase }}
         </div>
-      </a>
+
+        <div class="user-info">
+          <h2>{{ user.name }}</h2>
+          <p class="email">{{ user.email }}</p>
+          <span class="type">{{ user.type }}</span>
+        </div>
+      </div>
+    </a>
     }
+
+
   </div>
 </div>
-
