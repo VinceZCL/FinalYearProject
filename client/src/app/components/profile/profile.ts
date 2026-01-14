@@ -3,6 +3,7 @@ import { User } from '../../models/user.model';
 import { UserService } from '../../services/user';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Error } from '../../models/error.model';
+import { effect } from '@angular/core';
 
 @Component({
   selector: 'app-profile',
@@ -20,12 +21,15 @@ export class Profile implements OnInit {
   user!: User;
   showback: boolean = false;
 
-  ngOnInit(): void {
-
-    const nav = this.router.getCurrentNavigation();
+  // ✅ effect runs in injection context
+  private navigationEffect = effect(() => {
+    const nav = this.router.currentNavigation();
     const state = nav?.extras.state ?? history.state;
 
     this.showback = state?.from === 'list';
+  });
+
+  ngOnInit(): void {
 
     this.route.queryParams.subscribe(
       (params) => {

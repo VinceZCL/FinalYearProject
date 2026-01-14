@@ -24,6 +24,10 @@ func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint, date strin
 		return nil, err
 	}
 
+	if len(checkIns) == 0 {
+		return nil, nil
+	}
+
 	dailyCheckIn := &dto.DailyCheckIn{
 		UserID:    userID,
 		Username:  checkIns[0].User.Name, // Assuming all check-ins belong to the same user
