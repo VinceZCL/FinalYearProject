@@ -1,12 +1,12 @@
 @if(this.log) {
     <ul>
-        <li><a href="#" routerLink="/home" routerLinkActive="activelink">Home</a></li>
+        <!-- <li><a href="#" routerLink="/home" routerLinkActive="activelink">Home</a></li> -->
         <li><a href="#" routerLink="/dashboard" routerLinkActive="activelink">Dashboard</a></li>
         <li><a href="#" routerLink="/teams" routerLinkActive="activelink">Teams</a></li>
         <li><a href="#" routerLink="/profile" [queryParams]="{id: uid}" routerLinkActive="activelink">Profile</a></li>
         
         @if(this.admin) {
-          <li><a href="#" routerLink="/admin" routerLinkActive="activelink">Admin</a></li>
+          <li><a href="#" routerLink="/admin/users" routerLinkActive="activelink">Admin</a></li>
         }
 
         <li class="logout"><a href="#" (click)="logout()">Logout</a></li>

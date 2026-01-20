@@ -12,7 +12,7 @@ import { Dashboard } from './components/dashboard/dashboard';
 
 export const routes: Routes = [
     {path: "login", component: Login},
-    {path: "home", component: Home, canActivate: [authGuard]},
+    // {path: "home", component: Home, canActivate: [authGuard]},
     {path: "dashboard", component: Dashboard, canActivate: [authGuard]},
 
     // TODO teams => { list, dashboard => { members } }
@@ -20,11 +20,11 @@ export const routes: Routes = [
     {path: "profile", component: Profile, canActivate: [authGuard]},
     // TODO setup more sub-routes for profile (teams, etc.)
 
-    {path: "admin", component: Admin, canActivate: [adminGuard], children: [
-        {path: "users", component: UserList, canActivate: [adminGuard]},
-        {path: "users/create", component: UserCreate, canActivate: [adminGuard]}
-    ]},
+    // {path: "admin", component: Admin, canActivate: [adminGuard], children: [
+        {path: "admin/users", component: UserList, canActivate: [adminGuard]},
+        {path: "admin/users/create", component: UserCreate, canActivate: [adminGuard]},
+    // ]},
 
-    {path: "", redirectTo: "home", pathMatch: "full"},
+    {path: "", redirectTo: "dashboard", pathMatch: "full"},
     {path: "**", component: PageNotFound}
 ];

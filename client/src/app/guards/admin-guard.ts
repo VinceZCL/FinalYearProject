@@ -14,7 +14,7 @@ export const adminGuard: CanActivateFn = (route, state) => {
         if (resp.claims.type == "admin") {
           return true; // Token is valid, allow access
         } else {
-          router.navigate(["/home"]);
+          router.navigate(["/dashboard"]);
           return false;
         }
       }),

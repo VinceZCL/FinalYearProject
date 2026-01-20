@@ -12,7 +12,7 @@ export interface CheckIn {
 
 export interface CheckInsAPI {
     status: string;
-    checkIns: checkins | null;
+    checkIns: CheckIns | null;
 }
 
 export interface CheckInAPI {
@@ -20,7 +20,7 @@ export interface CheckInAPI {
     checkIn: CheckIn;
 }
 
-interface checkins {
+export interface CheckIns {
     userID: number;
     username: string;
     created_at: string;

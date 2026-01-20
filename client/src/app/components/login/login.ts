@@ -59,7 +59,7 @@ export class Login {
       next: () => {
         this.error = "";
         this.loginFail = false;
-        this.router.navigate(["/home"]);
+        this.router.navigate(["/dashboard"]);
       },
       error: (err : Error) => {
         this.loginFail = true;
