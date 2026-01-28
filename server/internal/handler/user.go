@@ -92,3 +92,32 @@ func NewUser(c echo.Context) error {
 		"user":   user,
 	})
 }
+
+func DeactivateUser(c echo.Context) error {
+	app := app.FromContext(c)
+
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Logger().Errorf("Handler | UserHandler | Invalid Params: %w", err)
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"status":  "failure",
+			"error":   "invalid param",
+			"details": "Invalid route param id",
+		})
+	}
+
+	user, err := app.Services.User.DeactivateUser(c, uint(userID))
+	if err != nil {
+		c.Logger().Errorf("Handler | UserHandler | DeactivateUser: %w", err)
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"status":  "failure",
+			"error":   "invalid param",
+			"details": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"status": "success",
+		"user":   user,
+	})
+}

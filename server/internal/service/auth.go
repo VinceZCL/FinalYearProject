@@ -21,6 +21,7 @@ type Claims struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Type     string `json:"type"`
+	Status   string `json:"status"`
 	jwt.RegisteredClaims
 }
 
@@ -68,10 +69,11 @@ func (s *AuthService) Register(c echo.Context, req param.NewUser) (*dto.User, er
 	}
 
 	dto := &dto.User{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
-		Type:  user.Type,
+		ID:     user.ID,
+		Name:   user.Name,
+		Email:  user.Email,
+		Type:   user.Type,
+		Status: user.Status,
 	}
 	return dto, nil
 }
@@ -93,6 +95,10 @@ func (s *AuthService) Login(c echo.Context, param param.Login) (string, error) {
 }
 
 func tokenGen(c echo.Context, user *model.User) (string, error) {
+	if user.Status != "active" {
+		return "", fmt.Errorf("User deactivated")
+	}
+
 	expire := time.Now().Add(24 * time.Hour)
 
 	claims := Claims{
@@ -100,6 +106,7 @@ func tokenGen(c echo.Context, user *model.User) (string, error) {
 		Username: user.Name,
 		Email:    user.Email,
 		Type:     user.Type,
+		Status:   user.Status,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expire),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

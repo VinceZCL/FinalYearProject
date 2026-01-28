@@ -72,4 +72,24 @@ export class UserService {
       );
   }
 
+  deactivateUser(id: number): Observable<User> {
+    return this.http.delete<UserAPI>(`${this.url}/${id}`)
+      .pipe(map(
+        (response: UserAPI) => {
+          return response.user;
+        }
+      ),
+        catchError(
+          (error) => {
+            let err: Error = {
+              status: error.error.status,
+              error: error.error.error,
+              details: error.error.details
+            };
+            return throwError(() => err);
+          }
+        )
+      )
+  }
+
 }

@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { UserService } from '../../../services/user';
-import { AsyncPipe, UpperCasePipe } from '@angular/common';
+import { AsyncPipe, NgClass, UpperCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, map, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-user-list',
-  imports: [UpperCasePipe, RouterLink, AsyncPipe, ReactiveFormsModule],
+  imports: [UpperCasePipe, RouterLink, AsyncPipe, ReactiveFormsModule, NgClass],
   templateUrl: './user-list.html',
   styleUrl: './user-list.css',
 })
@@ -49,7 +49,8 @@ export class UserList {
       return users.filter(u =>
         u.name.toLowerCase().includes(term) ||
         u.email.toLowerCase().includes(term) ||
-        u.type.toLowerCase().includes(term)
+        u.type.toLowerCase().includes(term) ||
+        u.status.toLowerCase().includes(term)
       );
     })
   );

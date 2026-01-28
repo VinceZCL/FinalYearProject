@@ -149,3 +149,27 @@ button:hover {
   background: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
 }
+
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Reuse general button style, but add variations */
+.activate-btn {
+  background: linear-gradient(135deg, #4caf50, #81c784); /* green gradient */
+  color: #fff;
+}
+
+.deactivate-btn {
+  background: linear-gradient(135deg, #f44336, #e57373); /* red gradient */
+  color: #fff;
+}
+
+.activate-btn:hover,
+.deactivate-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+}

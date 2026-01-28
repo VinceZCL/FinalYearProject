@@ -5,10 +5,11 @@ import (
 )
 
 type User struct {
-	ID    uint   `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Type  string `json:"type"`
+	ID     uint   `json:"id"`
+	Name   string `json:"name"`
+	Email  string `json:"email"`
+	Type   string `json:"type"`
+	Status string `json:"status"`
 }
 
 type Member struct {

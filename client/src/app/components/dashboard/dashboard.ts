@@ -24,7 +24,6 @@ export class Dashboard implements OnInit {
     this.auth.getClaims().subscribe({
       next: (claims : Claims) => {
         this.uid = claims.userID;
-        alert(`your uid: ${this.uid}`);
       }
     })
 

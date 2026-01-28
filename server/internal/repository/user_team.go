@@ -21,7 +21,7 @@ func NewUserTeamRepository(dbclient *client.PostgresClient) UserTeamRepository {
 
 func (r *userTeamRepository) GetMembers(teamID uint) ([]model.UserTeam, error) {
 	var userTeams []model.UserTeam
-	err := r.client.DB.Preload("User").Preload("Team").Where("team_id = ?", teamID).Find(&userTeams).Error
+	err := r.client.DB.Joins("JOIN users ON users.id = user_teams.user_id AND users.status = ?", "active").Preload("User").Preload("Team").Where("team_id = ?", teamID).Find(&userTeams).Error
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (r *userTeamRepository) NewMember(input model.UserTeam) (*model.UserTeam, e
 		return nil, err
 	}
 	var result model.UserTeam
-	if err := r.client.DB.Preload("User").Preload("Team").Where("user_id = ? AND team_id = ?", input.UserID, input.TeamID).First(&result).Error; err != nil {
+	if err := r.client.DB.Joins("JOIN users ON users.id = user_teams.user_id AND users.status = ?", "active").Preload("User").Preload("Team").Where("user_id = ? AND team_id = ?", input.UserID, input.TeamID).First(&result).Error; err != nil {
 		return nil, err
 	}
 	return &result, nil
@@ -42,7 +42,7 @@ func (r *userTeamRepository) NewMember(input model.UserTeam) (*model.UserTeam, e
 
 func (r *userTeamRepository) GetUserTeams(userID uint) ([]model.UserTeam, error) {
 	var userTeams []model.UserTeam
-	err := r.client.DB.Preload("User").Preload("Team").Where("user_id = ?", userID).Find(&userTeams).Error
+	err := r.client.DB.Joins("JOIN users ON users.id = user_teams.user_id AND users.status = ?", "active").Preload("User").Preload("Team").Where("user_id = ?", userID).Find(&userTeams).Error
 	if err != nil {
 		return nil, err
 	}

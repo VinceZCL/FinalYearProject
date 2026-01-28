@@ -47,5 +47,5 @@ func RegisterRoutes(e echo.Echo) {
 
 	protected.POST("/users", handler.NewUser)
 
-	// TODO PUT METHODS
+	protected.DELETE("/users/:id", handler.DeactivateUser)
 }

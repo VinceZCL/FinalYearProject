@@ -28,7 +28,25 @@
         <label>Email:</label>
         <span>{{ user.email }}</span>
       </div>
-
+      <div class="profile-item">
+        <label>Status:</label>
+        <span>{{ user.status }}</span>
+      </div>      
     </div>
+
+    @if (admin) {
+      <div class="profile-actions">
+        @if (user.status == "deactivated") {
+          <button (click)="deactivate(user.id)" class="activate-btn">
+            Activate
+          </button>
+        } @else {
+          <button (click)="deactivate(user.id)" class="deactivate-btn">
+            Deactivate
+          </button>
+        }
+      </div>
+    }
+
   </div>
 </div>

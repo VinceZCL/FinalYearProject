@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/VinceZCL/FinalYearProject/internal/repository"
 	"github.com/VinceZCL/FinalYearProject/tools"
 	"github.com/VinceZCL/FinalYearProject/types/model"
@@ -27,10 +29,11 @@ func (s *UserService) GetUsers(c echo.Context) ([]dto.User, error) {
 	dtos := make([]dto.User, len(users))
 	for i, u := range users {
 		dtos[i] = dto.User{
-			ID:    u.ID,
-			Name:  u.Name,
-			Email: u.Email,
-			Type:  u.Type,
+			ID:     u.ID,
+			Name:   u.Name,
+			Email:  u.Email,
+			Type:   u.Type,
+			Status: u.Status,
 		}
 	}
 	return dtos, nil
@@ -44,10 +47,11 @@ func (s *UserService) GetUser(c echo.Context, userID uint) (*dto.User, error) {
 	}
 
 	dto := &dto.User{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
-		Type:  user.Type,
+		ID:     user.ID,
+		Name:   user.Name,
+		Email:  user.Email,
+		Type:   user.Type,
+		Status: user.Status,
 	}
 	return dto, nil
 }
@@ -79,10 +83,46 @@ func (s *UserService) NewUser(c echo.Context, req param.NewUser) (*dto.User, err
 	}
 
 	dto := &dto.User{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
-		Type:  user.Type,
+		ID:     user.ID,
+		Name:   user.Name,
+		Email:  user.Email,
+		Type:   user.Type,
+		Status: user.Status,
 	}
+	return dto, nil
+}
+
+func (s *UserService) DeactivateUser(c echo.Context, userID uint) (*dto.User, error) {
+
+	// TODO call repo deactive check error no error then ok
+
+	user, err := s.repo.GetUser(userID)
+	if err != nil {
+		c.Logger().Errorf("Service | UserService | DeactivateUser: %w", err)
+		return nil, fmt.Errorf("User not found")
+	}
+
+	if user.Status == "active" {
+		user, err = s.repo.DeactivateUser(*user)
+		if err != nil {
+			c.Logger().Errorf("Service | UserService | DeactivateUser: %w", err)
+			return nil, err
+		}
+	} else {
+		user, err = s.repo.ActivateUser(*user)
+		if err != nil {
+			c.Logger().Errorf("Service | UserService | ActivateUser: %w", err)
+			return nil, err
+		}
+	}
+
+	dto := &dto.User{
+		ID:     user.ID,
+		Name:   user.Name,
+		Email:  user.Email,
+		Type:   user.Type,
+		Status: user.Status,
+	}
+
 	return dto, nil
 }
