@@ -106,6 +106,10 @@
   font-weight: 400;
 }
 
+.profile-item .profile-status {
+  text-transform: capitalize;
+}
+
 /* Logout Button */
 button {
   padding: 1rem 2rem;
