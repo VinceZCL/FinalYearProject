@@ -7,46 +7,48 @@
     </a>
   }
 
-
-  <div class="profile-card">
-    <!-- Profile Picture Section -->
-    <div class="profile-header">
-      <div class="profile-image">
-        <img src="/assets/images/profile-100.png" alt="Profile Picture" />
+  @if (user) {
+    <div class="profile-card">
+      <!-- Profile Picture Section -->
+      <div class="profile-header">
+        <div class="profile-image">
+          <img src="/assets/images/profile-100.png" alt="Profile Picture" />
+        </div>
+        <h1>{{ user.name }}</h1>
+        <p class="user-type">{{ user.type }}</p>
       </div>
-      <h1>{{ user.name }}</h1>
-      <p class="user-type">{{ user.type }}</p>
+  
+      <!-- Profile Details -->
+      <div class="profile-details">
+        <div class="profile-item">
+          <label>User ID:</label>
+          <span>{{ user.id }}</span>
+        </div>
+        <div class="profile-item">
+          <label>Email:</label>
+          <span>{{ user.email }}</span>
+        </div>
+        <div class="profile-item">
+          <label>Status:</label>
+          <span class="profile-status">{{ user.status }}</span>
+        </div>      
+      </div>
+  
+      @if (admin) {
+        <div class="profile-actions">
+          @if (user.status == "deactivated") {
+            <button (click)="deactivate(user.id)" class="activate-btn">
+              Activate
+            </button>
+          } @else {
+            <button (click)="deactivate(user.id)" class="deactivate-btn">
+              Deactivate
+            </button>
+          }
+        </div>
+      }
+  
     </div>
+  }
 
-    <!-- Profile Details -->
-    <div class="profile-details">
-      <div class="profile-item">
-        <label>User ID:</label>
-        <span>{{ user.id }}</span>
-      </div>
-      <div class="profile-item">
-        <label>Email:</label>
-        <span>{{ user.email }}</span>
-      </div>
-      <div class="profile-item">
-        <label>Status:</label>
-        <span class="profile-status">{{ user.status }}</span>
-      </div>      
-    </div>
-
-    @if (admin) {
-      <div class="profile-actions">
-        @if (user.status == "deactivated") {
-          <button (click)="deactivate(user.id)" class="activate-btn">
-            Activate
-          </button>
-        } @else {
-          <button (click)="deactivate(user.id)" class="deactivate-btn">
-            Deactivate
-          </button>
-        }
-      </div>
-    }
-
-  </div>
 </div>

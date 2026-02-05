@@ -28,3 +28,11 @@ export interface CheckIns {
     today: CheckIn[];
     blockers: CheckIn[];
 }
+
+export interface NewCheckIns {
+    userID: number;
+    type: 'yesterday' | 'today' | 'blockers';
+    item?: string;
+    jira?: string;
+    visibility: string | number;
+}

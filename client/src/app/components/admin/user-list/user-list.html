@@ -18,32 +18,35 @@
     </a>
   </div>
 
-  <div class="users-grid">
-
-
-    <!-- @for (user of users; track user;) { -->
-    @for (user of filteredUsers$ | async; track user;) {
-    <a class="user-link" href="#" [routerLink]="['/profile']" [queryParams]="{ id: user.id }" [state]="{from: 'list'}">
-      <div class="user-card">
-        <div class="avatar">
-          {{ user.name.charAt(0) | uppercase }}
+  @if (filteredUsers$) {
+    <div class="users-grid">
+  
+  
+      <!-- @for (user of users; track user;) { -->
+      @for (user of filteredUsers$ | async; track user;) {
+      <a class="user-link" href="#" [routerLink]="['/profile']" [queryParams]="{ id: user.id }" [state]="{from: 'list'}">
+        <div class="user-card">
+          <div class="avatar">
+            {{ user.name.charAt(0) | uppercase }}
+          </div>
+  
+          <div class="user-info">
+            <h2>{{ user.name }}</h2>
+            <p class="email">{{ user.email }}</p>
+            <span class="type">{{ user.type }}</span>
+            <span [ngClass]="{
+              statusActive: user.status === 'active',
+              statusDeactivated: user.status === 'deactivated'
+            }">
+              {{ user.status }}
+            </span>
+          </div>
         </div>
+      </a>
+      }
+  
+  
+    </div>
+  }
 
-        <div class="user-info">
-          <h2>{{ user.name }}</h2>
-          <p class="email">{{ user.email }}</p>
-          <span class="type">{{ user.type }}</span>
-          <span [ngClass]="{
-            statusActive: user.status === 'active',
-            statusDeactivated: user.status === 'deactivated'
-          }">
-            {{ user.status }}
-          </span>
-        </div>
-      </div>
-    </a>
-    }
-
-
-  </div>
 </div>

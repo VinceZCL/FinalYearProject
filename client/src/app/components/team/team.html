@@ -1,0 +1,35 @@
+<div class="teams-container">
+    <div class="teams-header">
+        <h1>Teams</h1>
+        <p class="subtitle">Your Teams</p>
+    </div>
+
+    <div class="teams-search">
+        <input type="text" placeholder="Search teams by name or role…" [formControl]="searchCtrl" />
+    </div>
+
+    @if (filteredTeams$) {
+    <div class="teams-grid">
+        @for (team of filteredTeams$ | async; track team;) {
+        <a class="team-link" href="#">
+            <div class="team-card">
+                <div class="avatar">
+                    {{ team.team_name.charAt(0) | uppercase }}
+                </div>
+
+                <div class="team-info">
+                    <h2>{{ team.team_name }}</h2>
+
+                    <span [ngClass]="{
+                        isAdmin: team.role === 'admin',
+                        isMember: team.role==='member'
+                    }">
+                        {{ team.role }}
+                    </span>
+                </div>
+            </div>
+        </a>
+        }
+    </div>
+    }
+</div>

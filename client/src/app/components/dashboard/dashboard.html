@@ -1,1 +1,108 @@
-<p>dashboard works!</p>
+@if (ci) {
+<!-- Display the checkin -->
+} @else {
+@if (form) {
+<form [formGroup]="form" (ngSubmit)="submit()" class="checkin-form">
+
+    <!-- ======================
+       Yesterday
+       ====================== -->
+    <section formArrayName="yesterday">
+        <h3>Yesterday</h3>
+        <div class="checkin-grid">
+            @for (control of yesterday.controls; track control) {
+            <div [formGroupName]="$index" class="checkin-row">
+                <div class="checkin-row-inner">
+
+                    <input type="text" formControlName="item" placeholder="What did you do yesterday?" />
+
+                    <input type="text" formControlName="jira" placeholder="Jira ticket (optional)" />
+
+                    <select formControlName="visibility" class="visibility-select">
+                        @for (opt of visibilityOptions; track opt.value) {
+                        <option [value]="opt.value">
+                            {{ opt.label }}
+                        </option>
+                        }
+                    </select>
+
+                </div>
+            </div>
+            } @empty {
+            <p>No entries in Yesterday.</p>
+            }
+        </div>
+    </section>
+
+    <!-- ======================
+       Today
+       ====================== -->
+    <section formArrayName="today">
+        <h3>Today</h3>
+        <div class="checkin-grid">
+            @for (control of today.controls; track control) {
+            <div [formGroupName]="$index" class="checkin-row">
+                <div class="checkin-row-inner">
+
+                    <input type="text" formControlName="item" placeholder="What will you work on today?" />
+
+                    <input type="text" formControlName="jira" placeholder="Jira ticket (optional)" />
+
+                    <select formControlName="visibility" class="visibility-select">
+                        @for (opt of visibilityOptions; track opt.value) {
+                        <option [value]="opt.value">
+                            {{ opt.label }}
+                        </option>
+                        }
+                    </select>
+
+                </div>
+            </div>
+            } @empty {
+            <p>No entries in Today.</p>
+            }
+        </div>
+    </section>
+
+    <!-- ======================
+       Blockers
+       ====================== -->
+    <section formArrayName="blockers">
+        <h3>Blockers</h3>
+        <div class="checkin-grid">
+            @for (control of blockers.controls; track control) {
+            <div [formGroupName]="$index" class="checkin-row">
+                <div class="checkin-row-inner">
+
+                    <input type="text" formControlName="item" placeholder="Any blockers?" />
+
+                    <input type="text" formControlName="jira" placeholder="Jira ticket (optional)" />
+
+                    <select formControlName="visibility" class="visibility-select">
+                        @for (opt of visibilityOptions; track opt.value) {
+                        <option [value]="opt.value">
+                            {{ opt.label }}
+                        </option>
+                        }
+                    </select>
+
+                </div>
+            </div>
+            } @empty {
+            <p>No blockers added.</p>
+            }
+        </div>
+    </section>
+
+    <!-- ======================
+       Submit
+       ====================== -->
+    <div class="actions">
+        <button type="submit">
+            Submit Check-In
+        </button>
+    </div>
+
+</form>
+}
+}

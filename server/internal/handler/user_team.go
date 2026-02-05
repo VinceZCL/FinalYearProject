@@ -97,7 +97,7 @@ func GetUserTeams(c echo.Context) error {
 		})
 	}
 	return c.JSON(http.StatusOK, echo.Map{
-		"status": "success",
-		"member": members,
+		"status":  "success",
+		"members": members,
 	})
 }
