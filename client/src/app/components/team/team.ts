@@ -1,6 +1,6 @@
-import { Component, inject, NgModule } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TeamService } from '../../services/team';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { AuthApi } from '../../models/auth.model';
 import { combineLatest, filter, map, startWith, switchMap } from 'rxjs';

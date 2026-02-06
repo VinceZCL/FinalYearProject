@@ -2,12 +2,12 @@
 
 
   @if (showback) {
-    <a class="back-button" [routerLink]="['/admin/users']">
-      ← Back to Users
-    </a>
+  <a class="back-button" [routerLink]="['/admin/users']">
+    ← Back to Users
+  </a>
   }
-
   @if (user) {
+  <div class="profile-layout">
     <div class="profile-card">
       <!-- Profile Picture Section -->
       <div class="profile-header">
@@ -17,13 +17,9 @@
         <h1>{{ user.name }}</h1>
         <p class="user-type">{{ user.type }}</p>
       </div>
-  
+
       <!-- Profile Details -->
       <div class="profile-details">
-        <div class="profile-item">
-          <label>User ID:</label>
-          <span>{{ user.id }}</span>
-        </div>
         <div class="profile-item">
           <label>Email:</label>
           <span>{{ user.email }}</span>
@@ -31,24 +27,46 @@
         <div class="profile-item">
           <label>Status:</label>
           <span class="profile-status">{{ user.status }}</span>
-        </div>      
-      </div>
-  
-      @if (admin) {
-        <div class="profile-actions">
-          @if (user.status == "deactivated") {
-            <button (click)="deactivate(user.id)" class="activate-btn">
-              Activate
-            </button>
-          } @else {
-            <button (click)="deactivate(user.id)" class="deactivate-btn">
-              Deactivate
-            </button>
-          }
         </div>
+      </div>
+
+      @if (admin) {
+      <div class="profile-actions">
+        @if (user.status == "deactivated") {
+        <button (click)="deactivate(user.id)" class="activate-btn">
+          Activate
+        </button>
+        } @else {
+        <button (click)="deactivate(user.id)" class="deactivate-btn">
+          Deactivate
+        </button>
+        }
+      </div>
       }
-  
+
     </div>
+
+    @if (admin) {
+      <div class="profile-teams-card">
+      <h2>Member of Teams:</h2>
+      @if (teams) {
+
+        @if (teams.length > 0) {
+          <ul class="team-list">
+            @for (team of teams; track team) {
+              <li class="team-item">
+                <span class="team-name">{{ team.team_name }}</span>
+                <span class="team-role">{{ team.role }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="no-teams">This user is not assigned to any teams.</p>
+        }
+      }
+    </div>
+    }
+  </div>
   }
 
 </div>
