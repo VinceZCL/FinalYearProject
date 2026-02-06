@@ -4,18 +4,15 @@
     <p class="subtitle">Registered Users</p>
   </div>
 
-
-  <div class="users-search">
-    <input type="text" placeholder="Search users by name, email, or type…" [formControl]="searchCtrl" />
-  </div>
-
-
-
   <!-- Create button -->
   <div class="users-actions">
     <a class="btn-create-user" [routerLink]="['/admin/users/create']">
       + Create User
     </a>
+  </div>
+
+  <div class="users-search">
+    <input type="text" placeholder="Search users by name, email, or type…" [formControl]="searchCtrl" />
   </div>
 
   @if (filteredUsers$) {

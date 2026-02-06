@@ -39,11 +39,11 @@ export class Profile implements OnInit {
 
   ngOnInit(): void {
 
-    this.checkDelete();
     this.route.queryParams.subscribe(
       (params) => {
         let param = params["id"];
         this.uid = param !== null ? parseInt(param) : 0;
+        this.checkDelete();
         this.update();
       }
     );

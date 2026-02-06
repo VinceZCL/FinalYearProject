@@ -5,10 +5,11 @@ import { AuthService } from '../../services/auth';
 import { AuthApi } from '../../models/auth.model';
 import { combineLatest, filter, map, startWith, switchMap } from 'rxjs';
 import { AsyncPipe, NgClass, UpperCasePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-team',
-  imports: [AsyncPipe, ReactiveFormsModule, UpperCasePipe, NgClass],
+  imports: [AsyncPipe, ReactiveFormsModule, UpperCasePipe, NgClass, RouterLink],
   templateUrl: './team.html',
   styleUrl: './team.css',
 })
