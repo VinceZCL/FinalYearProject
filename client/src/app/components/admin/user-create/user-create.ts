@@ -20,8 +20,8 @@ export class UserCreate {
   private cd = inject(ChangeDetectorRef);
 
   form: FormGroup;
-  error!: string;
-  createFail!: boolean;
+  error: string = "";
+  createFail: boolean = false;
 
   constructor() {
     this.form = this.fb.group({

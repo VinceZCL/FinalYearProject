@@ -1,0 +1,105 @@
+/* Container to center the form */
+.formContainer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 3rem 1rem;
+}
+
+/* Form panel */
+form {
+  width: 100%;
+  max-width: 380px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+
+  padding: 2rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+
+  color: var(--text-main);
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Team name input */
+form input[type="text"] {
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  font-size: 1rem;
+  outline: none;
+
+  transition: border-color 0.2s ease,
+              box-shadow 0.2s ease,
+              background 0.2s ease;
+}
+
+/* Placeholder */
+form input::placeholder {
+  color: rgba(245, 247, 255, 0.6);
+}
+
+/* Focus state */
+form input:focus {
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 6px rgba(77, 213, 153, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Invalid state */
+form input.invalid {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 8px rgba(255, 111, 145, 0.5);
+}
+
+/* Submit button */
+form button {
+  margin-top: 0.5rem;
+  padding: 0.9rem 1.6rem;
+  border-radius: 999px;
+
+  background: linear-gradient(
+    135deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
+
+  color: #000;
+  font-weight: bold;
+  font-size: 1rem;
+
+  border: none;
+  cursor: pointer;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+/* Button hover */
+form button:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* Error message */
+form p {
+  color: var(--accent-primary);
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin-top: 0.4rem;
+}
+
+/* Remove <br> spacing */
+form br {
+  display: none;
+}

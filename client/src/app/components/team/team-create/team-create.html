@@ -1,0 +1,10 @@
+<div class="formContainer">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <input type="text" formControlName="name" placeholder="Team Name" [ngClass]="{'invalid':invalidName()}"/>
+        <br>
+        <button type="submit">Create Team</button>
+        @if (error) {
+            <p>{{error}}</p>
+        }
+    </form>
+</div>

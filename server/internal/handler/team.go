@@ -84,7 +84,7 @@ func NewTeam(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"status":  "failure",
 			"error":   "create team failed",
-			"details": err.Error(),
+			"details": "Team already exist",
 		})
 	}
 
