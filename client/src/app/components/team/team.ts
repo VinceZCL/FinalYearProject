@@ -16,16 +16,12 @@ import { RouterLink } from '@angular/router';
 export class Team {
 
   private teamSvc = inject(TeamService);
-  private auth = inject(AuthService)
+  private auth = inject(AuthService);
+
   searchCtrl = new FormControl('');
 
-  uid$ = this.auth.getStatus().pipe(
-    filter(Boolean),
-    switchMap(() => this.auth.testToken()),
-    map((resp: AuthApi) => resp.claims.userID)
-  );
-
-  teams$ = this.uid$.pipe(
+  teams$ = this.auth.userID$.pipe(
+    filter((uid): uid is number => uid !== null),
     switchMap(uid => this.teamSvc.getOwnTeams(uid))
   );
 

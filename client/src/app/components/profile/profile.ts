@@ -67,14 +67,14 @@ export class Profile implements OnInit {
   }
 
   checkDelete(): void {
-    
-    this.auth.testToken().subscribe({
-      next: (resp : AuthApi) => {
-        this.admin = resp.claims.type == "admin";
-        this.self = resp.claims.userID == this.uid;
-        this.cd.detectChanges();
-      }
-    })
+
+    this.auth.userID$.subscribe(uid => {
+      this.self = uid == this.uid;
+    });
+    this.auth.admin$.subscribe(isAdmin => {
+      this.admin = isAdmin;
+    });
+    this.cd.detectChanges();
 
   }
 

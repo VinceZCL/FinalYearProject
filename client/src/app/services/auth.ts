@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { AuthApi, Claims, Login } from '../models/auth.model';
 import { Error } from '../models/error.model';
 
@@ -12,9 +12,51 @@ export class AuthService {
   private url: string = "http://localhost:8080/api/auth";
   private http = inject(HttpClient)
 
-  private logged = new BehaviorSubject<boolean>(this.hasToken())
+  private claimSubject = new BehaviorSubject<Claims | null>(null);
+  claim$ = this.claimSubject.asObservable();
 
-  claims!: Claims;
+  private userIDSubject = new BehaviorSubject<Number | null>(null);
+  userID$ = this.userIDSubject.asObservable();
+
+  private loggedSubject = new BehaviorSubject<boolean>(false);
+  logged$ = this.loggedSubject.asObservable();
+
+  private adminSubject = new BehaviorSubject<boolean>(false);
+  admin$ = this.adminSubject.asObservable();
+
+  verifyAndHydrate(): Observable<boolean> {
+    if (!this.hasToken()) {
+      this.clearAuthState();
+      return of(false);
+    }
+
+    return this.testToken().pipe(
+      tap(
+        (resp: AuthApi) => {
+          this.claimSubject.next(resp.claims);
+          this.userIDSubject.next(resp.claims.userID);
+          this.loggedSubject.next(true);
+          this.adminSubject.next(resp.claims.type == "admin");
+        }
+      ),
+      map(() => true),
+      catchError(() => {
+        this.clearAuthState();
+        return of(false);
+      })
+    );
+  }
+
+  clearAuthState(): void {
+    this.claimSubject.next(null);
+    this.userIDSubject.next(null);
+    this.loggedSubject.next(false);
+  }
+
+  logout(): void {
+    localStorage.removeItem("token");
+    this.clearAuthState();
+  }
 
   getToken(): string | null {
     return localStorage.getItem("token");
@@ -28,25 +70,10 @@ export class AuthService {
     localStorage.setItem("token", token);
   }
 
-  logout(): void {
-    this.logged.next(false);
-    localStorage.removeItem("token");
-  }
-
-  getStatus(): Observable<boolean> {
-    return this.logged.asObservable();
-  }
-
-  getClaims(): Observable<Claims> {
-    let current = new BehaviorSubject<Claims>(this.claims);
-    return current.asObservable();
-  }
-
   testToken(): Observable<AuthApi> {
     return this.http.get<AuthApi>(`${this.url}/verify`)
       .pipe(map(
         (response: AuthApi) => {
-          this.claims = response.claims;
           return response
         }
       ),
@@ -67,7 +94,7 @@ export class AuthService {
       .pipe(map(
         (response: Login) => {
           this.setToken(response.token);
-          this.logged.next(true);
+          this.loggedSubject.next(true);
           return response;
         }
       ),
