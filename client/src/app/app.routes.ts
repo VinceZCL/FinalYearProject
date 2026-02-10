@@ -26,8 +26,8 @@ export const routes: Routes = [
     {path: "profile", component: Profile, canActivate: [authGuard]},
 
     {path: "admin", children: [
-        {path: "users", component: UserList, canActivate: [adminGuard]},
-        {path: "users/create", component: UserCreate, canActivate: [adminGuard]},
+        {path: "users", component: UserList, canActivate: [authGuard, adminGuard]},
+        {path: "users/create", component: UserCreate, canActivate: [authGuard, adminGuard]},
     ]},
 
     // {path: "admin", component: Admin, canActivate: [adminGuard], children: [

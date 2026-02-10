@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { TeamService } from '../../services/team';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
-import { AuthApi } from '../../models/auth.model';
 import { combineLatest, filter, map, startWith, switchMap } from 'rxjs';
 import { AsyncPipe, NgClass, UpperCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';

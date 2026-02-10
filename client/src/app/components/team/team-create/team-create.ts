@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth';
-import { Claims } from '../../../models/auth.model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TeamService } from '../../../services/team';
 import { NgClass } from '@angular/common';
@@ -33,7 +32,7 @@ export class TeamCreate implements OnInit {
       name: ["", Validators.required]
     });
 
-    this.auth.claim$.subscribe(claims => {
+    this.auth.claim$.subscribe((claims) => {
       this.uid = Number(claims?.userID);
     });
   }

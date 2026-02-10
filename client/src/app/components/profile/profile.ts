@@ -5,7 +5,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Error } from '../../models/error.model';
 import { effect } from '@angular/core';
 import { AuthService } from '../../services/auth';
-import { AuthApi } from '../../models/auth.model';
 import { TeamService } from '../../services/team';
 import { Member } from '../../models/team.model';
 

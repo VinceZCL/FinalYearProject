@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
-import { Claims } from '../../models/auth.model';
 import { CheckIns, NewCheckIns } from '../../models/check-in.model';
 import { CheckInService } from '../../services/check-in';
 import { Error } from '../../models/error.model';
