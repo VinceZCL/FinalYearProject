@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { Member, MembersAPI, TeamCreatedAPI } from '../models/team.model';
+import { Member, MembersAPI, Team, TeamAPI, TeamCreatedAPI } from '../models/team.model';
 import { Error } from '../models/error.model';
 
 @Injectable({
@@ -50,6 +50,46 @@ export class TeamService {
         }
       )
     );
+  }
+
+  getTeam(teamID: number): Observable<Team> {
+    return this.http.get<TeamAPI>(`${this.url}/${teamID}`)
+      .pipe(map(
+        (response: TeamAPI) => {
+          return response.team;
+        }
+      ),
+      catchError(
+        (error) => {
+          let err: Error = {
+            status: error.error.status,
+            error: error.error.error,
+            details: error.error.details
+          };
+          return throwError(() => err);
+        }
+      )
+    )
+  }
+
+  getMembers(teamID: number): Observable<Member[]> {
+    return this.http.get<MembersAPI>(`${this.url}/members/${teamID}`)
+      .pipe(map(
+        (response: MembersAPI) => {
+          return response.members;
+        }
+      ),
+      catchError(
+        (error) => {
+          let err: Error = {
+            status: error.error.status,
+            error: error.error.error,
+            details: error.error.details
+          };
+          return throwError(() => err);
+        }
+      )
+    )
   }
 
 }

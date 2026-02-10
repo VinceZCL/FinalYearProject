@@ -9,17 +9,18 @@ import { adminGuard } from './guards/admin-guard';
 import { Dashboard } from './components/dashboard/dashboard';
 import { Team } from './components/team/team';
 import { TeamCreate } from './components/team/team-create/team-create';
+import { TeamDashboard } from './components/team/team-dashboard/team-dashboard';
 
 export const routes: Routes = [
     {path: "login", component: Login},
 
     // {path: "home", component: Home, canActivate: [authGuard]},
-
     {path: "dashboard", component: Dashboard, canActivate: [authGuard]},    
     
     {path: "teams", children: [
         {path: "", component: Team, canActivate: [authGuard]},
         {path: "create", component: TeamCreate, canActivate: [authGuard]},
+        {path: ":teamID", component: TeamDashboard, canActivate: [authGuard]},
     ]},
 
     {path: "profile", component: Profile, canActivate: [authGuard]},

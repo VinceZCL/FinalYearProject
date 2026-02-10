@@ -23,7 +23,7 @@
   @if (filteredTeams$) {
     <div class="teams-grid">
       @for (team of filteredTeams$ | async; track team;) {
-        <a class="team-link" href="#" [routerLink]="['/teams', 0]">
+        <a class="team-link" href="#" [routerLink]="['/teams', team.teamID]">
           <div class="team-card">
             <div class="avatar">
               {{ team.team_name.charAt(0) | uppercase }}

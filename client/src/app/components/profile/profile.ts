@@ -26,6 +26,7 @@ export class Profile implements OnInit {
   uid!: number;
   user!: User;
   admin!: boolean;
+  self!: boolean;
   teams!: Member[];
   showback: boolean = false;
 
@@ -69,7 +70,8 @@ export class Profile implements OnInit {
     
     this.auth.testToken().subscribe({
       next: (resp : AuthApi) => {
-        this.admin = (resp.claims.type == "admin" && resp.claims.userID != this.uid);
+        this.admin = resp.claims.type == "admin";
+        this.self = resp.claims.userID == this.uid;
         this.cd.detectChanges();
       }
     })

@@ -14,6 +14,11 @@ export interface Member {
     role: "admin" | "member";
 }
 
+export interface TeamAPI {
+    status: string;
+    team: Team;
+}
+
 export interface MembersAPI {
     status: string;
     members: Member[];

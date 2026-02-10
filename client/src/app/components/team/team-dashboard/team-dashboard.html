@@ -1,0 +1,16 @@
+<p>team-dashboard works!</p>
+@if (team) {
+    {{ team.name }}
+    <br>
+    {{ team.id  }}
+
+    
+    @if (members) {
+        <ul>
+        @for (member of members; track member) {
+            <li>{{member.name}} -> {{member.role}}</li>
+        }
+        </ul>
+    }
+
+}

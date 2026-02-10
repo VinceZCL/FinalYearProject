@@ -30,7 +30,7 @@
         </div>
       </div>
 
-      @if (admin) {
+      @if (admin && !self) {
       <div class="profile-actions">
         @if (user.status == "deactivated") {
         <button (click)="deactivate(user.id)" class="activate-btn">

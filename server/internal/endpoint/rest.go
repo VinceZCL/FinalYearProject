@@ -32,7 +32,7 @@ func RegisterRoutes(e echo.Echo) {
 	protected.GET("/checkins/:id", handler.GetCheckIn)
 
 	// GET TEAM RELATED
-	protected.GET("/members/teams/:id", handler.GetMembers)
+	protected.GET("/teams/members/:id", handler.GetMembers)
 	protected.GET("/teams/users/:id", handler.GetUserTeams)
 
 	// GET CHECKINS
