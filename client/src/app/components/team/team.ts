@@ -20,7 +20,8 @@ export class Team {
 
   searchCtrl = new FormControl('');
 
-  teams$ = this.auth.userID$.pipe(
+  teams$ = this.auth.claim$.pipe(
+    map(claims => claims?.userID ?? null),
     filter((uid): uid is number => uid !== null),
     switchMap(uid => this.teamSvc.getOwnTeams(uid))
   );

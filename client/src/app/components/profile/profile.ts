@@ -68,13 +68,11 @@ export class Profile implements OnInit {
 
   checkDelete(): void {
 
-    this.auth.userID$.subscribe(uid => {
-      this.self = uid == this.uid;
+    this.auth.claim$.subscribe(claims => {
+      this.self = claims?.userID == this.uid;
+      this.admin = claims?.type == "admin";
+      this.cd.detectChanges();
     });
-    this.auth.admin$.subscribe(isAdmin => {
-      this.admin = isAdmin;
-    });
-    this.cd.detectChanges();
 
   }
 

@@ -22,13 +22,9 @@ export class App implements OnInit {
     this.auth.logged$.subscribe(isLogged => {
       this.log = isLogged;
     });
-
-    this.auth.userID$.subscribe(uid => {
-      this.uid = Number(uid);
-    });
-
-    this.auth.admin$.subscribe(isAdmin => {
-      this.admin = isAdmin;
+    this.auth.claim$.subscribe(claims => {
+      this.uid = Number(claims?.userID);
+      this.admin = claims?.type == "admin";
     })
   }
 

@@ -33,9 +33,9 @@ export class TeamCreate implements OnInit {
       name: ["", Validators.required]
     });
 
-    this.auth.userID$.subscribe(uid => {
-      this.uid = Number(uid);
-    })
+    this.auth.claim$.subscribe(claims => {
+      this.uid = Number(claims?.userID);
+    });
   }
 
   onSubmit(): void {

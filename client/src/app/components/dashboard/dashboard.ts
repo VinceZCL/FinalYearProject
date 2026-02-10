@@ -35,10 +35,12 @@ export class Dashboard implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.auth.userID$.subscribe(uid => {
-      this.uid = Number(uid);
+
+    this.auth.claim$.subscribe(claims => {
+      this.uid = Number(claims?.userID);
       this.loadToday();
-    })
+    });
+
   }
 
   loadToday(): void {

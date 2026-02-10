@@ -15,14 +15,8 @@ export class AuthService {
   private claimSubject = new BehaviorSubject<Claims | null>(null);
   claim$ = this.claimSubject.asObservable();
 
-  private userIDSubject = new BehaviorSubject<Number | null>(null);
-  userID$ = this.userIDSubject.asObservable();
-
   private loggedSubject = new BehaviorSubject<boolean>(false);
   logged$ = this.loggedSubject.asObservable();
-
-  private adminSubject = new BehaviorSubject<boolean>(false);
-  admin$ = this.adminSubject.asObservable();
 
   verifyAndHydrate(): Observable<boolean> {
     if (!this.hasToken()) {
@@ -34,9 +28,7 @@ export class AuthService {
       tap(
         (resp: AuthApi) => {
           this.claimSubject.next(resp.claims);
-          this.userIDSubject.next(resp.claims.userID);
           this.loggedSubject.next(true);
-          this.adminSubject.next(resp.claims.type == "admin");
         }
       ),
       map(() => true),
@@ -49,13 +41,12 @@ export class AuthService {
 
   clearAuthState(): void {
     this.claimSubject.next(null);
-    this.userIDSubject.next(null);
     this.loggedSubject.next(false);
   }
 
   logout(): void {
-    localStorage.removeItem("token");
     this.clearAuthState();
+    localStorage.removeItem("token");
   }
 
   getToken(): string | null {
