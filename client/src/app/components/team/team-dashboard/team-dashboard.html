@@ -1,16 +1,127 @@
-<p>team-dashboard works!</p>
 @if (team) {
-    {{ team.name }}
-    <br>
-    {{ team.id  }}
+<!-- ======================
+     TOP BAR
+     ====================== -->
+<header class="top-bar">
+  <h1>{{ team.name }}</h1>
 
-    
-    @if (members) {
-        <ul>
-        @for (member of members; track member) {
-            <li>{{member.name}} -> {{member.role}}</li>
+  <button class="icon-btn" (click)="sidebarOpen = !sidebarOpen">
+    ☰
+  </button>
+</header>
+
+<!-- ======================
+     MAIN CONTENT (FEED)
+     ====================== -->
+<section class="content">
+  <div class="feed-placeholder">
+    <h2>Team Updates</h2>
+    <p>
+      Status updates from team members will appear here.
+    </p>
+  </div>
+</section>
+
+<!-- ======================
+     SIDEBAR
+     ====================== -->
+<aside class="sidebar" [class.open]="sidebarOpen">
+  <header>
+    <h2>Team Info</h2>
+    <button class="icon-btn" (click)="sidebarOpen = false">✕</button>
+  </header>
+
+  <!-- Members -->
+  <section>
+    <h3>Members</h3>
+
+    @if (members.length > 0) {
+      <ul class="member-list">
+        @for (m of members; track m.userID) {
+          <li>
+            <span class="member-name">
+              {{ m.name }}
+            </span>
+
+            <span
+              class="role"
+              [class.admin]="m.role === 'admin'"
+            >
+              {{ m.role }}
+            </span>
+          </li>
         }
-        </ul>
+      </ul>
+    } @else {
+      <p class="hint">No members yet.</p>
     }
+  </section>
 
+  <!-- Add user (admin only) -->
+  @if (power) {
+    <section class="add-user-section">
+      <h3>Add User</h3>
+
+      <div class="add-member">
+        <input
+          type="text"
+          placeholder="Search users..."
+          [(ngModel)]="search"
+          (input)="onSearchChange()"
+        />
+
+        @if (filteredAvail.length > 0) {
+          <ul class="dropdown">
+            @for (u of filteredAvail; track u.id) {
+              <li (click)="selectUser(u)">
+                <div class="name">
+                  {{ u.name }}
+                </div>
+                <div class="email">
+                  {{ u.email }}
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </section>
+  }
+</aside>
+
+<!-- ======================
+     ADD USER MODAL
+     ====================== -->
+@if (showUserModal && selectedUser) {
+  <div class="modal-backdrop">
+    <div class="modal">
+      <h2>
+        {{ selectedUser.name }}
+      </h2>
+
+      <p><strong>Email:</strong> {{ selectedUser.email }}</p>
+      <p><strong>User Type:</strong> {{ selectedUser.type }}</p>
+
+      <div class="actions">
+        <button class="ghost" (click)="closeModal()">
+          Cancel
+        </button>
+
+        <button
+          class="primary"
+          (click)="addMember(selectedUser, 'member')"
+        >
+          Add as User
+        </button>
+
+        <button
+          class="danger"
+          (click)="addMember(selectedUser, 'admin')"
+        >
+          Add as Admin
+        </button>
+      </div>
+    </div>
+  </div>
+}
 }

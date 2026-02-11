@@ -19,6 +19,11 @@ export interface TeamAPI {
     team: Team;
 }
 
+export interface MemberAPI {
+    status: string;
+    member: Member;
+}
+
 export interface MembersAPI {
     status: string;
     members: Member[];
