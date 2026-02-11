@@ -42,7 +42,7 @@ export class Profile implements OnInit {
     this.route.queryParams.subscribe(
       (params) => {
         let param = params["id"];
-        this.uid = param !== null ? parseInt(param) : 0;
+        this.uid = Number(param);
         this.checkDelete();
         this.update();
       }
@@ -53,9 +53,7 @@ export class Profile implements OnInit {
     this.userSvc.getUser(this.uid).subscribe({
       next: (resp: User) => {
         this.user = resp;
-        if (this.admin) {
-          this.getTeams();
-        }
+        this.getTeams();
         this.cd.detectChanges();
       },
       error: (err: Error) => {

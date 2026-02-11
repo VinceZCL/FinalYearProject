@@ -46,23 +46,26 @@
 
     </div>
 
-    @if (admin) {
-      <div class="profile-teams-card">
+    @if (admin || self) {
+    <div class="profile-teams-card">
+      @if (!self) {
       <h2>Member of Teams:</h2>
+      } @else {
+      <h2>Your Teams:</h2>
+      }
       @if (teams) {
-
-        @if (teams.length > 0) {
-          <ul class="team-list">
-            @for (team of teams; track team) {
-              <li class="team-item">
-                <span class="team-name">{{ team.team_name }}</span>
-                <span class="team-role">{{ team.role }}</span>
-              </li>
-            }
-          </ul>
-        } @else {
-          <p class="no-teams">This user is not assigned to any teams.</p>
+      @if (teams.length > 0) {
+      <ul class="team-list">
+        @for (team of teams; track team) {
+        <li class="team-item">
+          <span class="team-name">{{ team.team_name }}</span>
+          <span class="team-role">{{ team.role }}</span>
+        </li>
         }
+      </ul>
+      } @else {
+      <p class="no-teams">This user is not assigned to any teams.</p>
+      }
       }
     </div>
     }
