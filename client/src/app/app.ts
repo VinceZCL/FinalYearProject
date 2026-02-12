@@ -24,7 +24,7 @@ export class App implements OnInit {
     this.auth.claim$.subscribe(claims => {
       this.uid = Number(claims?.userID);
       this.admin = claims?.type == "admin";
-    })
+    });
   }
 
   logout() : void {
