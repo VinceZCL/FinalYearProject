@@ -1,7 +1,7 @@
 package service
 
 import (
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/VinceZCL/FinalYearProject/app/config"
@@ -82,10 +82,10 @@ func (s *AuthService) Login(c echo.Context, param param.Login) (string, error) {
 	user, err := s.authRepo.GetCredentials(param.Email)
 	if err != nil {
 		c.Logger().Errorf("Service | AuthService | GetCredentials (%s): %w", param.Email, err)
-		return "", fmt.Errorf("Email not found")
+		return "", errors.New("Email not found")
 	}
 	if !tools.ComparePass(user.Password, param.Password) {
-		return "", fmt.Errorf("Incorrect Password")
+		return "", errors.New("Incorrect Password")
 	}
 	token, err := tokenGen(c, user)
 	if err != nil {
@@ -96,7 +96,7 @@ func (s *AuthService) Login(c echo.Context, param param.Login) (string, error) {
 
 func tokenGen(c echo.Context, user *model.User) (string, error) {
 	if user.Status != "active" {
-		return "", fmt.Errorf("User deactivated")
+		return "", errors.New("User deactivated")
 	}
 
 	expire := time.Now().Add(24 * time.Hour)

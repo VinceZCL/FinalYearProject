@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/VinceZCL/FinalYearProject/internal/repository"
 	"github.com/VinceZCL/FinalYearProject/types/model"
 	"github.com/VinceZCL/FinalYearProject/types/model/dto"
@@ -39,6 +41,16 @@ func (s *UserTeamService) GetMembers(c echo.Context, teamID uint) ([]dto.Member,
 }
 
 func (s *UserTeamService) NewMember(c echo.Context, req param.NewMember) (*dto.Member, error) {
+
+	claims := c.Get("user").(Claims)
+
+	admin, err := s.repo.IsTeamAdmin(claims.UserID, req.TeamID)
+	if err != nil {
+		return nil, err
+	}
+	if !admin {
+		return nil, errors.New("Team Admin required")
+	}
 
 	input := model.UserTeam{
 		UserID: req.UserID,

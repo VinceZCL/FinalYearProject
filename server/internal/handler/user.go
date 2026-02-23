@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/VinceZCL/FinalYearProject/app"
+	"github.com/VinceZCL/FinalYearProject/internal/service"
 	"github.com/VinceZCL/FinalYearProject/types/model/param"
 	"github.com/labstack/echo/v4"
 )
@@ -56,6 +57,17 @@ func GetUser(c echo.Context) error {
 
 // unused, migrate to auth.Register
 func NewUser(c echo.Context) error {
+
+	// only admin can create user
+	claims := c.Get("user").(*service.Claims)
+	if claims.Type != "admin" {
+		return c.JSON(http.StatusForbidden, echo.Map{
+			"status":  "failure",
+			"error":   "invalid operation",
+			"details": "Admin required",
+		})
+	}
+
 	var req param.NewUser
 
 	if err := c.Bind(&req); err != nil {
@@ -94,6 +106,17 @@ func NewUser(c echo.Context) error {
 }
 
 func DeactivateUser(c echo.Context) error {
+
+	// only admin can deactivate user
+	claims := c.Get("user").(*service.Claims)
+	if claims.Type != "admin" {
+		return c.JSON(http.StatusForbidden, echo.Map{
+			"status":  "failure",
+			"error":   "invalid operation",
+			"details": "Admin required",
+		})
+	}
+
 	app := app.FromContext(c)
 
 	userID, err := strconv.Atoi(c.Param("id"))

@@ -9,6 +9,7 @@ type UserTeamRepository interface {
 	GetMembers(teamID uint) ([]model.UserTeam, error)
 	NewMember(input model.UserTeam) (*model.UserTeam, error)
 	GetUserTeams(userID uint) ([]model.UserTeam, error)
+	IsTeamAdmin(userID uint, teamID uint) (bool, error)
 }
 
 type userTeamRepository struct {
@@ -47,4 +48,14 @@ func (r *userTeamRepository) GetUserTeams(userID uint) ([]model.UserTeam, error)
 		return nil, err
 	}
 	return userTeams, nil
+}
+
+func (r *userTeamRepository) IsTeamAdmin(userID uint, teamID uint) (bool, error) {
+	var userTeam model.UserTeam
+
+	err := r.client.DB.Select("1").Where("user_id = ? AND team_id = ? AND role = ?", userID, teamID, "admin").First(&userTeam).Error
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }

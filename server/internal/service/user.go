@@ -1,7 +1,7 @@
 package service
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/VinceZCL/FinalYearProject/internal/repository"
 	"github.com/VinceZCL/FinalYearProject/tools"
@@ -94,12 +94,10 @@ func (s *UserService) NewUser(c echo.Context, req param.NewUser) (*dto.User, err
 
 func (s *UserService) DeactivateUser(c echo.Context, userID uint) (*dto.User, error) {
 
-	// TODO call repo deactive check error no error then ok
-
 	user, err := s.repo.GetUser(userID)
 	if err != nil {
 		c.Logger().Errorf("Service | UserService | DeactivateUser: %w", err)
-		return nil, fmt.Errorf("User not found")
+		return nil, errors.New("User not found")
 	}
 
 	if user.Status == "active" {
