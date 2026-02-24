@@ -7,6 +7,7 @@ export interface CheckIn {
     teamID: number;
     userID: number;
     username: string;
+    team_name: string;
     created_at: string;
 }
 
@@ -34,5 +35,6 @@ export interface NewCheckIns {
     type: 'yesterday' | 'today' | 'blockers';
     item?: string;
     jira?: string;
-    visibility: string | number;
+    visibility: string;
+    teamID?: number;
 }

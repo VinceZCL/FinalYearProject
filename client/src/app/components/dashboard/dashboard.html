@@ -1,5 +1,125 @@
 @if (ci) {
 <!-- Display the checkin -->
+<div class="checkin-shell">
+
+    <article class="checkin-card display-mode">
+
+        <header class="checkin-header">
+            <div class="header-left">
+                <h2>Daily Check-In</h2>
+                <time class="submitted-at" [attr.datetime]="ci.created_at">
+                    {{ ci.created_at | date:'EEEE, MMMM d, y' }}
+                    <span class="time">
+                        at {{ ci.created_at | date:'h:mm a' }}
+                    </span>
+                </time>
+            </div>
+        </header>
+
+        <!-- Yesterday -->
+        <section class="checkin-section">
+            <header class="section-title">
+                <h3>Yesterday</h3>
+            </header>
+
+            <div class="entries">
+                @for (ytd of ci.yesterday; track ytd) {
+                <div class="entry">
+                    <div class="entry-content">
+                        {{ ytd.item }}
+                    </div>
+
+                    <div class="entry-tags">
+                        @if (ytd.jira) {
+                        <span class="tag jira">
+                            {{ ytd.jira }}
+                        </span>
+                        }
+
+                        <span class="tag visibility" 
+                            [class.all]="ytd.visibility === 'all'"
+                            [class.private]="ytd.visibility === 'private'"
+                            [class.team]="ytd.visibility === 'team'">
+                            {{ ytd.visibility === 'team' ? ytd.team_name : ytd.visibility }}
+                        </span>
+                    </div>
+                </div>
+                } @empty {
+                <p class="empty">No updates.</p>
+                }
+            </div>
+        </section>
+
+        <!-- Today -->
+        <section class="checkin-section">
+            <header class="section-title">
+                <h3>Today</h3>
+            </header>
+
+            <div class="entries">
+                @for (td of ci.today; track td) {
+                <div class="entry">
+                    <div class="entry-content">
+                        {{ td.item }}
+                    </div>
+
+                    <div class="entry-tags">
+                        @if (td.jira) {
+                        <span class="tag jira">
+                            {{ td.jira }}
+                        </span>
+                        }
+
+                        <span class="tag visibility" 
+                            [class.all]="td.visibility === 'all'"
+                            [class.private]="td.visibility === 'private'"
+                            [class.team]="td.visibility === 'team'">
+                            {{ td.visibility === 'team' ? td.team_name : td.visibility }}
+                        </span>
+                    </div>
+                </div>
+                } @empty {
+                <p class="empty">No plans listed.</p>
+                }
+            </div>
+        </section>
+
+        <!-- Blockers -->
+        <section class="checkin-section blockers">
+            <header class="section-title">
+                <h3>Blockers</h3>
+            </header>
+
+            <div class="entries">
+                @for (blk of ci.blockers; track blk) {
+                <div class="entry blocker">
+                    <div class="entry-content">
+                        {{ blk.item }}
+                    </div>
+
+                    <div class="entry-tags">
+                        @if (blk.jira) {
+                        <span class="tag jira">
+                            {{ blk.jira }}
+                        </span>
+                        }
+
+                        <span class="tag visibility" 
+                            [class.all]="blk.visibility === 'all'"
+                            [class.private]="blk.visibility === 'private'"
+                            [class.team]="blk.visibility === 'team'">
+                            {{ blk.visibility === 'team' ? blk.team_name : blk.visibility }}
+                        </span>
+                    </div>
+                </div>
+                } @empty {
+                <p class="empty">No blockers 🎉</p>
+                }
+            </div>
+        </section>
+
+    </article>
+</div>
 } @else {
 @if (form) {
 <form [formGroup]="form" (ngSubmit)="submit()" class="checkin-form">

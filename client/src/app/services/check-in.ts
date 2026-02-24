@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { CheckIns, CheckInsAPI } from '../models/check-in.model';
+import { CheckIns, CheckInsAPI, NewCheckIns } from '../models/check-in.model';
 import { Error } from '../models/error.model';
 
 @Injectable({
@@ -19,6 +19,26 @@ export class CheckInService {
         (resp: CheckInsAPI) => {
           return resp.checkIns;
           // null if no checkIn today
+        }
+      ),
+        catchError(
+          (error) => {
+            let err: Error = {
+              status: error.error.status,
+              error: error.error.error,
+              details: error.error.details
+            };
+            return throwError(() => err);
+          }
+        )
+      )
+  }
+
+  submitBulk(payload: {"checkIns": NewCheckIns[]}): Observable<CheckIns | null> {
+    return this.http.post<CheckInsAPI>(`${this.url}/bulk`, payload, { responseType: "json" })
+      .pipe(map(
+        (resp: CheckInsAPI) => {
+          return resp.checkIns;
         }
       ),
         catchError(

@@ -6,13 +6,14 @@ import { CheckInService } from '../../services/check-in';
 import { Error } from '../../models/error.model';
 import { Member } from '../../models/team.model';
 import { TeamService } from '../../services/team';
+import { DatePipe } from '@angular/common';
 
 // Visibility value stored in the form
 type VisibilityValue = 'all' | 'private' | number;
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, DatePipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -46,6 +47,7 @@ export class Dashboard implements OnInit {
     this.ciSvc.getDaily(this.uid).subscribe({
       next: (resp: CheckIns | null) => {
         this.ci = resp;
+        this.cd.detectChanges();
 
         if (!this.ci) {
           this.teamSvc.getOwnTeams(this.uid).subscribe({
@@ -144,45 +146,76 @@ export class Dashboard implements OnInit {
   }
 
   submit(): void {
-    if (!this.form) return;
+  if (!this.form) return;
 
-    let checkIns: NewCheckIns[] = [];
+  const sections: { type: 'yesterday' | 'today' | 'blockers'; array: FormArray }[] = [
+    { type: 'yesterday', array: this.yesterday },
+    { type: 'today', array: this.today },
+    { type: 'blockers', array: this.blockers },
+  ];
 
-    const sections: { type: 'yesterday' | 'today' | 'blockers'; array: FormArray }[] = [
-      { type: 'yesterday', array: this.yesterday },
-      { type: 'today', array: this.today },
-      { type: 'blockers', array: this.blockers },
-    ];
-
-    sections.forEach(section => {
-      section.array.controls.forEach(control => {
+  const checkIns: NewCheckIns[] = sections.flatMap(section =>
+    section.array.controls
+      .map(control => {
         const value = control.value;
-        // Only include if item or jira is non-empty
-        if ((value.item?.trim() ?? '') !== '' || (value.jira?.trim() ?? '') !== '') {
-          let vis: string | number;
-          vis = value.visibility === "all" || value.visibility === "private" ? value.visibility : parseInt(value.visibility);
-          checkIns.push({
-            userID: this.uid,
-            type: section.type,
-            item: value.item?.trim() ?? '',
-            jira: value.jira?.trim() || undefined,
-            visibility: vis
-          });
+        const item = value.item?.trim() ?? '';
+        const jira = value.jira?.trim() || undefined;
+
+        // Skip if both item and jira are empty
+        if (!item && !jira) return null;
+
+        // Determine visibility
+        let vis: string | number = value.visibility;
+        const parsedTeamID = parseInt(value.visibility);
+        if (!isNaN(parsedTeamID)) {
+          vis = 'team';
         }
-      });
-    });
 
-    if (checkIns.length === 0) {
-      alert('Please fill at least one entry.');
-      return;
-    }
+        const checkIn: NewCheckIns = {
+          userID: this.uid,
+          type: section.type,
+          item,
+          jira,
+          visibility: vis as 'all' | 'private' | 'team',
+          teamID: vis === 'team' ? parsedTeamID : undefined
+        };
 
-    let payload = { checkIns };
+        return checkIn;
+      })
+      .filter(Boolean) as NewCheckIns[]
+  );
 
-    console.log('Payload:', payload);
-
-    // TODO: wire to API
-    // this.ciSvc.submit(payload).subscribe(...)
+  if (checkIns.length === 0) {
+    alert('Please fill at least one entry.');
+    return;
   }
+
+  const payload = { checkIns };
+  this.ciSvc.submitBulk(payload).subscribe({
+    next: (resp: CheckIns | null) => {
+      this.ci = resp;
+      this.cd.detectChanges();
+    },
+    error: (err: Error) => {
+      console.error(err);
+    }
+  });
+}
+
+
+
+  // TODO submit your checkin
+  // TODO after submitted, retrieve the checkin for today and update template
+
+
+
+  
+  // TODO also handle get yesterday for suggestions
+  // TODO consider get previous (latest checkin)
+  // TODO ^ new backend API / reuse date checkin
+
+  // TODO check if checkin exist for today, then display it
+  // TODO show date selector to change date, query for checkin of that date
+  // TODO if no checkin on that day, say not found, show the date of that day as well
 
 }

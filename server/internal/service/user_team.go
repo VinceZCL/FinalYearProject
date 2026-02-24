@@ -41,7 +41,7 @@ func (s *UserTeamService) GetMembers(c echo.Context, teamID uint) ([]dto.Member,
 
 func (s *UserTeamService) NewMember(c echo.Context, req param.NewMember) (*dto.Member, error) {
 
-	claims := c.Get("user").(Claims)
+	claims := c.Get("user").(*Claims)
 
 	admin, err := s.repo.IsTeamAdmin(claims.UserID, req.TeamID)
 	if err != nil {

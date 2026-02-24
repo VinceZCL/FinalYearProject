@@ -36,6 +36,10 @@ func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint, date strin
 	}
 
 	for _, ci := range checkIns {
+		var teamName *string
+		if ci.Team != nil {
+			teamName = &ci.Team.Name
+		}
 		single := &dto.CheckIn{
 			ID:         ci.ID,
 			Type:       ci.Type,
@@ -45,6 +49,7 @@ func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint, date strin
 			TeamID:     ci.TeamID,
 			UserID:     ci.UserID,
 			Username:   ci.User.Name,
+			TeamName:   teamName,
 			CreatedAt:  ci.CreatedAt,
 		}
 
@@ -79,6 +84,10 @@ func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint, date strin
 				CreatedAt: ci.CreatedAt,
 			}
 		}
+		var teamName *string
+		if ci.Team != nil {
+			teamName = &ci.Team.Name
+		}
 
 		single := &dto.CheckIn{
 			ID:         ci.ID,
@@ -89,6 +98,7 @@ func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint, date strin
 			TeamID:     ci.TeamID,
 			UserID:     ci.UserID,
 			Username:   ci.User.Name,
+			TeamName:   teamName,
 			CreatedAt:  ci.CreatedAt,
 		}
 
@@ -115,6 +125,10 @@ func (s *CheckInService) GetCheckIn(c echo.Context, checkInID uint) (*dto.CheckI
 		c.Logger().Errorf("Service | CheckInService | GetCheckIn (%d): %w", checkInID, err)
 		return nil, tools.ErrInternal("database failure", err.Error())
 	}
+	var teamName *string
+	if checkIn.Team != nil {
+		teamName = &checkIn.Team.Name
+	}
 
 	dto := &dto.CheckIn{
 		ID:         checkIn.ID,
@@ -125,6 +139,7 @@ func (s *CheckInService) GetCheckIn(c echo.Context, checkInID uint) (*dto.CheckI
 		TeamID:     checkIn.TeamID,
 		UserID:     checkIn.UserID,
 		Username:   checkIn.User.Name,
+		TeamName:   teamName,
 		CreatedAt:  checkIn.CreatedAt,
 	}
 	return dto, nil
@@ -146,6 +161,11 @@ func (s *CheckInService) NewCheckIn(c echo.Context, req param.NewCheckIn) (*dto.
 		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
+	var teamName *string
+	if checkIn.Team != nil {
+		teamName = &checkIn.Team.Name
+	}
+
 	dto := &dto.CheckIn{
 		ID:         checkIn.ID,
 		Type:       checkIn.Type,
@@ -155,6 +175,7 @@ func (s *CheckInService) NewCheckIn(c echo.Context, req param.NewCheckIn) (*dto.
 		TeamID:     checkIn.TeamID,
 		UserID:     checkIn.UserID,
 		Username:   checkIn.User.Name,
+		TeamName:   teamName,
 		CreatedAt:  checkIn.CreatedAt,
 	}
 	return dto, nil
@@ -186,6 +207,11 @@ func (s *CheckInService) BulkCheckIn(c echo.Context, req param.BulkCheckIn) ([]*
 			return nil, tools.ErrInternal("database failure", err.Error())
 		}
 
+		var teamName *string
+		if checkIn.Team != nil {
+			teamName = &checkIn.Team.Name
+		}
+
 		// Map the database model to the DTO
 		dto := &dto.CheckIn{
 			ID:         checkIn.ID,
@@ -196,6 +222,7 @@ func (s *CheckInService) BulkCheckIn(c echo.Context, req param.BulkCheckIn) ([]*
 			TeamID:     checkIn.TeamID,
 			UserID:     checkIn.UserID,
 			Username:   checkIn.User.Name,
+			TeamName:   teamName,
 			CreatedAt:  checkIn.CreatedAt,
 		}
 

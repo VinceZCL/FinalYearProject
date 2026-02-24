@@ -37,6 +37,7 @@ type CheckIn struct {
 	TeamID     *uint     `json:"teamID"`
 	UserID     uint      `json:"userID"`
 	Username   string    `json:"username"`
+	TeamName   *string   `json:"team_name"`
 	CreatedAt  time.Time `json:"created_at"`
 }
 
