@@ -33,7 +33,7 @@ export class AuthService {
       ),
       map(() => true),
       catchError(() => {
-        this.clearAuthState();
+        this.logout();
         return of(false);
       })
     );

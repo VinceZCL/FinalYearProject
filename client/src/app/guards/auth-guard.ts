@@ -26,6 +26,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   return auth.verifyAndHydrate().pipe(
     tap((valid) => {
       if (!valid) {
+        auth.logout();
         router.navigate(["/login"]);
       }
     })

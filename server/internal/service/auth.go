@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"time"
 
 	"github.com/VinceZCL/FinalYearProject/app/config"
@@ -90,14 +89,14 @@ func (s *AuthService) Login(c echo.Context, param param.Login) (string, error) {
 	}
 	token, err := tokenGen(c, user)
 	if err != nil {
-		return "", tools.ErrInternal("login failed", "Token gen failed")
+		return "", err
 	}
 	return token, nil
 }
 
 func tokenGen(c echo.Context, user *model.User) (string, error) {
 	if user.Status != "active" {
-		return "", errors.New("User deactivated")
+		return "", tools.ErrNotFound("login failed", "User deactivated")
 	}
 
 	expire := time.Now().Add(24 * time.Hour)
@@ -120,7 +119,7 @@ func tokenGen(c echo.Context, user *model.User) (string, error) {
 	tokenString, err := token.SignedString(JWTSecretKey)
 	if err != nil {
 		c.Logger().Errorf("Service | AuthService | tokenGen: %w", err)
-		return "", err
+		return "", tools.ErrInternal("login failed", "Token gen failed")
 	}
 	return tokenString, nil
 }
