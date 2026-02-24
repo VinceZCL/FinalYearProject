@@ -1,9 +1,8 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/VinceZCL/FinalYearProject/internal/repository"
+	"github.com/VinceZCL/FinalYearProject/tools"
 	"github.com/VinceZCL/FinalYearProject/types/model"
 	"github.com/VinceZCL/FinalYearProject/types/model/dto"
 	"github.com/VinceZCL/FinalYearProject/types/model/param"
@@ -23,7 +22,7 @@ func (s *UserTeamService) GetMembers(c echo.Context, teamID uint) ([]dto.Member,
 	members, err := s.repo.GetMembers(teamID)
 	if err != nil {
 		c.Logger().Errorf("Service | UserTeamService | GetMembers: %w", err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	dtos := make([]dto.Member, len(members))
@@ -46,10 +45,10 @@ func (s *UserTeamService) NewMember(c echo.Context, req param.NewMember) (*dto.M
 
 	admin, err := s.repo.IsTeamAdmin(claims.UserID, req.TeamID)
 	if err != nil {
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 	if !admin {
-		return nil, errors.New("Team Admin required")
+		return nil, tools.ErrForbidden("Team Admin required")
 	}
 
 	input := model.UserTeam{
@@ -61,7 +60,7 @@ func (s *UserTeamService) NewMember(c echo.Context, req param.NewMember) (*dto.M
 	member, err := s.repo.NewMember(input)
 	if err != nil {
 		c.Logger().Errorf("Service | UserTeamService | NewMember: %w", err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 	dto := &dto.Member{
 		UserID:   member.UserID,
@@ -78,7 +77,7 @@ func (s *UserTeamService) GetUserTeams(c echo.Context, userID uint) ([]dto.Membe
 	members, err := s.repo.GetUserTeams(userID)
 	if err != nil {
 		c.Logger().Errorf("Service | UserTeamService | GetTeams (%d): %w", userID, err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	dtos := make([]dto.Member, len(members))

@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/VinceZCL/FinalYearProject/internal/repository"
+	"github.com/VinceZCL/FinalYearProject/tools"
 	"github.com/VinceZCL/FinalYearProject/types/model"
 	"github.com/VinceZCL/FinalYearProject/types/model/dto"
 	"github.com/VinceZCL/FinalYearProject/types/model/param"
@@ -20,7 +21,7 @@ func (s *TeamService) GetTeams(c echo.Context) ([]dto.Team, error) {
 	teams, err := s.repo.GetTeams()
 	if err != nil {
 		c.Logger().Errorf("Service | TeamService | GetTeams: %w", err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	dtos := make([]dto.Team, len(teams))
@@ -39,7 +40,7 @@ func (s *TeamService) GetTeam(c echo.Context, teamID uint) (*dto.Team, error) {
 	team, err := s.repo.GetTeam(teamID)
 	if err != nil {
 		c.Logger().Errorf("Service | TeamService | GetTeam (%d): %w", teamID, err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	dto := &dto.Team{
@@ -60,7 +61,7 @@ func (s *TeamService) NewTeam(c echo.Context, req param.NewTeam) (*dto.Team, err
 	team, err := s.repo.NewTeam(input)
 	if err != nil {
 		c.Logger().Errorf("Service | TeamService | NewTeam: %w", err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	dto := &dto.Team{

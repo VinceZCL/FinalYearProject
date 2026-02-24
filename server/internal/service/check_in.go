@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/VinceZCL/FinalYearProject/internal/repository"
+	"github.com/VinceZCL/FinalYearProject/tools"
 	"github.com/VinceZCL/FinalYearProject/types/model"
 	"github.com/VinceZCL/FinalYearProject/types/model/dto"
 	"github.com/VinceZCL/FinalYearProject/types/model/param"
@@ -21,7 +22,7 @@ func (s *CheckInService) GetUserCheckIns(c echo.Context, userID uint, date strin
 	checkIns, err := s.repo.GetUserCheckIns(userID, date)
 	if err != nil {
 		c.Logger().Errorf("Service | CheckInService | GetUserCheckIns: %w", err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	if len(checkIns) == 0 {
@@ -65,7 +66,7 @@ func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint, date strin
 	checkIns, err := s.repo.GetTeamCheckIns(teamID, date)
 	if err != nil {
 		c.Logger().Errorf("Service | CheckInService | GetTeamCheckIns: %w", err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	grouped := make(map[uint]*dto.DailyCheckIn)
@@ -112,7 +113,7 @@ func (s *CheckInService) GetCheckIn(c echo.Context, checkInID uint) (*dto.CheckI
 	checkIn, err := s.repo.GetCheckIn(checkInID)
 	if err != nil {
 		c.Logger().Errorf("Service | CheckInService | GetCheckIn (%d): %w", checkInID, err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	dto := &dto.CheckIn{
@@ -142,7 +143,7 @@ func (s *CheckInService) NewCheckIn(c echo.Context, req param.NewCheckIn) (*dto.
 	checkIn, err := s.repo.NewCheckIn(input)
 	if err != nil {
 		c.Logger().Errorf("Service | CheckInService | NewCheckIn: %w", err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	dto := &dto.CheckIn{
@@ -164,7 +165,7 @@ func (s *CheckInService) BulkCheckIn(c echo.Context, req param.BulkCheckIn) ([]*
 
 	// Validate the bulk check-in request
 	if err := req.Validate(); err != nil {
-		return nil, err // Return error if bulk validation fails
+		return nil, tools.ErrBadRequest("request validation failed") // Return error if bulk validation fails
 	}
 
 	// Iterate through each NewCheckIn and process it
@@ -182,7 +183,7 @@ func (s *CheckInService) BulkCheckIn(c echo.Context, req param.BulkCheckIn) ([]*
 		checkIn, err := s.repo.NewCheckIn(input)
 		if err != nil {
 			c.Logger().Errorf("Service | CheckInService | NewBulkCheckIn: %w", err)
-			continue // Proceed with next check-in even if one fails
+			return nil, tools.ErrInternal("database failure", err.Error())
 		}
 
 		// Map the database model to the DTO

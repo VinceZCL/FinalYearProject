@@ -1,8 +1,6 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/VinceZCL/FinalYearProject/internal/repository"
 	"github.com/VinceZCL/FinalYearProject/tools"
 	"github.com/VinceZCL/FinalYearProject/types/model"
@@ -23,7 +21,7 @@ func (s *UserService) GetUsers(c echo.Context) ([]dto.User, error) {
 	users, err := s.repo.GetUsers()
 	if err != nil {
 		c.Logger().Errorf("Service | UserService | GetUsers: %w", err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	dtos := make([]dto.User, len(users))
@@ -43,7 +41,7 @@ func (s *UserService) GetUser(c echo.Context, userID uint) (*dto.User, error) {
 	user, err := s.repo.GetUser(userID)
 	if err != nil {
 		c.Logger().Errorf("Service | UserService | GetUser (%d): %w", userID, err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	dto := &dto.User{
@@ -56,7 +54,7 @@ func (s *UserService) GetUser(c echo.Context, userID uint) (*dto.User, error) {
 	return dto, nil
 }
 
-// unused, migrate to auth.Register
+// now used in Admin user creation
 func (s *UserService) NewUser(c echo.Context, req param.NewUser) (*dto.User, error) {
 	var userType string
 	if req.Type != "" {
@@ -66,7 +64,7 @@ func (s *UserService) NewUser(c echo.Context, req param.NewUser) (*dto.User, err
 	}
 	hashed, err := tools.HashPass(req.Password)
 	if err != nil {
-		return nil, err
+		return nil, tools.ErrInternal("hasing error", err.Error())
 	}
 	input := model.User{
 		Name:     req.Name,
@@ -79,7 +77,7 @@ func (s *UserService) NewUser(c echo.Context, req param.NewUser) (*dto.User, err
 	user, err := s.repo.NewUser(input)
 	if err != nil {
 		c.Logger().Errorf("Service | UserService | NewUser: %w", err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	dto := &dto.User{
@@ -97,20 +95,20 @@ func (s *UserService) DeactivateUser(c echo.Context, userID uint) (*dto.User, er
 	user, err := s.repo.GetUser(userID)
 	if err != nil {
 		c.Logger().Errorf("Service | UserService | DeactivateUser: %w", err)
-		return nil, errors.New("User not found")
+		return nil, tools.ErrNotFound("database failure", "User not found")
 	}
 
 	if user.Status == "active" {
 		user, err = s.repo.DeactivateUser(*user)
 		if err != nil {
 			c.Logger().Errorf("Service | UserService | DeactivateUser: %w", err)
-			return nil, err
+			return nil, tools.ErrInternal("database failure", err.Error())
 		}
 	} else {
 		user, err = s.repo.ActivateUser(*user)
 		if err != nil {
 			c.Logger().Errorf("Service | UserService | ActivateUser: %w", err)
-			return nil, err
+			return nil, tools.ErrInternal("database failure", err.Error())
 		}
 	}
 

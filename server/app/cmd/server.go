@@ -13,6 +13,7 @@ import (
 
 	"github.com/VinceZCL/FinalYearProject/app"
 	"github.com/VinceZCL/FinalYearProject/internal/endpoint"
+	"github.com/VinceZCL/FinalYearProject/tools"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
@@ -46,6 +47,26 @@ func init() {
 					return next(c) // Continue with the request handling
 				}
 			})
+
+			e.HTTPErrorHandler = func(err error, c echo.Context) {
+				if c.Response().Committed {
+					return
+				}
+				if err, ok := err.(*tools.Xerror); ok {
+					c.JSON(err.Code, echo.Map{
+						"status":  "failure",
+						"error":   err.Msg,
+						"details": err.Details,
+					})
+					return
+				}
+				c.JSON(500, echo.Map{
+					"status":  "failure",
+					"error":   "internal server error",
+					"details": err.Error(),
+				})
+				return
+			}
 
 			e.Logger.SetLevel(log.INFO)
 

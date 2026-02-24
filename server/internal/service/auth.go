@@ -37,6 +37,7 @@ func NewAuthService(authRepo repository.AuthRepository, userRepo repository.User
 	}
 }
 
+// TODO should disable in favor of CreateUser
 func (s *AuthService) Register(c echo.Context, req param.NewUser) (*dto.User, error) {
 	var userType string
 	if req.Type != "" {
@@ -46,7 +47,7 @@ func (s *AuthService) Register(c echo.Context, req param.NewUser) (*dto.User, er
 	}
 	hashed, err := tools.HashPass(req.Password)
 	if err != nil {
-		return nil, err
+		return nil, tools.ErrInternal("hasing error", err.Error())
 	}
 	newReq := param.NewUser{
 		Name:     req.Name,
@@ -65,7 +66,7 @@ func (s *AuthService) Register(c echo.Context, req param.NewUser) (*dto.User, er
 	user, err := s.userRepo.NewUser(input)
 	if err != nil {
 		c.Logger().Errorf("Service | AuthService | Register: %w", err)
-		return nil, err
+		return nil, tools.ErrInternal("database failure", err.Error())
 	}
 
 	dto := &dto.User{
@@ -82,14 +83,14 @@ func (s *AuthService) Login(c echo.Context, param param.Login) (string, error) {
 	user, err := s.authRepo.GetCredentials(param.Email)
 	if err != nil {
 		c.Logger().Errorf("Service | AuthService | GetCredentials (%s): %w", param.Email, err)
-		return "", errors.New("Email not found")
+		return "", tools.ErrNotFound("login failed", "Email not found")
 	}
 	if !tools.ComparePass(user.Password, param.Password) {
-		return "", errors.New("Incorrect Password")
+		return "", tools.ErrNotFound("login failed", "Incorrect password")
 	}
 	token, err := tokenGen(c, user)
 	if err != nil {
-		return "", err
+		return "", tools.ErrInternal("login failed", "Token gen failed")
 	}
 	return token, nil
 }

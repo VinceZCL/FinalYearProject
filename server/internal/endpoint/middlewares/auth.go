@@ -2,11 +2,11 @@ package middlewares
 
 import (
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
 	"github.com/VinceZCL/FinalYearProject/internal/service"
+	"github.com/VinceZCL/FinalYearProject/tools"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
@@ -17,22 +17,14 @@ func AuthMiddleware() echo.MiddlewareFunc {
 
 			authHeader := c.Request().Header.Get("Authorization")
 			if authHeader == "" {
-				return c.JSON(http.StatusUnauthorized, echo.Map{
-					"status":  "failure",
-					"error":   "authorization",
-					"details": "Missing Authorization header",
-				})
+				return tools.ErrUnauthorized("Missing Authorization header")
 			}
 
 			// Split the header into "Bearer <token>"
 			authParts := strings.Split(authHeader, " ")
 			if len(authParts) != 2 || authParts[0] != "Bearer" {
 				// Invalid format, return Unauthorized
-				return c.JSON(http.StatusUnauthorized, echo.Map{
-					"status":  "failure",
-					"error":   "authorization",
-					"details": "Invalid Authorization header format. Expected 'Bearer <token>'",
-				})
+				return tools.ErrUnauthorized("Invalid Authorization header format. Expected 'Bearer <token>'")
 			}
 
 			tokenStr := authParts[1]
@@ -48,38 +40,22 @@ func AuthMiddleware() echo.MiddlewareFunc {
 
 			// If parsing fails or the token is invalid, return Unauthorized
 			if err != nil || !token.Valid {
-				return c.JSON(http.StatusUnauthorized, echo.Map{
-					"status":  "failure",
-					"error":   "token",
-					"details": "Invalid or expired token",
-				})
+				return tools.ErrUnauthorized("Invalid or expired token")
 			}
 
 			// Extract the claims
 			claims, ok := token.Claims.(*service.Claims)
 			if !ok {
-				return c.JSON(http.StatusUnauthorized, echo.Map{
-					"status":  "failure",
-					"error":   "token",
-					"details": "Invalid token claims",
-				})
+				return tools.ErrUnauthorized("Invalid token claims")
 			}
 
 			// Optionally, check claims like expiration and issuer
 			if claims.ExpiresAt.Time.Before(time.Now()) {
-				return c.JSON(http.StatusUnauthorized, echo.Map{
-					"status":  "failure",
-					"error":   "token",
-					"details": "Token has expired",
-				})
+				return tools.ErrUnauthorized("Token has expired")
 			}
 
 			if claims.Issuer != "github.com/VinceZCL/FinalYearProject" {
-				return c.JSON(http.StatusUnauthorized, echo.Map{
-					"status":  "failure",
-					"error":   "token",
-					"details": "Invalid issuer",
-				})
+				return tools.ErrUnauthorized("Invalid token Issuer")
 			}
 
 			c.Set("user", claims)
