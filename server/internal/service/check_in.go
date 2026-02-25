@@ -181,7 +181,7 @@ func (s *CheckInService) NewCheckIn(c echo.Context, req param.NewCheckIn) (*dto.
 	return dto, nil
 }
 
-func (s *CheckInService) BulkCheckIn(c echo.Context, req param.BulkCheckIn) ([]*dto.CheckIn, error) {
+func (s *CheckInService) BulkCheckIn(c echo.Context, req param.BulkCheckIn) (*dto.DailyCheckIn, error) {
 	var result []*dto.CheckIn
 
 	// Validate the bulk check-in request
@@ -230,5 +230,22 @@ func (s *CheckInService) BulkCheckIn(c echo.Context, req param.BulkCheckIn) ([]*
 		result = append(result, dto)
 	}
 
-	return result, nil
+	dailyCI := &dto.DailyCheckIn{
+		UserID:    result[0].UserID,
+		Username:  result[0].Username,
+		CreatedAt: result[0].CreatedAt,
+	}
+
+	for _, ci := range result {
+		switch ci.Type {
+		case "yesterday":
+			dailyCI.Yesterday = append(dailyCI.Yesterday, ci)
+		case "today":
+			dailyCI.Today = append(dailyCI.Today, ci)
+		case "blockers":
+			dailyCI.Blockers = append(dailyCI.Blockers, ci)
+		}
+	}
+
+	return dailyCI, nil
 }

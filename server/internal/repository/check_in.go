@@ -44,19 +44,30 @@ func (r *checkInRepository) GetTeamCheckIns(teamID uint, date string) ([]model.C
 	if err != nil {
 		return nil, err
 	}
-	err = r.client.DB.Model(&model.CheckIn{}).Joins("JOIN user_teams ut ON ut.user_id = check_ins.user_id").
-		Where("ut.team_id = ?", teamID).
-		Where("created_at >= ? AND created_at < ?", start, end).
+
+	err = r.client.DB.Model(&model.CheckIn{}).
 		Where(`
-			check_ins.visibility = 'all'
-			OR (
-				check_ins.visibility = 'team'
-				AND check_ins.team_id = ?
+			EXISTS (
+				SELECT 1
+				FROM user_teams ut
+				WHERE ut.user_id = check_ins.user_id
+				AND ut.team_id = ?
+			)
+		`, teamID).
+		Where(`check_ins.created_at >= ? AND check_ins.created_at < ?`, start, end).
+		Where(`
+			(
+				check_ins.visibility = 'all'
+				OR (
+					check_ins.visibility = 'team'
+					AND check_ins.team_id = ?	
+				)
 			)
 		`, teamID).
 		Preload("User").
 		Preload("Team").
 		Find(&checkIns).Error
+
 	if err != nil {
 		return nil, err
 	}
