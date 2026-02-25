@@ -146,76 +146,69 @@ export class Dashboard implements OnInit {
   }
 
   submit(): void {
-  if (!this.form) return;
+    if (!this.form) return;
 
-  const sections: { type: 'yesterday' | 'today' | 'blockers'; array: FormArray }[] = [
-    { type: 'yesterday', array: this.yesterday },
-    { type: 'today', array: this.today },
-    { type: 'blockers', array: this.blockers },
-  ];
+    const sections: { type: 'yesterday' | 'today' | 'blockers'; array: FormArray }[] = [
+      { type: 'yesterday', array: this.yesterday },
+      { type: 'today', array: this.today },
+      { type: 'blockers', array: this.blockers },
+    ];
 
-  const checkIns: NewCheckIns[] = sections.flatMap(section =>
-    section.array.controls
-      .map(control => {
-        const value = control.value;
-        const item = value.item?.trim() ?? '';
-        const jira = value.jira?.trim() || undefined;
+    const checkIns: NewCheckIns[] = sections.flatMap(section =>
+      section.array.controls
+        .map(control => {
+          const value = control.value;
+          const item = value.item?.trim() ?? '';
+          const jira = value.jira?.trim() || undefined;
 
-        // Skip if both item and jira are empty
-        if (!item && !jira) return null;
+          // Skip if both item and jira are empty
+          if (!item && !jira) return null;
 
-        // Determine visibility
-        let vis: string | number = value.visibility;
-        const parsedTeamID = parseInt(value.visibility);
-        if (!isNaN(parsedTeamID)) {
-          vis = 'team';
-        }
+          // Determine visibility
+          let vis: string | number = value.visibility;
+          const parsedTeamID = parseInt(value.visibility);
+          if (!isNaN(parsedTeamID)) {
+            vis = 'team';
+          }
 
-        const checkIn: NewCheckIns = {
-          userID: this.uid,
-          type: section.type,
-          item,
-          jira,
-          visibility: vis as 'all' | 'private' | 'team',
-          teamID: vis === 'team' ? parsedTeamID : undefined
-        };
+          const checkIn: NewCheckIns = {
+            userID: this.uid,
+            type: section.type,
+            item,
+            jira,
+            visibility: vis as 'all' | 'private' | 'team',
+            teamID: vis === 'team' ? parsedTeamID : undefined
+          };
 
-        return checkIn;
-      })
-      .filter(Boolean) as NewCheckIns[]
-  );
+          return checkIn;
+        })
+        .filter(Boolean) as NewCheckIns[]
+    );
 
-  if (checkIns.length === 0) {
-    alert('Please fill at least one entry.');
-    return;
+    if (checkIns.length === 0) {
+      alert('Please fill at least one entry.');
+      return;
+    }
+
+    const payload = { checkIns };
+    this.ciSvc.submitBulk(payload).subscribe({
+      next: (resp: CheckIns) => {
+        this.ci = resp;
+        this.cd.detectChanges();
+      },
+      error: (err: Error) => {
+        console.error(err);
+      }
+    });
   }
 
-  const payload = { checkIns };
-  this.ciSvc.submitBulk(payload).subscribe({
-    next: (resp: CheckIns | null) => {
-      this.ci = resp;
-      this.cd.detectChanges();
-    },
-    error: (err: Error) => {
-      console.error(err);
-    }
-  });
-}
-
-
-
-  // TODO submit your checkin
-  // TODO after submitted, retrieve the checkin for today and update template
-
-
-
-  
   // TODO also handle get yesterday for suggestions
   // TODO consider get previous (latest checkin)
   // TODO ^ new backend API / reuse date checkin
 
   // TODO check if checkin exist for today, then display it
   // TODO show date selector to change date, query for checkin of that date
+  // ! should you be able to see previous, if not checkin today
   // TODO if no checkin on that day, say not found, show the date of that day as well
 
 }

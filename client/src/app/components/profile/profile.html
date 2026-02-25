@@ -64,7 +64,11 @@
         }
       </ul>
       } @else {
-      <p class="no-teams">This user is not assigned to any teams.</p>
+        @if (!self) {
+          <p class="no-teams">This user is not assigned to any teams.</p>
+        } @else {
+          <p class="no-teams">You are not assigned to any teams.</p>
+        }
       }
       }
     </div>
