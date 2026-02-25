@@ -16,14 +16,14 @@ export interface CheckInsAPI {
     checkIns: CheckIns | null;
 }
 
-export interface NewCheckInsAPI {
-    status: string;
-    checkIns: CheckIns;
-}
-
 export interface CheckInAPI {
     status: string;
     checkIn: CheckIn;
+}
+
+export interface TeamCheckInsAPI {
+    status: string;
+    checkIns: CheckIns[];
 }
 
 export interface CheckIns {
