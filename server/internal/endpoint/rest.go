@@ -13,7 +13,10 @@ func RegisterRoutes(e echo.Echo) {
 
 	// api/auth/*
 	auth := api.Group("/auth")
+
+	// TODO remove this
 	auth.POST("/register", handler.Register)
+
 	auth.POST("/login", handler.Login)
 
 	auth.GET("/verify", handler.Verify, middlewares.AuthMiddleware())
@@ -47,5 +50,5 @@ func RegisterRoutes(e echo.Echo) {
 
 	protected.POST("/users", handler.NewUser)
 
-	protected.DELETE("/users/:id", handler.DeactivateUser)
+	protected.PATCH("/users/:id", handler.DeactivateUser)
 }

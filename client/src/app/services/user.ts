@@ -73,7 +73,7 @@ export class UserService {
   }
 
   deactivateUser(id: number): Observable<User> {
-    return this.http.delete<UserAPI>(`${this.url}/${id}`)
+    return this.http.patch<UserAPI>(`${this.url}/${id}`, null)
       .pipe(map(
         (response: UserAPI) => {
           return response.user;

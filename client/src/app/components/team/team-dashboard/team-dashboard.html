@@ -14,12 +14,80 @@
      MAIN CONTENT (FEED)
      ====================== -->
 <section class="content">
-  <div class="feed-placeholder">
-    <h2>Team Updates</h2>
-    <p>
-      Status updates from team members will appear here.
-    </p>
-  </div>
+  @if (cis) {
+  @if (cis.length > 0) {
+
+    <div class="feed">
+
+      @for (user of cis; track user.userID) {
+
+        <div class="checkin-card">
+
+          <!-- USER HEADER -->
+          <div class="checkin-header">
+            <h3>{{ user.username }}</h3>
+            <span class="date">
+              {{ user.created_at | date:'medium' }}
+            </span>
+          </div>
+
+          <!-- YESTERDAY -->
+          @if (user.yesterday) {
+            <div class="checkin-section">
+              <h4>Yesterday</h4>
+              <ul>
+                @for (item of user.yesterday; track item.id) {
+                  <li>
+                    {{ item.item }}
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          <!-- TODAY -->
+          @if (user.today) {
+            <div class="checkin-section">
+              <h4>Today</h4>
+              <ul>
+                @for (item of user.today; track item.id) {
+                  <li>
+                    {{ item.item }}
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          <!-- BLOCKERS -->
+          @if (user.blockers) {
+            <div class="checkin-section blockers">
+              <h4>Blockers</h4>
+              <ul>
+                @for (item of user.blockers; track item.id) {
+                  <li>
+                    {{ item.item }}
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+  } @else {
+
+    <div class="feed-placeholder">
+      <h2>Team Updates</h2>
+      <p>Status updates from team members will appear here.</p>
+    </div>
+
+  }
+  }
 </section>
 
 <!-- ======================

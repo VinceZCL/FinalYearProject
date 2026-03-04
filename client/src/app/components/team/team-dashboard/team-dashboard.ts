@@ -7,10 +7,13 @@ import { AuthService } from '../../../services/auth';
 import { User } from '../../../models/user.model';
 import { UserService } from '../../../services/user';
 import { FormsModule } from '@angular/forms';
+import { CheckInService } from '../../../services/check-in';
+import { CheckIns } from '../../../models/check-in.model';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-team-dashboard',
-  imports: [FormsModule],
+  imports: [FormsModule, DatePipe],
   templateUrl: './team-dashboard.html',
   styleUrl: './team-dashboard.css',
 })
@@ -19,6 +22,7 @@ export class TeamDashboard implements OnInit {
   private teamSvc = inject(TeamService);
   private auth = inject(AuthService);
   private userSvc = inject(UserService);
+  private ciSvc = inject(CheckInService);
   private route = inject(ActivatedRoute);
   private cd = inject(ChangeDetectorRef);
   private router = inject(Router);
@@ -29,6 +33,7 @@ export class TeamDashboard implements OnInit {
   members!: Member[];
   power!: boolean;
   avail!: User[];
+  cis!: CheckIns[];
 
   // UI state
   sidebarOpen = false;
@@ -46,6 +51,7 @@ export class TeamDashboard implements OnInit {
     this.teamSvc.getTeam(this.teamID).subscribe({
       next: (resp: Team) => {
         this.team = resp;
+        this.getCIs();
         this.getMembers();
       },
       error: (err : Error) => {
@@ -70,6 +76,18 @@ export class TeamDashboard implements OnInit {
         console.log(err.details);
       }
     });
+  }
+
+  getCIs(): void {
+    this.ciSvc.getTeam(this.teamID).subscribe({
+      next: (resp: CheckIns[]) => {
+        this.cis = resp;
+        console.log(this.cis);
+      },
+      error: (err: Error) => {
+        console.log(err.details);
+      }
+    })
   }
 
   getAvailable(): void {

@@ -192,7 +192,7 @@ export class Dashboard implements OnInit {
 
     const payload = { checkIns };
     this.ciSvc.submitBulk(payload).subscribe({
-      next: (resp: CheckIns) => {
+      next: (resp: CheckIns | null) => {
         this.ci = resp;
         this.cd.detectChanges();
       },

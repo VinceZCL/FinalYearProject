@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { CheckIns, CheckInsAPI, NewCheckIns } from '../models/check-in.model';
+import { CheckIns, CheckInsAPI, NewCheckIns, TeamCheckInsAPI } from '../models/check-in.model';
 import { Error } from '../models/error.model';
 
 @Injectable({
@@ -31,10 +31,10 @@ export class CheckInService {
             return throwError(() => err);
           }
         )
-      )
+      );
   }
 
-  submitBulk(payload: {"checkIns": NewCheckIns[]}): Observable<CheckIns | null> {
+  submitBulk(payload: { "checkIns": NewCheckIns[] }): Observable<CheckIns | null> {
     return this.http.post<CheckInsAPI>(`${this.url}/bulk`, payload, { responseType: "json" })
       .pipe(map(
         (resp: CheckInsAPI) => {
@@ -51,9 +51,27 @@ export class CheckInService {
             return throwError(() => err);
           }
         )
-      )
+      );
   }
 
-  // getTeam(tid: number): Observable<>
+  getTeam(tid: number): Observable<CheckIns[]> {
+    return this.http.get<TeamCheckInsAPI>(`${this.url}/teams/${tid}`)
+      .pipe(map(
+        (resp: TeamCheckInsAPI) => {
+          return resp.checkIns;
+        }
+      ),
+        catchError(
+          (error) => {
+            let err: Error = {
+              status: error.error.status,
+              error: error.error.error,
+              details: error.error.details
+            };
+            return throwError(() => err);
+          }
+        )
+      );
+  }
 
 }
