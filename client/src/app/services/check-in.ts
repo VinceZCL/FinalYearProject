@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { CheckIns, CheckInsAPI, NewCheckIns, TeamCheckInsAPI } from '../models/check-in.model';
+import { CheckIn, CheckIns, CheckInsAPI, NewCheckIns, TeamCheckInsAPI } from '../models/check-in.model';
 import { Error } from '../models/error.model';
 
 @Injectable({
@@ -72,6 +72,29 @@ export class CheckInService {
           }
         )
       );
+  }
+
+  getYesterday(uid: number): Observable<CheckIn[] | undefined > {
+    let d = new Date();
+    d.setDate(d.getDate() - 1);
+    const yesterday = d.toLocaleDateString('en-CA');
+    return this.http.get<CheckInsAPI>(`${this.url}/users/${uid}?date=${yesterday}`)
+      .pipe(map(
+        (resp: CheckInsAPI) => {
+          return resp.checkIns?.today;
+        }
+      ),
+      catchError(
+          (error) => {
+            let err: Error = {
+              status: error.error.status,
+              error: error.error.error,
+              details: error.error.details
+            };
+            return throwError(() => err);
+          }
+        )
+    );
   }
 
 }

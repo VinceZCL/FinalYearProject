@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
-import { CheckIns, NewCheckIns } from '../../models/check-in.model';
+import { CheckIn, CheckIns, NewCheckIns } from '../../models/check-in.model';
 import { CheckInService } from '../../services/check-in';
 import { Error } from '../../models/error.model';
 import { Member } from '../../models/team.model';
@@ -22,6 +22,7 @@ export class Dashboard implements OnInit {
   form!: FormGroup;
   uid!: number;
   ci!: CheckIns | null;
+  ytdtd!: CheckIn[] | undefined;
 
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
@@ -48,7 +49,6 @@ export class Dashboard implements OnInit {
       next: (resp: CheckIns | null) => {
         this.ci = resp;
         this.cd.detectChanges();
-
         if (!this.ci) {
           this.teamSvc.getOwnTeams(this.uid).subscribe({
             next: (val: Member[]) => {
@@ -60,6 +60,11 @@ export class Dashboard implements OnInit {
                 ...this.visibilityOptions,
                 ...teamOpts
               ];
+            }
+          });
+          this.ciSvc.getYesterday(this.uid).subscribe({
+            next: (val: CheckIn[] | undefined) => {
+              this.ytdtd = val;
               this.initForm();
               this.cd.detectChanges();
             }
@@ -79,7 +84,7 @@ export class Dashboard implements OnInit {
       blockers: this.fb.array([])
     });
 
-    this.initSection(this.yesterday);
+    this.initSection(this.yesterday, this.ytdtd);
     this.initSection(this.today);
     this.initSection(this.blockers);
   }
@@ -96,15 +101,29 @@ export class Dashboard implements OnInit {
     return this.form.get('blockers') as FormArray;
   }
 
-  initSection(section: FormArray): void {
+  initSection(section: FormArray, data?: CheckIn[]): void {
+    if (data && data.length > 0) {
+      data.forEach(entry => {
+        section.push(this.createPair(section, entry));
+      })
+    }
     section.push(this.createPair(section));
   }
 
-  createPair(section: FormArray): FormGroup {
+  createPair(section: FormArray, entry?: CheckIn): FormGroup {
+
+    let visibility: VisibilityValue = "all";
+
+    if (entry?.visibility === "team" && entry.teamID) {
+      visibility = entry.teamID;
+    } else if (entry?.visibility === "private") {
+      visibility = "private";
+    }
+
     const group = this.fb.group({
-      item: [''],
-      jira: [''],
-      visibility: ['all' as VisibilityValue]
+      item: [entry?.item ?? ''],
+      jira: [entry?.jira ?? ''],
+      visibility: [visibility]
     });
 
     let triggerUpdate = () => this.updateInputs(section);
@@ -201,10 +220,6 @@ export class Dashboard implements OnInit {
       }
     });
   }
-
-  // TODO also handle get yesterday for suggestions
-  // TODO consider get previous (latest checkin)
-  // TODO ^ new backend API / reuse date checkin
 
   // TODO check if checkin exist for today, then display it
   // TODO show date selector to change date, query for checkin of that date

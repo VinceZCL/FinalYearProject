@@ -89,6 +89,7 @@ export class Profile implements OnInit {
     this.teamSvc.getOwnTeams(this.uid).subscribe({
       next: (resp: Member[]) => {
         this.teams = resp;
+        this.teams.sort((a, b) => Number(b.role === "admin") - Number(a.role === "admin"));
         this.cd.detectChanges();
       },
       error: (err: Error) => {

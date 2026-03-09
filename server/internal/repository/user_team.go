@@ -51,9 +51,8 @@ func (r *userTeamRepository) GetUserTeams(userID uint) ([]model.UserTeam, error)
 }
 
 func (r *userTeamRepository) IsTeamAdmin(userID uint, teamID uint) (bool, error) {
-	var userTeam model.UserTeam
-
-	err := r.client.DB.Select("1").Where("user_id = ? AND team_id = ? AND role = ?", userID, teamID, "admin").First(&userTeam).Error
+	var exists int
+	err := r.client.DB.Model(&model.UserTeam{}).Select("1").Where("user_id = ? AND team_id = ? AND role = ?", userID, teamID, "admin").Limit(1).Scan(&exists).Error
 	if err != nil {
 		return false, err
 	}
