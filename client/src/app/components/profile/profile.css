@@ -1,3 +1,12 @@
+.profile-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  justify-content: center;
+}
+
 /* Adjust profile container for back button alignment */
 .profile-container {
   display: flex;
@@ -178,15 +187,6 @@ button:hover {
   box-shadow: 0 12px 35px rgba(0,0,0,0.4);
 }
 
-/* Layout wrapper for profile + teams */
-.profile-layout {
-  display: flex;
-  gap: 2rem;
-  width: 100%;
-  max-width: 1200px;
-  justify-content: center;
-}
-
 /* Ensure both cards align nicely */
 .profile-card,
 .profile-teams-card {
@@ -203,6 +203,12 @@ button:hover {
   backdrop-filter: blur(8px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   color: var(--text-main);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.profile-teams-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
 /* Teams list wrapper */
@@ -261,4 +267,48 @@ button:hover {
   );
   color: #000;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+}
+
+.edit-profile-card {
+  flex: 0 0 92.5%;
+  padding: 2rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.edit-profile-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.edit-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 250px;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+}
+
+.form-group input {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-soft);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-main);
 }

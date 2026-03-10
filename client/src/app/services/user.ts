@@ -92,4 +92,24 @@ export class UserService {
       )
   }
 
+  updateUser(id: number, cred: { userID: number, name: string, email: string, current_password: string, new_password: string }): Observable<User> {
+    return this.http.patch<UserAPI>(`${this.url}/${id}`, cred, { responseType: "json" })
+      .pipe(map(
+        (resp: UserAPI) => {
+          return resp.user;
+        }
+      ),
+        catchError(
+          (error) => {
+            let err: Error = {
+              status: error.error.status,
+              error: error.error.error,
+              details: error.error.details
+            };
+            return throwError(() => err);
+          }
+        )
+      );
+  }
+
 }

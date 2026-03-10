@@ -142,7 +142,7 @@ func (s *UserService) UpdateUser(c echo.Context, req param.UpdateUser, uid uint)
 
 	user.Name = req.Name
 	user.Email = req.Email
-	if req.NewPassword != nil {
+	if req.NewPassword != nil && *req.NewPassword != "" {
 		user.Password, err = tools.HashPass(*req.NewPassword)
 		if err != nil {
 			return nil, tools.ErrInternal("hashing error", err.Error())

@@ -7,10 +7,11 @@ import { effect } from '@angular/core';
 import { AuthService } from '../../services/auth';
 import { TeamService } from '../../services/team';
 import { Member } from '../../models/team.model';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-profile',
-  imports: [RouterLink],
+  imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
@@ -22,12 +23,15 @@ export class Profile implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private auth = inject(AuthService);
+  private fb = inject(FormBuilder);
   uid!: number;
   user!: User;
   admin!: boolean;
   self!: boolean;
   teams!: Member[];
   showback: boolean = false;
+  edit: boolean = false;
+  form!: FormGroup;
 
   // ✅ effect runs in injection context
   private navigationEffect = effect(() => {
@@ -54,6 +58,9 @@ export class Profile implements OnInit {
       next: (resp: User) => {
         this.user = resp;
         this.getTeams();
+        if (this.self) {
+          this.initForm();
+        }
         this.cd.detectChanges();
       },
       error: (err: Error) => {
@@ -96,6 +103,30 @@ export class Profile implements OnInit {
         console.log(err.details);
       }
     })
+  }
+
+  initForm(): void {
+    this.form = this.fb.group({
+      name: [this.user.name, Validators.required],
+      email: [this.user.email, [Validators.required, Validators.email]],
+      current_password: ["", Validators.required],
+      new_password: [""]
+    });
+  }
+
+  onSubmit(): void {
+
+    // TODO error checking
+
+    this.userSvc.updateUser(this.uid, {userID: this.uid, ...this.form.value}).subscribe({
+      next: (val: User) => {
+        this.update();
+        this.edit = false;
+      },
+      error: (err: Error) => {
+        console.log(err.details);
+      }
+    });
   }
 
 }
