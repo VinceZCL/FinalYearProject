@@ -7,11 +7,12 @@ import { effect } from '@angular/core';
 import { AuthService } from '../../services/auth';
 import { TeamService } from '../../services/team';
 import { Member } from '../../models/team.model';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-profile',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, NgClass],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
@@ -32,6 +33,8 @@ export class Profile implements OnInit {
   showback: boolean = false;
   edit: boolean = false;
   form!: FormGroup;
+  updateFail: boolean = false;
+  error: string = "";
 
   // ✅ effect runs in injection context
   private navigationEffect = effect(() => {
@@ -116,7 +119,35 @@ export class Profile implements OnInit {
 
   onSubmit(): void {
 
-    // TODO error checking
+    this.updateFail = false;
+    if (this.form.invalid) {
+      this.updateFail = true;
+      this.markAllFields();
+
+      let nameErr = this.getForm("name").errors;
+      let emailErr = this.getForm("email").errors;
+      let passwordErr = this.getForm("current_password").errors;
+
+      if (nameErr) {
+        this.error = "Name is required";
+        return;
+      }
+
+      if (emailErr) {
+        if (emailErr["required"]) {
+          this.error = "Email is required";
+        }
+        if (emailErr["email"]) {
+          this.error = "Email format is invalid";
+        }
+        return;
+      }
+      if (passwordErr) {
+        this.error = "Password is required";
+        return;
+      }
+    }
+    this.error = "";
 
     this.userSvc.updateUser(this.uid, {userID: this.uid, ...this.form.value}).subscribe({
       next: (val: User) => {
@@ -124,9 +155,29 @@ export class Profile implements OnInit {
         this.edit = false;
       },
       error: (err: Error) => {
+        this.updateFail = true;
+        this.markAllFields();
+        this.error = err.details;
         console.log(err.details);
+        this.cd.detectChanges();
       }
     });
+  }
+
+  private getForm(controlName: string): FormControl {
+    return this.form.get(controlName) as FormControl;
+  }
+
+  invalidInp(controlName: string): boolean {
+    let control = this.getForm(controlName);
+    return !!(control && control.invalid && (control.dirty || control.touched) || this.updateFail);
+  }
+
+  private markAllFields(): void {
+    Object.values(this.form.controls).forEach(control => {
+      control.markAsTouched();
+      control.markAsDirty();
+    })
   }
 
 }
