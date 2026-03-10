@@ -46,7 +46,7 @@ func (s *AuthService) Register(c echo.Context, req param.NewUser) (*dto.User, er
 	}
 	hashed, err := tools.HashPass(req.Password)
 	if err != nil {
-		return nil, tools.ErrInternal("hasing error", err.Error())
+		return nil, tools.ErrInternal("hashing error", err.Error())
 	}
 	newReq := param.NewUser{
 		Name:     req.Name,

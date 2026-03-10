@@ -11,6 +11,7 @@ type UserRepository interface {
 	NewUser(model.User) (*model.User, error)
 	DeactivateUser(user model.User) (*model.User, error)
 	ActivateUser(user model.User) (*model.User, error)
+	UpdateUser(user model.User) (*model.User, error)
 }
 
 type userRepository struct {
@@ -67,5 +68,13 @@ func (r *userRepository) ActivateUser(user model.User) (*model.User, error) {
 		return nil, err
 	}
 
+	return &user, nil
+}
+
+func (r *userRepository) UpdateUser(user model.User) (*model.User, error) {
+	err := r.client.DB.Save(&user).Error
+	if err != nil {
+		return nil, err
+	}
 	return &user, nil
 }

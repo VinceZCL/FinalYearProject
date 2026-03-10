@@ -13,3 +13,16 @@ func (r *NewUser) Validate() error {
 	v := validator.New()
 	return v.Struct(r)
 }
+
+type UpdateUser struct {
+	UserID          uint    `json:"userID" validate:"required"`
+	Name            string  `json:"name" validate:"required,max=100"`
+	Email           string  `json:"email" validate:"required,email,max=100"`
+	CurrentPassword string  `json:"current_password" validate:"required,max=100"`
+	NewPassword     *string `json:"new_password" validate:"max=100"`
+}
+
+func (r *UpdateUser) Validate() error {
+	v := validator.New()
+	return v.Struct(r)
+}

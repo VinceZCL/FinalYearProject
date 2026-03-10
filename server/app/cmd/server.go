@@ -36,7 +36,7 @@ func init() {
 
 			e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 				AllowOrigins: []string{"http://localhost:4200"},
-				AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
+				AllowMethods: []string{"GET", "POST", "PATCH", "OPTIONS"},
 				AllowHeaders: []string{"Origin", "Content-Type", "Accept", "Authorization"},
 			}))
 

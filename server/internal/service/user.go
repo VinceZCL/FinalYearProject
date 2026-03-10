@@ -122,3 +122,47 @@ func (s *UserService) DeactivateUser(c echo.Context, userID uint) (*dto.User, er
 
 	return dto, nil
 }
+
+func (s *UserService) UpdateUser(c echo.Context, req param.UpdateUser, uid uint) (*dto.User, error) {
+
+	user, err := s.repo.GetUser(req.UserID)
+	if err != nil {
+		c.Logger().Errorf("Service | UserService | DeactivateUser: %w", err)
+		return nil, tools.ErrNotFound("database failure", "User not found")
+	}
+
+	claims := c.Get("user").(*Claims)
+	if claims.UserID != user.ID || uid != user.ID {
+		return nil, tools.ErrForbidden("Invalid operation on other users")
+	}
+
+	if !tools.ComparePass(user.Password, req.CurrentPassword) {
+		return nil, tools.ErrForbidden("Incorrect password")
+	}
+
+	user.Name = req.Name
+	user.Email = req.Email
+	if req.NewPassword != nil {
+		user.Password, err = tools.HashPass(*req.NewPassword)
+		if err != nil {
+			return nil, tools.ErrInternal("hashing error", err.Error())
+		}
+	}
+
+	updated, err := s.repo.UpdateUser(*user)
+	if err != nil {
+		c.Logger().Errorf("Service | UserService | UpdateUser: %w", err)
+		return nil, tools.ErrInternal("database failure", err.Error())
+	}
+
+	dto := &dto.User{
+		ID:     updated.ID,
+		Name:   updated.Name,
+		Email:  updated.Email,
+		Type:   updated.Type,
+		Status: updated.Status,
+	}
+
+	return dto, nil
+
+}

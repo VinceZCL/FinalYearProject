@@ -105,3 +105,35 @@ func DeactivateUser(c echo.Context) error {
 		"user":   user,
 	})
 }
+
+func UpdateUser(c echo.Context) error {
+
+	var req param.UpdateUser
+
+	if err := c.Bind(&req); err != nil {
+		c.Logger().Errorf("Handler | UserHandler | Invalid Request: %w", err)
+		return tools.ErrBadRequest(err.Error())
+	}
+	if err := req.Validate(); err != nil {
+		c.Logger().Errorf("Handler | UserHandler | Invalid Request: %w", err)
+		return tools.ErrBadRequest(err.Error())
+	}
+
+	app := app.FromContext(c)
+
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Logger().Errorf("Handler | UserHandler | Invalid Params: %w", err)
+		return tools.ErrBadRequest(err.Error())
+	}
+
+	user, err := app.Services.User.UpdateUser(c, req, uint(userID))
+	if err != nil {
+		c.Logger().Errorf("Handler | UserHandler | UpdateUser: %w", err)
+		return err
+	}
+	return c.JSON(http.StatusOK, echo.Map{
+		"status": "success",
+		"user":   user,
+	})
+}
