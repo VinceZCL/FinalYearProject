@@ -36,6 +36,26 @@ func NewAuthService(authRepo repository.AuthRepository, userRepo repository.User
 	}
 }
 
+func (s *AuthService) Default() error {
+	hashed, err := tools.HashPass("admin")
+	if err != nil {
+		return tools.ErrInternal("hashing error", err.Error())
+	}
+	input := model.User{
+		Name:     "admin",
+		Email:    "admin@example.com",
+		Password: hashed,
+		Type:     "admin",
+		Status:   "active",
+	}
+
+	_, err = s.userRepo.NewUser(input)
+	if err != nil {
+		return tools.ErrInternal("database failure", err.Error())
+	}
+	return nil
+}
+
 // TODO should disable in favor of CreateUser
 func (s *AuthService) Register(c echo.Context, req param.NewUser) (*dto.User, error) {
 	var userType string

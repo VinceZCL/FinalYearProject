@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// no longer served in REST
 func Register(c echo.Context) error {
 	var req param.NewUser
 

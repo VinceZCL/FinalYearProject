@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/VinceZCL/FinalYearProject/app"
 	"github.com/spf13/cobra"
 )
 
@@ -38,6 +39,7 @@ func init() {
 
 			fmt.Printf("Secret written to server/%s\n", envPath)
 
+			generateDefault()
 		},
 	})
 }
@@ -46,7 +48,21 @@ func generateJWTSecretKey() string {
 	secret := make([]byte, 32)
 	_, err := rand.Read(secret)
 	if err != nil {
-		log.Fatalf("Error generating secret: %w", err)
+		log.Fatalf("Error generating secret: %s", err)
 	}
 	return base64.RawURLEncoding.EncodeToString(secret)
+}
+
+func generateDefault() {
+	fmt.Printf("Creating default admin\n")
+	// TODO generate default admin account
+	app := app.SetupApp(app.New())
+	err := app.Services.Auth.Default()
+	if err != nil {
+		log.Fatalf("Error creating default admin: %s", err)
+		return
+	}
+	fmt.Printf("Default admin created.\n")
+	fmt.Printf("Email: %s\nPassword: %s\n", "admin@example.com", "admin")
+	fmt.Printf("Please update credentials for security.")
 }

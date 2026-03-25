@@ -15,7 +15,7 @@ func RegisterRoutes(e echo.Echo) {
 	auth := api.Group("/auth")
 
 	// TODO remove this
-	auth.POST("/register", handler.Register)
+	// auth.POST("/register", handler.Register)
 
 	auth.POST("/login", handler.Login)
 
