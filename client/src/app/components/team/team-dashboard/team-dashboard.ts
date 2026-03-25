@@ -19,6 +19,8 @@ import { DatePipe } from '@angular/common';
 })
 export class TeamDashboard implements OnInit {
 
+  jiraURL = "https://example.atlassian.net/browse";
+
   private teamSvc = inject(TeamService);
   private auth = inject(AuthService);
   private userSvc = inject(UserService);
@@ -34,6 +36,8 @@ export class TeamDashboard implements OnInit {
   power!: boolean;
   avail!: User[];
   cis!: CheckIns[];
+
+  ciUID = new Set<Number>();
 
   // UI state
   sidebarOpen = false;
@@ -54,7 +58,7 @@ export class TeamDashboard implements OnInit {
         this.getCIs();
         this.getMembers();
       },
-      error: (err : Error) => {
+      error: (err: Error) => {
         console.log(err.details);
         this.router.navigate(["/404"]);
       }
@@ -65,6 +69,10 @@ export class TeamDashboard implements OnInit {
     this.teamSvc.getMembers(this.teamID).subscribe({
       next: (resp: Member[]) => {
         this.members = resp;
+        this.members = resp.sort((a, b) => {
+          if (a.role === b.role) return 0;
+          return a.role === "admin" ? -1 : 1;
+        });
         this.power = this.members.some(
           (m: Member) => {
             return m.userID === this.uid && m.role === "admin";
@@ -82,6 +90,7 @@ export class TeamDashboard implements OnInit {
     this.ciSvc.getTeam(this.teamID).subscribe({
       next: (resp: CheckIns[]) => {
         this.cis = resp;
+        this.ciUID = new Set(resp.map(ci => ci.userID));
         console.log(this.cis);
       },
       error: (err: Error) => {

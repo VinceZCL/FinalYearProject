@@ -221,7 +221,6 @@ export class Dashboard implements OnInit {
     });
   }
 
-  // TODO check if checkin exist for today, then display it
   // TODO show date selector to change date, query for checkin of that date
   // ! should you be able to see previous, if not checkin today
   // TODO if no checkin on that day, say not found, show the date of that day as well
