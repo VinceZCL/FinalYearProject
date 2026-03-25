@@ -51,11 +51,11 @@
 # download dependencies
 make deps
 
-# generate secret
-make secret
-
 # run migration
 make migrate
+
+# generate secret
+make secret
 
 # start backend server
 make dev
