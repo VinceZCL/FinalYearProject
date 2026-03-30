@@ -116,6 +116,12 @@
 .checkin-card.display-mode .tag.jira {
   background: rgba(77, 213, 153, 0.15);
   color: var(--accent-secondary);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.checkin-card.display-mode .tag.jira:hover {
+  opacity: 0.85;
 }
 
 /* Visibility Variants */

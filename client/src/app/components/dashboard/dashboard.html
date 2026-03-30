@@ -31,9 +31,13 @@
 
                     <div class="entry-tags">
                         @if (ytd.jira) {
-                        <span class="tag jira">
-                            {{ ytd.jira }}
-                        </span>
+                        <a
+                                class="tag jira"
+                                href="{{jiraURL}}/{{ ytd.jira }}"
+                                target="_blank"
+                            >
+                                {{ ytd.jira }}
+                            </a>
                         }
 
                         <span class="tag visibility" 
@@ -65,9 +69,13 @@
 
                     <div class="entry-tags">
                         @if (td.jira) {
-                        <span class="tag jira">
-                            {{ td.jira }}
-                        </span>
+                        <a
+                                class="tag jira"
+                                href="{{jiraURL}}/{{ td.jira }}"
+                                target="_blank"
+                            >
+                                {{ td.jira }}
+                            </a>
                         }
 
                         <span class="tag visibility" 
@@ -99,9 +107,13 @@
 
                     <div class="entry-tags">
                         @if (blk.jira) {
-                        <span class="tag jira">
-                            {{ blk.jira }}
-                        </span>
+                            <a
+                                class="tag jira"
+                                href="{{jiraURL}}/{{ blk.jira }}"
+                                target="_blank"
+                            >
+                                {{ blk.jira }}
+                            </a>
                         }
 
                         <span class="tag visibility" 

@@ -19,6 +19,8 @@ type VisibilityValue = 'all' | 'private' | number;
 })
 export class Dashboard implements OnInit {
 
+  jiraURL = "https://example.atlassian.net/browse";
+
   form!: FormGroup;
   uid!: number;
   ci!: CheckIns | null;
