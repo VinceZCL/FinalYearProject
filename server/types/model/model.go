@@ -37,3 +37,19 @@ type CheckIn struct {
 	User       User    `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"user"`
 	Team       *Team   `gorm:"foreignKey:TeamID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"team"`
 }
+
+func (User) TableName() string {
+	return "fyp_scrum_users"
+}
+
+func (Team) TableName() string {
+	return "fyp_scrum_teams"
+}
+
+func (UserTeam) TableName() string {
+	return "fyp_scrum_user_teams"
+}
+
+func (CheckIn) TableName() string {
+	return "fyp_scrum_checkins"
+}

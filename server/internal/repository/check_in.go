@@ -29,8 +29,8 @@ func (r *checkInRepository) GetUserCheckIns(userID uint, date string) ([]model.C
 		return nil, err
 	}
 	err = r.client.DB.Preload("User").Preload("Team").
-		Where("user_id = ?", userID).
-		Where("created_at >= ? AND created_at < ?", start, end).
+		Where("fyp_scrum_checkins.user_id = ?", userID).
+		Where("fyp_scrum_checkins.created_at >= ? AND fyp_scrum_checkins.created_at < ?", start, end).
 		Find(&checkIns).Error
 	if err != nil {
 		return nil, err
@@ -49,18 +49,18 @@ func (r *checkInRepository) GetTeamCheckIns(teamID uint, date string) ([]model.C
 		Where(`
 			EXISTS (
 				SELECT 1
-				FROM user_teams ut
-				WHERE ut.user_id = check_ins.user_id
+				FROM fyp_scrum_user_teams ut
+				WHERE ut.user_id = fyp_scrum_checkins.user_id
 				AND ut.team_id = ?
 			)
 		`, teamID).
-		Where(`check_ins.created_at >= ? AND check_ins.created_at < ?`, start, end).
+		Where(`fyp_scrum_checkins.created_at >= ? AND fyp_scrum_checkins.created_at < ?`, start, end).
 		Where(`
 			(
-				check_ins.visibility = 'all'
+				fyp_scrum_checkins.visibility = 'all'
 				OR (
-					check_ins.visibility = 'team'
-					AND check_ins.team_id = ?	
+					fyp_scrum_checkins.visibility = 'team'
+					AND fyp_scrum_checkins.team_id = ?	
 				)
 			)
 		`, teamID).
