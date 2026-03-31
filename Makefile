@@ -20,6 +20,9 @@ migrate: go-deps env
 secret: go-deps
 	go -C server run -tags cli -race main.go secret
 
+default: go-deps
+	go -C server run -tags cli -race main.go default
+
 env:
 	podman-compose up -d postgres
 
