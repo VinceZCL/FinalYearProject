@@ -52,4 +52,6 @@ func RegisterRoutes(e echo.Echo) {
 
 	protected.PATCH("/users/:id", handler.UpdateUser)
 	protected.PATCH("/users/:id/delete", handler.DeactivateUser)
+
+	setupStatic(e)
 }

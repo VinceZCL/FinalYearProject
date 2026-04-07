@@ -7,3 +7,6 @@ database:
 
 security:
   secretkey: <redacted>
+
+client:
+  dir: "../client/dist/angular/browser"

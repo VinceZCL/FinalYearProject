@@ -9,6 +9,9 @@ npm-deps:
 
 deps: go-deps npm-deps
 
+build-client:
+	npm --prefix client run build 
+
 # for Echo Backend
 
 dev: go-deps
@@ -22,6 +25,11 @@ secret: go-deps
 
 default: go-deps
 	go -C server run -tags cli -race main.go default
+
+build: deps build-client
+	go -C server build -tags server -o ../out/fyp-scrum
+
+# for Postgres Database
 
 env:
 	podman-compose up -d postgres

@@ -30,6 +30,12 @@ type ConfigStruct struct {
 		// jwt secret key
 		Secretkey string
 	}
+
+	// client static SPA configuration settings
+	Client struct {
+		// client static SPA directory
+		Dir string
+	}
 }
 
 func Get() *ConfigStruct {
