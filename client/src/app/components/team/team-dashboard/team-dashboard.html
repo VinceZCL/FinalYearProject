@@ -139,7 +139,7 @@
         </span>
 
         <!-- Delete button -->
-        @if (m.userID != team.creatorID || m.userID != uid) {
+        @if (power && m.userID != team.creatorID && m.userID != uid) {
         <button class="delete-btn" (click)="removeMember(m)">
           ✕
         </button>
