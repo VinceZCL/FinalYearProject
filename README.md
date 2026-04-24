@@ -20,31 +20,37 @@
 
 ```text
 .
+├── Dockerfile.ci.arm64         # docker image for ECR
 ├── Makefile
 ├── README.md
-├── client/                 # Angular Frontend
-│   ├── angular.json
-│   ├── node_modules
-│   ├── package-lock.json
-│   ├── package.json
-│   ├── public
-│   ├── src
-│   ├── tsconfig.app.json
-│   ├── tsconfig.json
-│   └── tsconfig.spec.json
+├── client                      # Angular Frontend
+│   ├── angular.json
+│   ├── dist
+│   ├── node_modules
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   ├── src
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   └── tsconfig.spec.json
 ├── docker-compose.yml
-├── server/                 # Echo Backend
-│   ├── app
-│   ├── config
-│   ├── go.mod
-│   ├── go.sum
-│   ├── internal
-│   ├── main.go
-│   ├── tools
-│   └── types
-├── node_modules
 ├── package-lock.json
-└── package.json
+├── package.json
+├── postgres                    # Liquibase
+│   ├── change.yaml
+│   ├── indexes.sql
+│   ├── liquibase.properties
+│   └── migration.sql
+└── server                      # Echo Backend
+    ├── app
+    ├── config
+    ├── go.mod
+    ├── go.sum
+    ├── internal
+    ├── main.go
+    ├── tools
+    └── types
 ```
 
 ## QuickStart
