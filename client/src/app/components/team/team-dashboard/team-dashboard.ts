@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, HostListener, inject, OnInit } from '@angular/core';
 import { TeamService } from '../../../services/team';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Member, MemberAPI, Team } from '../../../models/team.model';
+import { DeleteMemberAPI, Member, MemberAPI, Team } from '../../../models/team.model';
 import { Error } from '../../../models/error.model';
 import { AuthService } from '../../../services/auth';
 import { User } from '../../../models/user.model';
@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { CheckInService } from '../../../services/check-in';
 import { CheckIns } from '../../../models/check-in.model';
 import { DatePipe } from '@angular/common';
+import { environment } from '../../../../environments/environments';
 
 @Component({
   selector: 'app-team-dashboard',
@@ -19,7 +20,7 @@ import { DatePipe } from '@angular/common';
 })
 export class TeamDashboard implements OnInit {
 
-  jiraURL = "https://example.atlassian.net/browse";
+  jiraURL = `https://${environment.jiraDomain}.atlassian.net/browse`;
 
   private teamSvc = inject(TeamService);
   private auth = inject(AuthService);
@@ -36,6 +37,7 @@ export class TeamDashboard implements OnInit {
   power!: boolean;
   avail!: User[];
   cis!: CheckIns[];
+  owner!: boolean;
 
   ciUID = new Set<Number>();
 
@@ -46,12 +48,14 @@ export class TeamDashboard implements OnInit {
 
   selectedUser?: User;
   showUserModal = false;
+  selectedMember?: Member;
+  showDeleteModal = false;
 
   ngOnInit(): void {
     this.teamID = Number(this.route.snapshot.paramMap.get("teamID"));
     this.auth.claim$.subscribe(claims => {
       this.uid = Number(claims?.userID);
-    })
+    });
     this.teamSvc.getTeam(this.teamID).subscribe({
       next: (resp: Team) => {
         this.team = resp;
@@ -70,8 +74,10 @@ export class TeamDashboard implements OnInit {
       next: (resp: Member[]) => {
         this.members = resp;
         this.members = resp.sort((a, b) => {
-          if (a.role === b.role) return 0;
-          return a.role === "admin" ? -1 : 1;
+          if (a.role !== b.role) {
+            return a.role === "admin" ? -1 : 1;
+          }
+          return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
         });
         this.power = this.members.some(
           (m: Member) => {
@@ -91,7 +97,6 @@ export class TeamDashboard implements OnInit {
       next: (resp: CheckIns[]) => {
         this.cis = resp;
         this.ciUID = new Set(resp.map(ci => ci.userID));
-        console.log(this.cis);
       },
       error: (err: Error) => {
         console.log(err.details);
@@ -132,8 +137,14 @@ export class TeamDashboard implements OnInit {
     this.filteredAvail = [];
   }
 
+  removeMember(member: Member): void {
+    this.selectedMember = member;
+    this.showDeleteModal = true;
+  }
+
   closeModal(): void {
     this.showUserModal = false;
+    this.showDeleteModal = false;
     this.selectedUser = undefined;
   }
 
@@ -167,6 +178,19 @@ export class TeamDashboard implements OnInit {
       this.sidebarOpen = false;
       this.cd.detectChanges();
     }
+  }
+
+  deleteMember(userID: number): void {
+    this.teamSvc.deleteMember(this.teamID, userID).subscribe({
+      next: (resp: DeleteMemberAPI) => {
+        this.getMembers();
+        this.getCIs();
+      },
+      error: (err: Error) => {
+        console.log(err.details)
+      }
+    });
+    this.closeModal();
   }
 
 }

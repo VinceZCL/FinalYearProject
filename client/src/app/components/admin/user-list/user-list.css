@@ -1,8 +1,6 @@
 /* Page container */
 .users-container {
-  min-height: 80vh;
   padding: 2rem;
-  background: radial-gradient(circle at top, #1a1f4a, var(--bg-main));
   color: var(--text-main);
   font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -32,19 +30,19 @@
   gap: 1.8rem;
   max-width: 1100px;
   margin: 0 auto;
+  align-items: stretch;
 }
 
 .user-link {
   text-decoration: none;
   color: inherit;
-  display: block;
+  display: flex;
 }
-
 
 /* User card */
 .user-card {
   display: flex;
-  align-items: center;
+  flex: 1;
   gap: 1.2rem;
   padding: 1.6rem;
   background: var(--bg-panel);
@@ -53,11 +51,33 @@
   backdrop-filter: blur(8px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-width: 0;
+  position: relative;
 }
 
 .user-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+}
+
+.user-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
+  opacity: 0;
+  z-index: -1;
+  filter: blur(18px);
+  transition: opacity 0.3s ease;
+}
+
+.user-card:hover::after {
+  opacity: 0.25;
 }
 
 /* Avatar circle */
@@ -79,18 +99,28 @@
   flex-shrink: 0;
 }
 
+.user-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
 /* User info */
 .user-info h2 {
   font-size: 1.2rem;
   margin: 0;
   font-weight: 600;
+  overflow-wrap: break-word; /* safe fallback */
+  word-break: normal;
 }
 
 .user-info .email {
   font-size: 0.95rem;
   opacity: 0.75;
   margin: 0.2rem 0 0.4rem;
-  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .user-info .adminType {
@@ -225,28 +255,4 @@
 
 .users-actions {
   margin-bottom: 2.2rem;
-}
-
-.user-card {
-  position: relative;
-}
-
-.user-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 16px;
-  background: linear-gradient(
-    135deg,
-    var(--accent-primary),
-    var(--accent-secondary)
-  );
-  opacity: 0;
-  z-index: -1;
-  filter: blur(18px);
-  transition: opacity 0.3s ease;
-}
-
-.user-card:hover::after {
-  opacity: 0.25;
 }

@@ -9,4 +9,4 @@ security:
   secretkey: <redacted>
 
 client:
-  dir: "../client/dist/angular/browser"
+  dir: "../out/client/browser"

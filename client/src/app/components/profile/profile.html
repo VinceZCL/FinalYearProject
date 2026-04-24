@@ -12,7 +12,7 @@
       <!-- Profile Picture Section -->
       <div class="profile-header">
         <div class="profile-image">
-          <img src="/assets/images/profile-100.png" alt="Profile Picture" />
+          {{ user.name.charAt(0) | uppercase }}
         </div>
         <h1>{{ user.name }}</h1>
         <p class="user-type">{{ user.type }}</p>

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"strings"
 	"time"
 
 	"github.com/VinceZCL/FinalYearProject/app/config"
@@ -51,6 +52,9 @@ func (s *AuthService) Default() error {
 
 	_, err = s.userRepo.NewUser(input)
 	if err != nil {
+		if strings.Contains(err.Error(), "duplicate") {
+			return tools.ErrAlreadyExists("default admin already exists")
+		}
 		return tools.ErrInternal("database failure", err.Error())
 	}
 	return nil

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { CheckIn, CheckIns, NewCheckIns } from '../../models/check-in.model';
 import { CheckInService } from '../../services/check-in';
@@ -7,6 +7,7 @@ import { Error } from '../../models/error.model';
 import { Member } from '../../models/team.model';
 import { TeamService } from '../../services/team';
 import { DatePipe } from '@angular/common';
+import { environment } from '../../../environments/environments';
 
 // Visibility value stored in the form
 type VisibilityValue = 'all' | 'private' | number;
@@ -19,12 +20,13 @@ type VisibilityValue = 'all' | 'private' | number;
 })
 export class Dashboard implements OnInit {
 
-  jiraURL = "https://example.atlassian.net/browse";
+  jiraURL = `https://${environment.jiraDomain}.atlassian.net/browse`;
 
   form!: FormGroup;
   uid!: number;
   ci!: CheckIns | null;
   ytdtd!: CheckIn[] | undefined;
+  dateControl!: FormControl;
 
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
@@ -32,54 +34,59 @@ export class Dashboard implements OnInit {
   private teamSvc = inject(TeamService);
   private cd = inject(ChangeDetectorRef);
 
+  todayDate: string = new Date().toLocaleDateString("en-CA");
+  selectedDate: string = this.todayDate;
+  isToday: boolean = true;
+
   visibilityOptions: { label: string; value: VisibilityValue }[] = [
     { label: 'All', value: 'all' },
     { label: 'Private', value: 'private' },
   ];
 
   ngOnInit(): void {
-
     this.auth.claim$.subscribe(claims => {
       this.uid = Number(claims?.userID);
-      this.loadToday();
     });
+    this.teamSvc.getOwnTeams(this.uid).subscribe({
+      next: (val: Member[]) => {
+        let teamOpts = val.map(team => ({
+          label: team.team_name,
+          value: team.teamID,
+        }));
+        this.visibilityOptions = [
+          ...this.visibilityOptions,
+          ...teamOpts
+        ];
+      }
+    });
+    this.loadDate(this.selectedDate);
 
+    this.dateControl = new FormControl(this.selectedDate);
+    this.dateControl.valueChanges.subscribe(value => {
+      this.isToday = false;
+      this.ci = null;
+      this.selectedDate = value;
+      this.loadDate(value);
+    });
   }
-
-  loadToday(): void {
-    this.ciSvc.getDaily(this.uid).subscribe({
+  
+  loadDate(date: string): void {
+    this.ciSvc.getDate(this.uid, date).subscribe({
       next: (resp: CheckIns | null) => {
         this.ci = resp;
+        this.isToday = (date == this.todayDate);
         this.cd.detectChanges();
-        if (!this.ci) {
-          this.teamSvc.getOwnTeams(this.uid).subscribe({
-            next: (val: Member[]) => {
-              let teamOpts = val.map(team => ({
-                label: team.team_name,
-                value: team.teamID,
-              }));
-              this.visibilityOptions = [
-                ...this.visibilityOptions,
-                ...teamOpts
-              ];
-            }
-          });
-          this.ciSvc.getYesterday(this.uid).subscribe({
-            next: (val: CheckIn[] | undefined) => {
-              this.ytdtd = val;
-              this.initForm();
-              this.cd.detectChanges();
-            }
-          });
+        
+        if (!this.ci && this.isToday) {
+          this.loadForm();
+          this.cd.detectChanges();
         }
-      },
-      error: (err: Error) => {
-        console.log(err.error);
       }
     });
   }
 
   initForm(): void {
+    if (this.form) return;
     this.form = this.fb.group({
       yesterday: this.fb.array([]),
       today: this.fb.array([]),
@@ -89,6 +96,16 @@ export class Dashboard implements OnInit {
     this.initSection(this.yesterday, this.ytdtd);
     this.initSection(this.today);
     this.initSection(this.blockers);
+  }
+  
+  loadForm(): void {
+    this.ciSvc.getYesterday(this.uid).subscribe({
+      next: (val: CheckIn[] | undefined) => {
+        this.ytdtd = val;
+        this.initForm();
+        this.cd.detectChanges();
+      }
+    });
   }
 
   get yesterday(): FormArray {
@@ -148,7 +165,6 @@ export class Dashboard implements OnInit {
       section.push(this.createPair(section));
     }
 
-    // Remove extra empty rows
     while (
       section.length > 1 &&
       this.isEmpty(controls[controls.length - 1]) &&
@@ -158,7 +174,6 @@ export class Dashboard implements OnInit {
     }
   }
 
-  // helper
   isEmpty(group: FormGroup): boolean {
     return (
       group.get('item')?.value?.trim() === '' &&
@@ -167,6 +182,7 @@ export class Dashboard implements OnInit {
   }
 
   submit(): void {
+    let invalidJira: boolean = false;
     if (!this.form) return;
 
     const sections: { type: 'yesterday' | 'today' | 'blockers'; array: FormArray }[] = [
@@ -180,10 +196,16 @@ export class Dashboard implements OnInit {
         .map(control => {
           const value = control.value;
           const item = value.item?.trim() ?? '';
-          const jira = value.jira?.trim() || undefined;
+          const rawJira = value.jira?.trim();
+          const jira = rawJira ? this.extractTicketKey(rawJira) ?? undefined : undefined;
 
           // Skip if both item and jira are empty
           if (!item && !jira) return null;
+
+          if (rawJira && !jira) {
+            invalidJira = true;
+            return null;
+          }
 
           // Determine visibility
           let vis: string | number = value.visibility;
@@ -206,6 +228,11 @@ export class Dashboard implements OnInit {
         .filter(Boolean) as NewCheckIns[]
     );
 
+    if (invalidJira) {
+      alert("Invalid Jira ticket found, please fix.")
+      return;
+    }
+
     if (checkIns.length === 0) {
       alert('Please fill at least one entry.');
       return;
@@ -223,8 +250,13 @@ export class Dashboard implements OnInit {
     });
   }
 
-  // TODO show date selector to change date, query for checkin of that date
-  // ! should you be able to see previous, if not checkin today
-  // TODO if no checkin on that day, say not found, show the date of that day as well
+  extractTicketKey(input: string): string | undefined {
+    const match = input.match(/[A-Z]+-\d+/i);
+    return match ? match[0].toUpperCase() : undefined;
+  }
+
+  goToToday(): void {
+    this.dateControl.setValue(this.todayDate);
+  }
 
 }

@@ -1,0 +1,15 @@
+FROM --platform=linux/arm64 <ECR-HOST>/<NAMESPACE>/<GO-IMAGE> AS runtime
+
+FROM scratch
+COPY --from=runtime /usr/local/go/lib/time/zoneinfo.zip /usr/local/go/lib/time/zoneinfo.zip
+COPY --from=runtime /etc/passwd /etc/passwd
+COPY --from=runtime /app /app
+COPY --from=runtime /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+COPY out/fyp-scrum /app/fyp-scrum
+COPY out/client /app/client
+EXPOSE 8080/tcp
+ENV TZ=Asia/Kuala_Lumpur
+USER app
+WORKDIR /app
+CMD ["./fyp-scrum", "server"]

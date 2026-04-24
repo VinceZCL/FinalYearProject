@@ -8,11 +8,11 @@ import { AuthService } from '../../services/auth';
 import { TeamService } from '../../services/team';
 import { Member } from '../../models/team.model';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgClass } from '@angular/common';
+import { NgClass, UpperCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-profile',
-  imports: [RouterLink, ReactiveFormsModule, NgClass],
+  imports: [RouterLink, ReactiveFormsModule, NgClass, UpperCasePipe],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
@@ -111,7 +111,7 @@ export class Profile implements OnInit {
   initForm(): void {
     this.form = this.fb.group({
       name: [this.user.name, Validators.required],
-      email: [this.user.email, [Validators.required, Validators.email]],
+      email: [{ value: this.user.email, disabled: true }, [Validators.required, Validators.email]],
       current_password: ["", Validators.required],
       new_password: [""]
     });
@@ -149,7 +149,7 @@ export class Profile implements OnInit {
     }
     this.error = "";
 
-    this.userSvc.updateUser(this.uid, {userID: this.uid, ...this.form.value}).subscribe({
+    this.userSvc.updateUser(this.uid, {userID: this.uid, ...this.form.getRawValue()}).subscribe({
       next: (val: User) => {
         this.update();
         this.edit = false;

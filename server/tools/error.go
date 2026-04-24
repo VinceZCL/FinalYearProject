@@ -34,6 +34,10 @@ func ErrNotFound(msg string, details string) *Xerror {
 	return new(404, msg, details)
 }
 
+func ErrAlreadyExists(details string) *Xerror {
+	return new(409, "already exists", details)
+}
+
 func ErrInternal(msg string, details string) *Xerror {
 	return new(500, msg, details)
 }

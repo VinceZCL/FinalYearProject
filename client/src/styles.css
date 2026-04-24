@@ -26,3 +26,30 @@ body, html {
   width: 100%;
   /* overflow: hidden; */
 }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overscroll-behavior: none; /* prevents bounce */
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+
+  background:
+    radial-gradient(circle at top, #1a1f4a, var(--bg-main)),
+    radial-gradient(1px 1px at 15% 20%, #ffffff, transparent),
+    radial-gradient(1px 1px at 80% 60%, #ffffff, transparent),
+    radial-gradient(1px 1px at 40% 90%, #ffffff, transparent);
+  opacity: 1;
+}
+
+app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

@@ -3,13 +3,14 @@ import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { CheckIn, CheckIns, CheckInsAPI, NewCheckIns, TeamCheckInsAPI } from '../models/check-in.model';
 import { Error } from '../models/error.model';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CheckInService {
 
-  private url: string = "http://localhost:8080/api/checkins";
+  private url: string = `${environment.apiBase}/api/checkins`;
   private http = inject(HttpClient);
 
   // get uid from component via auth
@@ -74,7 +75,7 @@ export class CheckInService {
       );
   }
 
-  getYesterday(uid: number): Observable<CheckIn[] | undefined > {
+  getYesterday(uid: number): Observable<CheckIn[] | undefined> {
     let d = new Date();
     d.setDate(d.getDate() - 1);
     const yesterday = d.toLocaleDateString('en-CA');
@@ -95,6 +96,26 @@ export class CheckInService {
           }
         )
     );
+  }
+
+  getDate(uid: number, date: string): Observable<CheckIns | null> {
+    return this.http.get<CheckInsAPI>(`${this.url}/users/${uid}?date=${date}`)
+      .pipe(map(
+        (resp: CheckInsAPI) => {
+          return resp.checkIns;
+        }
+      ),
+      catchError(
+          (error) => {
+            let err: Error = {
+              status: error.error.status,
+              error: error.error.error,
+              details: error.error.details
+            };
+            return throwError(() => err);
+          }
+        )
+    )
   }
 
 }

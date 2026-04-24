@@ -4,30 +4,12 @@
   min-height: 100vh;
   width: 100%;
 
-  background:
-    radial-gradient(circle at top, #1a1f4a, var(--bg-main));
-
   color: var(--text-main);
   font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Optional: subtle background texture */
-:host::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(1px 1px at 15% 20%, #ffffff, transparent),
-    radial-gradient(1px 1px at 80% 60%, #ffffff, transparent),
-    radial-gradient(1px 1px at 40% 90%, #ffffff, transparent);
-  opacity: 0.15;
-  z-index: -1;
-}
-
 /* Layout helper for pages */
 .app-shell {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -71,24 +53,20 @@ a:hover {
   color: var(--accent-secondary);
 }
 
-/* Motion safety */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
 /* Reset */
 ul {
     list-style: none;
     margin: 0;
     padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 29;
 }
 
 /* Navbar container */
 ul {
     display: flex;
+    height: 55px;
     align-items: center;
     gap: 1.5rem;
     background: rgba(255, 255, 255, 0.05); /* glassy panel style */

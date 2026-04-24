@@ -1,6 +1,10 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -42,8 +46,32 @@ func (User) TableName() string {
 	return "fyp_scrum_users"
 }
 
+// BeforeCreate ensures the CreatedAt is in UTC
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+	u.CreatedAt = time.Now().UTC()
+	return
+}
+
+// BeforeSave ensures UpdatedAt is in UTC
+func (u *User) BeforeSave(tx *gorm.DB) (err error) {
+	u.UpdatedAt = time.Now().UTC()
+	return
+}
+
 func (Team) TableName() string {
 	return "fyp_scrum_teams"
+}
+
+// BeforeCreate ensures the CreatedAt is in UTC
+func (t *Team) BeforeCreate(tx *gorm.DB) (err error) {
+	t.CreatedAt = time.Now().UTC()
+	return
+}
+
+// BeforeSave ensures UpdatedAt is in UTC
+func (t *Team) BeforeSave(tx *gorm.DB) (err error) {
+	t.UpdatedAt = time.Now().UTC()
+	return
 }
 
 func (UserTeam) TableName() string {
@@ -52,4 +80,16 @@ func (UserTeam) TableName() string {
 
 func (CheckIn) TableName() string {
 	return "fyp_scrum_checkins"
+}
+
+// BeforeCreate ensures the CreatedAt is in UTC
+func (c *CheckIn) BeforeCreate(tx *gorm.DB) (err error) {
+	c.CreatedAt = time.Now().UTC()
+	return
+}
+
+// BeforeSave ensures UpdatedAt is in UTC
+func (c *CheckIn) BeforeSave(tx *gorm.DB) (err error) {
+	c.UpdatedAt = time.Now().UTC()
+	return
 }

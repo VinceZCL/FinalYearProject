@@ -3,13 +3,14 @@ import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of, ReplaySubject, tap, throwError } from 'rxjs';
 import { AuthApi, Claims, Login } from '../models/auth.model';
 import { Error } from '../models/error.model';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
 
-  private url: string = "http://localhost:8080/api/auth";
+  private url: string = `${environment.apiBase}/api/auth`;
   private http = inject(HttpClient)
 
   private claimSubject = new ReplaySubject<Claims | null>(1);

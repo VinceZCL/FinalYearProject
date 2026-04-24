@@ -50,8 +50,10 @@ func RegisterRoutes(e echo.Echo) {
 
 	protected.POST("/users", handler.NewUser)
 
-	protected.PATCH("/users/:id", handler.UpdateUser)
+	protected.PUT("/users/:id", handler.UpdateUser)
 	protected.PATCH("/users/:id/delete", handler.DeactivateUser)
+
+	protected.DELETE("/teams/:tid/member/:mid", handler.DeleteMember)
 
 	setupStatic(e)
 }

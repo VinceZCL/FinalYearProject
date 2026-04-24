@@ -34,3 +34,7 @@ export interface TeamCreatedAPI {
     team: Team;
     member: Member;
 }
+
+export interface DeleteMemberAPI {
+    success: string;
+}

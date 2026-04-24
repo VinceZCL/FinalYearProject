@@ -1,16 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { Member, MemberAPI, MembersAPI, Team, TeamAPI, TeamCreatedAPI } from '../models/team.model';
+import { DeleteMemberAPI, Member, MemberAPI, MembersAPI, Team, TeamAPI, TeamCreatedAPI } from '../models/team.model';
 import { Error } from '../models/error.model';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TeamService {
   
-  private url: string = "http://localhost:8080/api/teams";
-  private memUrl: string = "http://localhost:8080/api/members";
+  private url: string = `${environment.apiBase}/api/teams`;
+  private memUrl: string = `${environment.apiBase}/api/members`;
   private http = inject(HttpClient);
 
   getOwnTeams(userID: number): Observable<Member[]> {
@@ -97,6 +98,26 @@ export class TeamService {
     return this.http.post<MemberAPI>(`${this.memUrl}`, cred, { responseType: "json" })
       .pipe(map(
         (response: MemberAPI) => {
+          return response;
+        }
+      ),
+      catchError(
+        (error) => {
+          let err: Error = {
+            status: error.error.status,
+            error: error.error.error,
+            details: error.error.details,
+          };
+          return throwError(() => err);
+        }
+      )
+    )
+  }
+
+  deleteMember(teamID: number, userID: number): Observable<DeleteMemberAPI> {
+    return this.http.delete<DeleteMemberAPI>(`${this.url}/${teamID}/member/${userID}`)
+      .pipe(map(
+        (response: DeleteMemberAPI) => {
           return response;
         }
       ),

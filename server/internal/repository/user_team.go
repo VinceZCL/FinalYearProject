@@ -10,6 +10,7 @@ type UserTeamRepository interface {
 	NewMember(input model.UserTeam) (*model.UserTeam, error)
 	GetUserTeams(userID uint) ([]model.UserTeam, error)
 	IsTeamAdmin(userID uint, teamID uint) (bool, error)
+	DeleteMember(teamID uint, userID uint) error
 }
 
 type userTeamRepository struct {
@@ -57,4 +58,12 @@ func (r *userTeamRepository) IsTeamAdmin(userID uint, teamID uint) (bool, error)
 		return false, err
 	}
 	return true, nil
+}
+
+func (r *userTeamRepository) DeleteMember(teamID uint, userID uint) error {
+	err := r.client.DB.Model(&model.UserTeam{}).Where("team_id = ? AND user_id = ?", teamID, userID).Delete(&model.UserTeam{}).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

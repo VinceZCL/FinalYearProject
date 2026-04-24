@@ -7,12 +7,14 @@
 * **PostgreSQL** Database
 * **Go Echo** Backend
 * **TypeScript Angular** Frontend
+* **Liquibase** Database Management
 
 ## Prerequisites
 
 * **Go**
 * **npm**
 * **Podman** with **Podman Compose**
+* **Liquibase** *Optional*
 
 ## Project Structure
 
@@ -54,8 +56,16 @@ make deps
 # run migration
 make migrate
 
+# OR
+
+# run liquibase migration
+make update
+
 # generate secret
 make secret
+
+# build static frontend
+make build-client
 
 # start backend server
 make dev
@@ -63,3 +73,25 @@ make dev
 # start frontend server
 make serve
 ```
+
+## Usage
+
+* Run
+
+```sh
+make build-client
+make dev
+```
+
+* navigate to `localhost:8080`
+
+## Deployment
+
+* Update `client/src/environments/environments.prod.ts` to follow K8s setup
+* Implement deployment CI/CD
+
+### Example
+
+1. Build docker image via GitLab pipeline
+2. Publish docker image to ECR via GitLab pipeline
+3. Update K8s to fetch new ECR image

@@ -93,3 +93,22 @@ func (s *UserTeamService) GetUserTeams(c echo.Context, userID uint) ([]dto.Membe
 	}
 	return dtos, nil
 }
+
+func (s *UserTeamService) DeleteMember(c echo.Context, teamID uint, userID uint) error {
+	claims := c.Get("user").(*Claims)
+	admin, err := s.repo.IsTeamAdmin(claims.UserID, teamID)
+	if err != nil {
+		return tools.ErrInternal("database failure", err.Error())
+	}
+	if !admin {
+		return tools.ErrForbidden("Team Admin required")
+	}
+
+	err = s.repo.DeleteMember(teamID, userID)
+	if err != nil {
+		c.Logger().Errorf("Service | UserTeamService | DeleteMember: %w", err)
+		return tools.ErrInternal("database failure", err.Error())
+	}
+
+	return nil
+}

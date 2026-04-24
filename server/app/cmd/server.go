@@ -34,6 +34,23 @@ func init() {
 			e.Use(middleware.Logger())
 			e.Use(middleware.Recover())
 
+			// generate default admin
+			e.Logger.Infof("Creating default admin\n")
+			err := globalApp.Services.Auth.Default()
+			if err != nil {
+				if xerr, ok := err.(*tools.Xerror); ok && xerr.Code == 409 {
+					e.Logger.Infof("Default admin already exists\n")
+				} else {
+					e.Logger.Errorf("Failed to create default admin: %s\n", err.Error())
+					os.Exit(1)
+				}
+			} else {
+				e.Logger.Infof("Default admin created.\n")
+				e.Logger.Infof("Email: %s\nPassword: %s\n", "admin@example.com", "admin")
+				e.Logger.Infof("Please update credentials for security.\n")
+			}
+			e.Logger.Infof("Default admin creation completed\n")
+
 			e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 				AllowOrigins: []string{"http://localhost:4200"},
 				AllowMethods: []string{"GET", "POST", "PATCH", "OPTIONS"},

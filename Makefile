@@ -10,7 +10,7 @@ npm-deps:
 deps: go-deps npm-deps
 
 build-client:
-	npm --prefix client run build 
+	npm --prefix client run build -- --configuration development
 
 # for Echo Backend
 
@@ -24,7 +24,7 @@ secret: go-deps
 	go -C server run -tags cli -race main.go secret
 
 default: go-deps
-	go -C server run -tags cli -race main.go default
+	go -C server run -tags default -race main.go default
 
 build: deps build-client
 	go -C server build -tags server -o ../out/fyp-scrum
@@ -41,3 +41,7 @@ down:
 
 serve: npm-deps
 	npm --prefix client run start
+
+# for liquibase database
+update:
+	cd postgres && liquibase update

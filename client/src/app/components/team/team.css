@@ -1,8 +1,6 @@
 /* Page container */
 .teams-container {
-  min-height: 80vh;
   padding: 2rem;
-  background: radial-gradient(circle at top, #1a1f4a, var(--bg-main));
   color: var(--text-main);
   font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }

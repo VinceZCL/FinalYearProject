@@ -124,9 +124,8 @@
   </header>
 
   <!-- Members -->
-  <section>
+  <section class="member-section">
     <h3>Members</h3>
-
     @if (members.length > 0) {
     <ul class="member-list">
       @for (m of members; track m.userID) {
@@ -138,6 +137,14 @@
         <span class="role" [class.admin]="m.role === 'admin'">
           {{ m.role }}
         </span>
+
+        <!-- Delete button -->
+        @if (m.userID != team.creatorID || m.userID != uid) {
+        <button class="delete-btn" (click)="removeMember(m)">
+          ✕
+        </button>
+        }
+
       </li>
       }
     </ul>
@@ -202,4 +209,35 @@
   </div>
 </div>
 }
+
+<!-- ======================
+     DELETE USER MODAL
+     ====================== -->
+@if (showDeleteModal && selectedMember) {
+<div class="modal-backdrop">
+  <div class="modal">
+    <h2>
+      Remove Member
+    </h2>
+
+    <p>
+      Are you sure you want to remove
+      <strong>{{ selectedMember.name }}</strong>?
+    </p>
+
+    <p><strong>Email:</strong> {{ selectedMember.email }}</p>
+
+    <div class="actions">
+      <button class="ghost" (click)="closeModal()">
+        Cancel
+      </button>
+
+      <button class="danger" (click)="deleteMember(selectedMember.userID)">
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+}
+
 }

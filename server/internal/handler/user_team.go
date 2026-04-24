@@ -74,3 +74,27 @@ func GetUserTeams(c echo.Context) error {
 		"members": members,
 	})
 }
+
+func DeleteMember(c echo.Context) error {
+	teamID, err := strconv.Atoi(c.Param("tid"))
+	if err != nil {
+		c.Logger().Errorf("Handler | UserTeamHandler | Invalid Params: %w", err)
+		return tools.ErrBadRequest("Invalid route param")
+	}
+	userID, err := strconv.Atoi(c.Param("mid"))
+	if err != nil {
+		c.Logger().Errorf("Handler | UserTeamHandler | Invalid Params: %w", err)
+		return tools.ErrBadRequest("Invalid route param")
+	}
+
+	app := app.FromContext(c)
+
+	err = app.Services.UserTeam.DeleteMember(c, uint(teamID), uint(userID))
+	if err != nil {
+		c.Logger().Errorf("Handler | UserTeamHandler | DeleteMember: %w", err)
+		return err
+	}
+	return c.JSON(http.StatusOK, echo.Map{
+		"status": "success",
+	})
+}

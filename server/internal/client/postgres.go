@@ -44,6 +44,8 @@ func NewPostgres() (*PostgresClient, error) {
 		return nil, err
 	}
 
+	db.Exec("SET timezone = 'UTC'")
+
 	return &PostgresClient{
 		DB: db,
 	}, nil
