@@ -511,3 +511,38 @@
 .delete-btn:focus {
   outline: none;
 }
+
+/* ======================
+   DATE CONTROLS
+   ====================== */
+
+.date-controls {
+  max-width: 1100px;
+  margin: 0 auto 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.date-controls input[type="date"] {
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-main);
+}
+
+.date-controls button {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.date-controls button:hover {
+  background: rgba(255,255,255,0.08);
+}

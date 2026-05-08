@@ -6,15 +6,16 @@ import { Error } from '../../../models/error.model';
 import { AuthService } from '../../../services/auth';
 import { User } from '../../../models/user.model';
 import { UserService } from '../../../services/user';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CheckInService } from '../../../services/check-in';
 import { CheckIns } from '../../../models/check-in.model';
 import { DatePipe } from '@angular/common';
 import { environment } from '../../../../environments/environments';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-team-dashboard',
-  imports: [FormsModule, DatePipe],
+  imports: [FormsModule, DatePipe, ReactiveFormsModule],
   templateUrl: './team-dashboard.html',
   styleUrl: './team-dashboard.css',
 })
@@ -29,6 +30,7 @@ export class TeamDashboard implements OnInit {
   private route = inject(ActivatedRoute);
   private cd = inject(ChangeDetectorRef);
   private router = inject(Router);
+  private title = inject(Title);
 
   uid!: number;
   teamID!: number;
@@ -51,23 +53,44 @@ export class TeamDashboard implements OnInit {
   selectedMember?: Member;
   showDeleteModal = false;
 
+  dateControl!: FormControl;
+
+  todayDate: string = new Date().toLocaleDateString("en-CA");
+  selectedDate: string = this.todayDate;
+  isToday: boolean = true;
+
   ngOnInit(): void {
     this.teamID = Number(this.route.snapshot.paramMap.get("teamID"));
     this.auth.claim$.subscribe(claims => {
       this.uid = Number(claims?.userID);
     });
-    this.teamSvc.getTeam(this.teamID).subscribe({
-      next: (resp: Team) => {
-        this.team = resp;
-        this.getCIs();
-        this.getMembers();
-      },
-      error: (err: Error) => {
-        console.log(err.details);
-        this.router.navigate(["/404"]);
+    this.loadDate(this.selectedDate);
+
+    this.dateControl = new FormControl(this.selectedDate);
+        this.dateControl.valueChanges.subscribe(value => {
+          this.isToday = false;
+          this.selectedDate = value;
+          this.loadDate(value);
+          this.cd.detectChanges();
+        });
+
       }
-    });
-  }
+
+    loadDate(date: string): void {
+      this.isToday = (date == this.todayDate);
+      this.teamSvc.getTeam(this.teamID).subscribe({
+        next: (resp: Team) => {
+          this.team = resp;
+          this.title.setTitle(`${this.team.name} | Team`)
+          this.getCIs(date);
+          this.getMembers();
+        },
+        error: (err: Error) => {
+          console.log(err.details);
+          this.router.navigate(["/404"]);
+        }
+      });
+    }
 
   getMembers(): void {
     this.teamSvc.getMembers(this.teamID).subscribe({
@@ -92,10 +115,14 @@ export class TeamDashboard implements OnInit {
     });
   }
 
-  getCIs(): void {
-    this.ciSvc.getTeam(this.teamID).subscribe({
+  getCIs(date: string): void {
+    this.ciSvc.getDateTeam(this.teamID, date).subscribe({
       next: (resp: CheckIns[]) => {
-        this.cis = resp;
+        this.cis = resp.sort(
+          (a, b) => {
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          }
+        );
         this.ciUID = new Set(resp.map(ci => ci.userID));
       },
       error: (err: Error) => {
@@ -168,7 +195,7 @@ export class TeamDashboard implements OnInit {
   @HostListener('document:keydown.escape')
   handleEscape() {
     // Close modal first (priority)
-    if (this.showUserModal) {
+    if (this.showUserModal || this.showDeleteModal) {
       this.closeModal();
       return;
     }
@@ -184,13 +211,18 @@ export class TeamDashboard implements OnInit {
     this.teamSvc.deleteMember(this.teamID, userID).subscribe({
       next: (resp: DeleteMemberAPI) => {
         this.getMembers();
-        this.getCIs();
+        this.goToToday();
       },
       error: (err: Error) => {
         console.log(err.details)
       }
     });
     this.closeModal();
+  }
+
+  goToToday(): void {
+    this.isToday = true;
+    this.dateControl.setValue(this.todayDate);
   }
 
 }

@@ -69,14 +69,14 @@ export class Dashboard implements OnInit {
       this.loadDate(value);
     });
   }
-  
+
   loadDate(date: string): void {
     this.ciSvc.getDate(this.uid, date).subscribe({
       next: (resp: CheckIns | null) => {
         this.ci = resp;
         this.isToday = (date == this.todayDate);
         this.cd.detectChanges();
-        
+
         if (!this.ci && this.isToday) {
           this.loadForm();
           this.cd.detectChanges();
@@ -97,7 +97,7 @@ export class Dashboard implements OnInit {
     this.initSection(this.today);
     this.initSection(this.blockers);
   }
-  
+
   loadForm(): void {
     this.ciSvc.getYesterday(this.uid).subscribe({
       next: (val: CheckIn[] | undefined) => {
@@ -238,6 +238,13 @@ export class Dashboard implements OnInit {
       return;
     }
 
+    let hasYesterday = checkIns.some(checkIn => checkIn.type === 'yesterday');
+    let hasToday = checkIns.some(checkIn => checkIn.type === 'today');
+    if (!hasYesterday || !hasToday) {
+      alert('Please include at least one "Yesterday" and one "Today".');
+      return;
+    }
+
     const payload = { checkIns };
     this.ciSvc.submitBulk(payload).subscribe({
       next: (resp: CheckIns | null) => {
@@ -257,6 +264,20 @@ export class Dashboard implements OnInit {
 
   goToToday(): void {
     this.dateControl.setValue(this.todayDate);
+  }
+
+  autoGrow(eventOrTextarea: Event) {
+    let textarea: HTMLTextAreaElement;
+
+    textarea = eventOrTextarea.target as HTMLTextAreaElement;
+
+    // reset height so scrollHeight works correctly
+    textarea.style.height = 'auto';
+
+    // Only grow if content overflows
+    if (textarea.scrollHeight > textarea.clientHeight) {
+      textarea.style.height = textarea.scrollHeight - (textarea.clientHeight / 2) + 'px';
+    }
   }
 
 }

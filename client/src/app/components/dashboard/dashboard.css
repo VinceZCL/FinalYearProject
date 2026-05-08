@@ -250,6 +250,33 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+/* Textareas - multi-line item input */
+.checkin-row-inner textarea {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s ease;
+  resize: none;
+  line-height: 1.4;
+  font-family: inherit;   /* match input font */
+  overflow: hidden;
+}
+
+.checkin-row-inner textarea:focus {
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 6px rgba(77, 213, 153, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.checkin-row-inner textarea::placeholder {
+  color: rgba(245, 247, 255, 0.6);
+}
+
 /* Optional invalid state */
 .checkin-row-inner input.invalid {
   border-color: var(--accent-primary);

@@ -11,6 +11,23 @@
 </header>
 
 <!-- ======================
+     DATE CONTROLS
+     ====================== -->
+@if (dateControl) {
+<div class="date-controls">
+
+  <input type="date" [formControl]="dateControl" [max]="(todayDate | date:'yyyy-MM-dd')" />
+
+  @if (!isToday) {
+  <button type="button" (click)="goToToday()">
+    Back to Today
+  </button>
+  }
+
+</div>
+}
+
+<!-- ======================
      MAIN CONTENT (FEED)
      ====================== -->
 <section class="content">
@@ -107,7 +124,11 @@
 
   <div class="feed-placeholder">
     <h2>Team Updates</h2>
-    <p>Status updates from team members will appear here.</p>
+    @if (isToday) {
+      <p>Status updates from team members will appear here.</p>
+    } @else {
+      <p>No updates available for date {{selectedDate}}.</p>
+    }
   </div>
 
   }
@@ -129,7 +150,7 @@
     @if (members.length > 0) {
     <ul class="member-list">
       @for (m of members; track m.userID) {
-      <li [class.missing]="!ciUID.has(m.userID)">
+      <li [class.missing]="!ciUID.has(m.userID) && (m.userID != team.creatorID)">
         <span class="member-name">
           {{ m.name }}
         </span>

@@ -9,6 +9,7 @@ import { TeamService } from '../../services/team';
 import { Member } from '../../models/team.model';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgClass, UpperCasePipe } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-profile',
@@ -25,6 +26,8 @@ export class Profile implements OnInit {
   private router = inject(Router);
   private auth = inject(AuthService);
   private fb = inject(FormBuilder);
+  private title = inject(Title);
+
   uid!: number;
   user!: User;
   admin!: boolean;
@@ -60,6 +63,8 @@ export class Profile implements OnInit {
     this.userSvc.getUser(this.uid).subscribe({
       next: (resp: User) => {
         this.user = resp;
+        let nTitle = (this.self) ? "Personal Profile" : `${this.user.name} | Profile`;
+        this.title.setTitle(nTitle)
         this.getTeams();
         if (this.self) {
           this.initForm();

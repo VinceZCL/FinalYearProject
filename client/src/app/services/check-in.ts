@@ -85,7 +85,7 @@ export class CheckInService {
           return resp.checkIns?.today;
         }
       ),
-      catchError(
+        catchError(
           (error) => {
             let err: Error = {
               status: error.error.status,
@@ -95,7 +95,7 @@ export class CheckInService {
             return throwError(() => err);
           }
         )
-    );
+      );
   }
 
   getDate(uid: number, date: string): Observable<CheckIns | null> {
@@ -105,7 +105,7 @@ export class CheckInService {
           return resp.checkIns;
         }
       ),
-      catchError(
+        catchError(
           (error) => {
             let err: Error = {
               status: error.error.status,
@@ -115,7 +115,27 @@ export class CheckInService {
             return throwError(() => err);
           }
         )
-    )
+      )
+  }
+
+  getDateTeam(tid: number, date: string): Observable<CheckIns[]> {
+    return this.http.get<TeamCheckInsAPI>(`${this.url}/teams/${tid}?date=${date}`)
+      .pipe(map(
+        (resp: TeamCheckInsAPI) => {
+          return resp.checkIns;
+        }
+      ),
+        catchError(
+          (error) => {
+            let err: Error = {
+              status: error.error.status,
+              error: error.error.error,
+              details: error.error.details
+            };
+            return throwError(() => err);
+          }
+        )
+      );
   }
 
 }

@@ -44,4 +44,4 @@ serve: npm-deps
 
 # for liquibase database
 update:
-	cd postgres && liquibase update
+	cd database && liquibase update

@@ -162,7 +162,7 @@
                 <div [formGroupName]="$index" class="checkin-row">
                     <div class="checkin-row-inner">
 
-                        <input type="text" formControlName="item" placeholder="What did you do yesterday?" />
+                        <textarea type="text" formControlName="item" placeholder="What did you do yesterday?" rows="1" (input)="autoGrow($event)" (focus)="autoGrow($event)"></textarea>
 
                         <input type="text" formControlName="jira" placeholder="Jira ticket (optional)" />
 
@@ -176,8 +176,6 @@
 
                     </div>
                 </div>
-                } @empty {
-                <p>No entries in Yesterday.</p>
                 }
             </div>
         </section>
@@ -192,7 +190,7 @@
                 <div [formGroupName]="$index" class="checkin-row">
                     <div class="checkin-row-inner">
 
-                        <input type="text" formControlName="item" placeholder="What will you work on today?" />
+                        <textarea type="text" formControlName="item" placeholder="What will you work on today?" rows="1" (input)="autoGrow($event)" (focus)="autoGrow($event)"></textarea>
 
                         <input type="text" formControlName="jira" placeholder="Jira ticket (optional)" />
 
@@ -206,8 +204,6 @@
 
                     </div>
                 </div>
-                } @empty {
-                <p>No entries in Today.</p>
                 }
             </div>
         </section>
@@ -222,7 +218,7 @@
                 <div [formGroupName]="$index" class="checkin-row">
                     <div class="checkin-row-inner">
 
-                        <input type="text" formControlName="item" placeholder="Any blockers?" />
+                        <textarea type="text" formControlName="item" placeholder="Any blockers?" rows="1" (input)="autoGrow($event)" (focus)="autoGrow($event)"></textarea>
 
                         <input type="text" formControlName="jira" placeholder="Jira ticket (optional)" />
 
@@ -236,8 +232,6 @@
 
                     </div>
                 </div>
-                } @empty {
-                <p>No blockers added.</p>
                 }
             </div>
         </section>
