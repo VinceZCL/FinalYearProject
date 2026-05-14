@@ -4,6 +4,7 @@ database:
   name: postgresdb
   user: postgresdb
   password: postgresdb
+  location: Asia/Kuala_Lumpur
 
 security:
   secretkey: <redacted>

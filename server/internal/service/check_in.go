@@ -249,3 +249,53 @@ func (s *CheckInService) BulkCheckIn(c echo.Context, req param.BulkCheckIn) (*dt
 
 	return dailyCI, nil
 }
+
+func (s *CheckInService) GetYesterday(c echo.Context, userID uint) (*dto.DailyCheckIn, error) {
+
+	checkIns, err := s.repo.GetYesterday(userID)
+	if err != nil {
+		c.Logger().Errorf("Service | CheckInService | GetYesterday: %w", err)
+		return nil, tools.ErrInternal("database failure", err.Error())
+	}
+
+	if len(checkIns) == 0 {
+		return nil, nil
+	}
+
+	dailyCI := &dto.DailyCheckIn{
+		UserID:    userID,
+		Username:  checkIns[0].User.Name,
+		CreatedAt: checkIns[0].CreatedAt,
+	}
+
+	for _, ci := range checkIns {
+		var teamName *string
+		if ci.Team != nil {
+			teamName = &ci.Team.Name
+		}
+		single := &dto.CheckIn{
+			ID:         ci.ID,
+			Type:       ci.Type,
+			Item:       ci.Item,
+			Jira:       ci.Jira,
+			Visibility: ci.Visibility,
+			TeamID:     ci.TeamID,
+			UserID:     ci.UserID,
+			Username:   ci.User.Name,
+			TeamName:   teamName,
+			CreatedAt:  ci.CreatedAt,
+		}
+
+		switch ci.Type {
+		case "yesterday":
+			dailyCI.Yesterday = append(dailyCI.Yesterday, single)
+		case "today":
+			dailyCI.Today = append(dailyCI.Today, single)
+		case "blockers":
+			dailyCI.Blockers = append(dailyCI.Blockers, single)
+		}
+	}
+
+	return dailyCI, nil
+
+}

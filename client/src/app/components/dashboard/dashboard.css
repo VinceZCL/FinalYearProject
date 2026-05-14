@@ -368,21 +368,33 @@
 }
 
 .date-controls input[type="date"] {
-  padding: 0.6rem 0.9rem;
+  padding: 0.8rem 1rem;
   border-radius: 10px;
+  font-size: 1rem;
   border: 1px solid var(--border-soft);
   background: rgba(255,255,255,0.05);
   color: var(--text-main);
 }
 
+/* Make calendar icon lighter */
+.date-controls input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.8;
+  cursor: pointer;
+  /* optional: slightly enlarge icon */
+  transform: scale(1.2);
+  padding-left: 12px;
+}
+
 .date-controls button {
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1rem;
   border-radius: 999px;
   border: 1px solid var(--border-soft);
   background: transparent;
   color: var(--text-main);
   cursor: pointer;
   transition: all 0.2s ease;
+  font-size: 1rem;
 }
 
 .date-controls button:hover {

@@ -3,6 +3,7 @@ package repository
 import (
 	"time"
 
+	"github.com/VinceZCL/FinalYearProject/app/config"
 	"github.com/VinceZCL/FinalYearProject/internal/client"
 	"github.com/VinceZCL/FinalYearProject/types/model"
 )
@@ -12,6 +13,7 @@ type CheckInRepository interface {
 	GetTeamCheckIns(teamID uint, date string) ([]model.CheckIn, error)
 	GetCheckIn(checkInID uint) (*model.CheckIn, error)
 	NewCheckIn(input model.CheckIn) (*model.CheckIn, error)
+	GetYesterday(userID uint) ([]model.CheckIn, error)
 }
 
 type checkInRepository struct {
@@ -94,24 +96,56 @@ func (r *checkInRepository) NewCheckIn(input model.CheckIn) (*model.CheckIn, err
 	return &input, nil
 }
 
+func (r *checkInRepository) GetYesterday(userID uint) ([]model.CheckIn, error) {
+	var checkIn []model.CheckIn
+
+	sub := r.client.DB.Model(&model.CheckIn{}).
+		Select("DATE(fyp_scrum_checkins.created_at)").
+		Where("fyp_scrum_checkins.user_id = ?", userID).
+		Order("fyp_scrum_checkins.created_at DESC").
+		Limit(1)
+
+	err := r.client.DB.Preload("User").Preload("Team").
+		Where("fyp_scrum_checkins.user_id = ?", userID).
+		Where("DATE(fyp_scrum_checkins.created_at) = (?)", sub).
+		Order("fyp_scrum_checkins.created_at DESC").
+		Find(&checkIn).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return checkIn, nil
+}
+
 func getTimes(dateStr string) (start, end time.Time, err error) {
+
+	tz := config.Get().Database.Location
+	loc, err := time.LoadLocation(tz)
+	if err != nil {
+		return time.Time{}, time.Time{}, err
+	}
 
 	var day time.Time
 	if dateStr == "" {
-		day = time.Now()
+		day = time.Now().In(loc)
 	} else {
-		day, err = time.ParseInLocation(time.DateOnly, dateStr, time.Local)
+		day, err = time.ParseInLocation(time.DateOnly, dateStr, loc)
 		if err != nil {
 			return time.Time{}, time.Time{}, err
 		}
 	}
-	start = time.Date(
+	locStart := time.Date(
 		day.Year(),
 		day.Month(),
 		day.Day(),
 		0, 0, 0, 0,
-		day.Location(),
+		loc,
 	)
-	end = start.Add(24 * time.Hour)
+	locEnd := locStart.Add(24 * time.Hour)
+
+	start = locStart.UTC()
+	end = locEnd.UTC()
+
 	return
 }

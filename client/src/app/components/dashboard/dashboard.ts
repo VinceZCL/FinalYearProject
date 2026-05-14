@@ -25,7 +25,7 @@ export class Dashboard implements OnInit {
   form!: FormGroup;
   uid!: number;
   ci!: CheckIns | null;
-  ytdtd!: CheckIn[] | undefined;
+  ytd?: CheckIns | null;
   dateControl!: FormControl;
 
   private fb = inject(FormBuilder);
@@ -93,15 +93,15 @@ export class Dashboard implements OnInit {
       blockers: this.fb.array([])
     });
 
-    this.initSection(this.yesterday, this.ytdtd);
+    this.initSection(this.yesterday, this.ytd?.today);
     this.initSection(this.today);
-    this.initSection(this.blockers);
+    this.initSection(this.blockers, this.ytd?.blockers);
   }
 
   loadForm(): void {
     this.ciSvc.getYesterday(this.uid).subscribe({
-      next: (val: CheckIn[] | undefined) => {
-        this.ytdtd = val;
+      next: (val: CheckIns | null) => {
+        this.ytd = val;
         this.initForm();
         this.cd.detectChanges();
       }

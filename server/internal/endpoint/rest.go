@@ -42,6 +42,9 @@ func RegisterRoutes(e echo.Echo) {
 	protected.GET("/checkins/users/:id", handler.GetUserCheckIns)
 	protected.GET("/checkins/teams/:id", handler.GetTeamCheckIns)
 
+	// GET YESTERDAY
+	protected.GET("/checkins/yesterday/:id", handler.GetYesterday)
+
 	// CREATE
 	protected.POST("/teams", handler.NewTeam)
 	protected.POST("/members", handler.NewMember)

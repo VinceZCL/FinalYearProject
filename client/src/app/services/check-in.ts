@@ -75,17 +75,14 @@ export class CheckInService {
       );
   }
 
-  getYesterday(uid: number): Observable<CheckIn[] | undefined> {
-    let d = new Date();
-    d.setDate(d.getDate() - 1);
-    const yesterday = d.toLocaleDateString('en-CA');
-    return this.http.get<CheckInsAPI>(`${this.url}/users/${uid}?date=${yesterday}`)
+  getYesterday(uid: number): Observable<CheckIns | null> {
+    return this.http.get<CheckInsAPI>(`${this.url}/yesterday/${uid}`)
       .pipe(map(
         (resp: CheckInsAPI) => {
-          return resp.checkIns?.today;
+          return resp.checkIns;
         }
       ),
-        catchError(
+      catchError(
           (error) => {
             let err: Error = {
               status: error.error.status,
@@ -95,7 +92,7 @@ export class CheckInService {
             return throwError(() => err);
           }
         )
-      );
+    );
   }
 
   getDate(uid: number, date: string): Observable<CheckIns | null> {

@@ -23,6 +23,8 @@ type ConfigStruct struct {
 		User string
 		// Database password.
 		Password string
+		// Database UTC timezone
+		Location string
 	}
 
 	// Security configuration settings
