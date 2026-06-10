@@ -58,5 +58,7 @@ func RegisterRoutes(e echo.Echo) {
 
 	protected.DELETE("/teams/:tid/member/:mid", handler.DeleteMember)
 
+	protected.PUT("/checkins/user/:id", handler.EditCheckIns)
+
 	setupStatic(e)
 }

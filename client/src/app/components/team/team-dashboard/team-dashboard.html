@@ -3,9 +3,23 @@
      TOP BAR
      ====================== -->
 <header class="top-bar">
-  <h1>{{ team.name }}</h1>
 
-  <button class="icon-btn" (click)="sidebarOpen = !sidebarOpen">
+  <div class="title-group">
+    <h1>{{ team.name }}</h1>
+
+    @if (isToday) {
+      <button
+        class="refresh-btn"
+        (click)="loadDate(todayDate)"
+        aria-label="Refresh"
+        title="Refresh"
+      >
+        ↻
+      </button>
+    }
+  </div>
+
+  <button class="icon-btn" title="Sidebar" (click)="sidebarOpen = !sidebarOpen">
     ☰
   </button>
 </header>

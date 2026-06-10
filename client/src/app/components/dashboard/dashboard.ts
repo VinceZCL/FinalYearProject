@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { CheckIn, CheckIns, NewCheckIns } from '../../models/check-in.model';
 import { CheckInService } from '../../services/check-in';
@@ -8,6 +8,7 @@ import { Member } from '../../models/team.model';
 import { TeamService } from '../../services/team';
 import { DatePipe } from '@angular/common';
 import { environment } from '../../../environments/environments';
+import { BehaviorSubject } from 'rxjs';
 
 // Visibility value stored in the form
 type VisibilityValue = 'all' | 'private' | number;
@@ -27,6 +28,8 @@ export class Dashboard implements OnInit {
   ci!: CheckIns | null;
   ytd?: CheckIns | null;
   dateControl!: FormControl;
+
+  edit$ = new BehaviorSubject<boolean>(false);
 
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
@@ -67,6 +70,29 @@ export class Dashboard implements OnInit {
       this.ci = null;
       this.selectedDate = value;
       this.loadDate(value);
+    });
+
+    this.edit$.subscribe( (edit) => {
+      if (edit) {
+        this.isToday = true;
+        this.ci = null;
+        this.ciSvc.getDate(this.uid, this.todayDate).subscribe({
+          next: (resp: CheckIns | null) => {
+            let ci = resp;
+
+            this.form = this.fb.group({
+              yesterday: this.fb.array([]),
+              today: this.fb.array([]),
+              blockers: this.fb.array([])
+            });
+
+            this.initSection(this.yesterday, ci?.yesterday);
+            this.initSection(this.today, ci?.today);
+            this.initSection(this.blockers, ci?.blockers);
+            this.cd.detectChanges();
+          }
+        })
+      }
     });
   }
 
@@ -154,8 +180,17 @@ export class Dashboard implements OnInit {
   }
 
   updateInputs(section: FormArray): void {
-    const controls = section.controls as FormGroup[];
+    let controls = section.controls as FormGroup[];
     const last = controls[controls.length - 1];
+
+    while (
+      section.length > 1 &&
+      this.isEmpty(controls[controls.length - 1]) &&
+      this.isEmpty(controls[controls.length - 2])
+    ) {
+      section.removeAt(section.length - 1);
+      controls = section.controls as FormGroup[];
+    }
 
     const lastItem = last.get('item')?.value?.trim();
     const lastJira = last.get('jira')?.value?.trim();
@@ -165,12 +200,15 @@ export class Dashboard implements OnInit {
       section.push(this.createPair(section));
     }
 
-    while (
-      section.length > 1 &&
-      this.isEmpty(controls[controls.length - 1]) &&
-      this.isEmpty(controls[controls.length - 2])
-    ) {
-      section.removeAt(section.length - 1);
+    // Iterate from the second-to-last up to the first
+    for (let i = controls.length - 2; i >= 0; i--) {
+      const current = controls[i];
+      const next = controls[i + 1];
+
+      // If current is empty and next is not empty, remove current
+      if (this.isEmpty(current) && !this.isEmpty(next)) {
+        section.removeAt(i);
+      }
     }
   }
 
@@ -244,17 +282,32 @@ export class Dashboard implements OnInit {
       alert('Please include at least one "Yesterday" and one "Today".');
       return;
     }
-
+    
     const payload = { checkIns };
-    this.ciSvc.submitBulk(payload).subscribe({
-      next: (resp: CheckIns | null) => {
-        this.ci = resp;
-        this.cd.detectChanges();
-      },
-      error: (err: Error) => {
-        console.error(err);
-      }
-    });
+
+    if (!this.edit$.value) {
+      this.ciSvc.submitBulk(payload).subscribe({
+        next: (resp: CheckIns | null) => {
+          this.ci = resp;
+          this.cd.detectChanges();
+        },
+        error: (err: Error) => {
+          console.error(err);
+        }
+      });
+    } else {
+      this.ciSvc.editCheckIn(this.uid, payload).subscribe({
+        next: (resp: CheckIns | null) => {
+          this.ci = resp;
+          this.edit$.next(false);
+          this.cd.detectChanges();
+        },
+        error: (err: Error) => {
+          console.error(err);
+        }
+      });
+    }
+
   }
 
   extractTicketKey(input: string): string | undefined {
@@ -278,6 +331,32 @@ export class Dashboard implements OnInit {
     if (textarea.scrollHeight > textarea.clientHeight) {
       textarea.style.height = textarea.scrollHeight - (textarea.clientHeight / 2) + 'px';
     }
+  }
+
+  copy(control: AbstractControl) {
+
+    const targets = this.today.controls as FormGroup[];
+    const group = control as FormGroup;
+
+    const value = group.value;
+    const item = value.item?.trim() ?? '';
+    const jira = value.jira?.trim() ?? '';
+
+    if (targets.length === 1 && this.isEmpty(targets[0])) {
+      const first = targets[0];
+      first.patchValue({
+        item, jira, visibility: value.visibility
+      });
+      return
+    }
+
+    let lastEmpty = targets[targets.length - 1];
+    lastEmpty.patchValue({
+      item, jira, visibility: value.visibility
+    });
+
+    this.updateInputs(this.today);
+
   }
 
 }

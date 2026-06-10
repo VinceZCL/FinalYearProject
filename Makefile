@@ -1,3 +1,7 @@
+ifneq ("$(wildcard ./server/.env.local)","")
+        include ./server/.env.local
+endif
+
 # for Dependencies
 
 go-deps:
@@ -29,10 +33,16 @@ default: go-deps
 build: deps build-client
 	go -C server build -tags server -o ../out/fyp-scrum
 
+cron: go-deps
+	go -C server run -tags cron -race main.go cron
+
 # for Postgres Database
 
 env:
 	podman-compose up -d postgres
+
+update:
+	cd database && liquibase update
 
 down:
 	podman-compose down
@@ -41,7 +51,3 @@ down:
 
 serve: npm-deps
 	npm --prefix client run start
-
-# for liquibase database
-update:
-	cd database && liquibase update

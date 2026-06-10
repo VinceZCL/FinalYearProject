@@ -163,3 +163,21 @@ func GetYesterday(c echo.Context) error {
 		"checkIns": checkIns,
 	})
 }
+
+func EditCheckIns(c echo.Context) error {
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.Logger().Errorf("Handler | CheckInHandler | Invalid Params: %w", err)
+		return tools.ErrBadRequest("Invalid route params")
+	}
+
+	app := app.FromContext(c)
+	err = app.Services.CheckIn.DeleteCheckIns(c, uint(userID))
+	if err != nil {
+		c.Logger().Errorf("Handler | CheckInHandler | GetYesterday: %w", err)
+		return err
+	}
+
+	return BulkCheckIn(c)
+
+}

@@ -11,3 +11,6 @@ security:
 
 client:
   dir: "../out/client/browser"
+
+cron:
+  webhook: <redacted>

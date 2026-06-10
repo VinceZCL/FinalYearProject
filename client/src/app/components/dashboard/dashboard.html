@@ -1,4 +1,4 @@
-@if (dateControl) {
+@if (dateControl && !edit$.value) {
     <div class="date-controls">
       <input 
         type="date"
@@ -146,6 +146,14 @@
             </div>
         </section>
 
+        @if (isToday) {
+            <div class="actions">
+                <button type="submit" (click)="edit$.next(true)">
+                    Edit Check-In
+                </button>
+            </div>
+        }
+
     </article>
 </div>
 } @else {
@@ -158,11 +166,28 @@
         <section formArrayName="yesterday">
             <h3>Yesterday</h3>
             <div class="checkin-grid">
-                @for (control of yesterday.controls; track control) {
-                <div [formGroupName]="$index" class="checkin-row">
+                @for (control of yesterday.controls; track control; let idx = $index) {
+                <div [formGroupName]="idx" class="checkin-row">
+
                     <div class="checkin-row-inner">
+                        
+                        <!-- Move down Button -->
+                        <div class="move-btn-slot">
+                            @if (control.get('item')?.value) {
+                                <button
+                                    type="button"
+                                    class="delete-btn"
+                                    (click)="copy(control)"
+                                    aria-label="Move down"
+                                    title="Copy to Today"
+                                >
+                                    ↓
+                                </button>
+                            }
+                        </div>
 
                         <textarea type="text" formControlName="item" placeholder="What did you do yesterday?" rows="1" (input)="autoGrow($event)" (focus)="autoGrow($event)"></textarea>
+
 
                         <input type="text" formControlName="jira" placeholder="Jira ticket (optional)" />
 
@@ -186,9 +211,12 @@
         <section formArrayName="today">
             <h3>Today</h3>
             <div class="checkin-grid">
-                @for (control of today.controls; track control) {
-                <div [formGroupName]="$index" class="checkin-row">
-                    <div class="checkin-row-inner">
+                @for (control of today.controls; track control; let idx = $index) {
+                <div [formGroupName]="idx" class="checkin-row">
+                    
+                    <div class="checkin-row-inner">    
+                        
+                        <div class="move-btn-slot"></div>
 
                         <textarea type="text" formControlName="item" placeholder="What will you work on today?" rows="1" (input)="autoGrow($event)" (focus)="autoGrow($event)"></textarea>
 
@@ -214,9 +242,12 @@
         <section formArrayName="blockers">
             <h3>Blockers</h3>
             <div class="checkin-grid">
-                @for (control of blockers.controls; track control) {
-                <div [formGroupName]="$index" class="checkin-row">
+                @for (control of blockers.controls; track control; let idx = $index) {
+                <div [formGroupName]="idx" class="checkin-row">
+                                        
                     <div class="checkin-row-inner">
+
+                        <div class="move-btn-slot"></div>
 
                         <textarea type="text" formControlName="item" placeholder="Any blockers?" rows="1" (input)="autoGrow($event)" (focus)="autoGrow($event)"></textarea>
 

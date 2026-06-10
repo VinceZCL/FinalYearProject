@@ -14,6 +14,7 @@ type CheckInRepository interface {
 	GetCheckIn(checkInID uint) (*model.CheckIn, error)
 	NewCheckIn(input model.CheckIn) (*model.CheckIn, error)
 	GetYesterday(userID uint) ([]model.CheckIn, error)
+	DeleteCheckIns(userID uint) error
 }
 
 type checkInRepository struct {
@@ -118,10 +119,28 @@ func (r *checkInRepository) GetYesterday(userID uint) ([]model.CheckIn, error) {
 	return checkIn, nil
 }
 
+func (r *checkInRepository) DeleteCheckIns(userID uint) error {
+
+	start, end, err := getTimes("")
+	if err != nil {
+		return err
+	}
+
+	err = r.client.DB.
+		Where("fyp_scrum_checkins.user_id = ?", userID).
+		Where("fyp_scrum_checkins.created_at >= ? AND fyp_scrum_checkins.created_at < ?", start, end).
+		Delete(&model.CheckIn{}).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func getTimes(dateStr string) (start, end time.Time, err error) {
 
-	tz := config.Get().Database.Location
-	loc, err := time.LoadLocation(tz)
+	loc, err := time.LoadLocation(config.Get().Database.Location)
 	if err != nil {
 		return time.Time{}, time.Time{}, err
 	}

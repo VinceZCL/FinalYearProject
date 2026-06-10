@@ -38,6 +38,12 @@ type ConfigStruct struct {
 		// client static SPA directory
 		Dir string
 	}
+
+	// Cronjob daily reminder settings
+	Cron struct {
+		// teams webhook endpoint
+		Webhook string
+	}
 }
 
 func Get() *ConfigStruct {

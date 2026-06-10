@@ -299,3 +299,14 @@ func (s *CheckInService) GetYesterday(c echo.Context, userID uint) (*dto.DailyCh
 	return dailyCI, nil
 
 }
+
+func (s *CheckInService) DeleteCheckIns(c echo.Context, userID uint) error {
+
+	err := s.repo.DeleteCheckIns(userID)
+	if err != nil {
+		return tools.ErrInternal("database failure", err.Error())
+	}
+
+	return nil
+
+}

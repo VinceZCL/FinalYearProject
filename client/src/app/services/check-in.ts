@@ -135,4 +135,24 @@ export class CheckInService {
       );
   }
 
+  editCheckIn(uid: number, payload: { "checkIns": NewCheckIns[] }): Observable<CheckIns | null> {
+    return this.http.put<CheckInsAPI>(`${this.url}/user/${uid}`, payload, { responseType: "json" })
+      .pipe(map(
+        (resp: CheckInsAPI) => {
+          return resp.checkIns;
+        }
+      ),
+        catchError(
+          (error) => {
+            let err: Error = {
+              status: error.error.status,
+              error: error.error.error,
+              details: error.error.details
+            };
+            return throwError(() => err);
+          }
+        )
+      );
+  }
+
 }

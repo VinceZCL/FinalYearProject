@@ -4,7 +4,7 @@
    ========================================================= */
 
 .checkin-shell {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 3rem auto;
   padding: 0 1.5rem;
 }
@@ -165,7 +165,7 @@
 
 /* Container / Form Panel */
 .checkin-form {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 3rem auto;
   padding: 2rem;
   background: var(--bg-panel);
@@ -329,6 +329,73 @@
   background-color: inherit;
 }
 
+/* Reserve button space even when hidden */
+.move-btn-slot {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  align-self: center;
+}
+
+/* Button */
+.delete-btn {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  align-self: center;
+
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 10px;
+
+  background: rgba(34, 197, 94, 0.08);
+  color: #22c55e;
+
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1;
+
+  cursor: pointer;
+
+  /* smoother transform rendering */
+  transform-origin: center;
+  will-change: transform;
+  backface-visibility: hidden;
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+/* Hover */
+.delete-btn:hover {
+  background: rgba(34, 197, 94, 0.18);
+  border-color: rgba(34, 197, 94, 0.5);
+  transform: scale(1.05);
+}
+
+/* Click */
+.delete-btn:active {
+  transform: scale(1);
+}
+
+/* Keyboard accessibility */
+.delete-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+}
+
 /* Submit button container */
 .actions {
   text-align: right;
@@ -358,7 +425,7 @@
 }
 
 .date-controls {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 2rem auto 0;
   padding: 0 1.5rem;
   display: flex;
