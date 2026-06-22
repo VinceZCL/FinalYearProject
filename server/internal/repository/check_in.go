@@ -1,10 +1,8 @@
 package repository
 
 import (
-	"time"
-
-	"github.com/VinceZCL/FinalYearProject/app/config"
 	"github.com/VinceZCL/FinalYearProject/internal/client"
+	"github.com/VinceZCL/FinalYearProject/tools"
 	"github.com/VinceZCL/FinalYearProject/types/model"
 )
 
@@ -27,7 +25,7 @@ func NewCheckInRepository(dbclient *client.PostgresClient) CheckInRepository {
 
 func (r *checkInRepository) GetUserCheckIns(userID uint, date string) ([]model.CheckIn, error) {
 	var checkIns []model.CheckIn
-	start, end, err := getTimes(date)
+	start, end, err := tools.GetTimes(date)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +41,7 @@ func (r *checkInRepository) GetUserCheckIns(userID uint, date string) ([]model.C
 
 func (r *checkInRepository) GetTeamCheckIns(teamID uint, date string) ([]model.CheckIn, error) {
 	var checkIns []model.CheckIn
-	start, end, err := getTimes(date)
+	start, end, err := tools.GetTimes(date)
 	if err != nil {
 		return nil, err
 	}
@@ -69,6 +67,8 @@ func (r *checkInRepository) GetTeamCheckIns(teamID uint, date string) ([]model.C
 		`, teamID).
 		Preload("User").
 		Preload("Team").
+		Preload("Comments", "fyp_scrum_comments.team_id = ?", teamID).
+		Preload("Comments.User").
 		Find(&checkIns).Error
 
 	if err != nil {
@@ -121,7 +121,7 @@ func (r *checkInRepository) GetYesterday(userID uint) ([]model.CheckIn, error) {
 
 func (r *checkInRepository) DeleteCheckIns(userID uint) error {
 
-	start, end, err := getTimes("")
+	start, end, err := tools.GetTimes("")
 	if err != nil {
 		return err
 	}
@@ -136,35 +136,4 @@ func (r *checkInRepository) DeleteCheckIns(userID uint) error {
 	}
 
 	return nil
-}
-
-func getTimes(dateStr string) (start, end time.Time, err error) {
-
-	loc, err := time.LoadLocation(config.Get().Database.Location)
-	if err != nil {
-		return time.Time{}, time.Time{}, err
-	}
-
-	var day time.Time
-	if dateStr == "" {
-		day = time.Now().In(loc)
-	} else {
-		day, err = time.ParseInLocation(time.DateOnly, dateStr, loc)
-		if err != nil {
-			return time.Time{}, time.Time{}, err
-		}
-	}
-	locStart := time.Date(
-		day.Year(),
-		day.Month(),
-		day.Day(),
-		0, 0, 0, 0,
-		loc,
-	)
-	locEnd := locStart.Add(24 * time.Hour)
-
-	start = locStart.UTC()
-	end = locEnd.UTC()
-
-	return
 }

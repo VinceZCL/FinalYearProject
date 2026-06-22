@@ -75,7 +75,6 @@ func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint, date strin
 	}
 
 	grouped := make(map[uint]*dto.DailyCheckIn)
-
 	for _, ci := range checkIns {
 		if _, ok := grouped[ci.UserID]; !ok {
 			grouped[ci.UserID] = &dto.DailyCheckIn{
@@ -89,6 +88,19 @@ func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint, date strin
 			teamName = &ci.Team.Name
 		}
 
+		dtoCom := make([]*dto.Comment, 0, len(ci.Comments))
+		for _, com := range ci.Comments {
+			dtoCom = append(dtoCom, &dto.Comment{
+				ID:        com.ID,
+				UserID:    com.UserID,
+				Username:  com.User.Name,
+				Item:      com.Item,
+				CheckinID: com.CheckinID,
+				TeamID:    com.TeamID,
+				CreatedAt: com.CreatedAt,
+			})
+		}
+
 		single := &dto.CheckIn{
 			ID:         ci.ID,
 			Type:       ci.Type,
@@ -100,6 +112,7 @@ func (s *CheckInService) GetTeamCheckIns(c echo.Context, teamID uint, date strin
 			Username:   ci.User.Name,
 			TeamName:   teamName,
 			CreatedAt:  ci.CreatedAt,
+			Comments:   dtoCom,
 		}
 
 		switch ci.Type {

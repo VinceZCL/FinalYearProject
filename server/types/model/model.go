@@ -40,6 +40,17 @@ type CheckIn struct {
 	TeamID     *uint   `gorm:"index" json:"teamID"`
 	User       User    `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"user"`
 	Team       *Team   `gorm:"foreignKey:TeamID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"team"`
+
+	Comments []Comment `gorm:"foreignKey:CheckinID" json:"comments"`
+}
+
+type Comment struct {
+	gorm.Model
+	UserID    uint   `gorm:"not null;index" json:"userID"`
+	CheckinID uint   `gorm:"not null;index" json:"checkinID"`
+	TeamID    uint   `gorm:"not null;index" json:"teamID"`
+	Item      string `gorm:"size:255;not null" json:"item"`
+	User      User   `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"user"`
 }
 
 func (User) TableName() string {
@@ -90,6 +101,22 @@ func (c *CheckIn) BeforeCreate(tx *gorm.DB) (err error) {
 
 // BeforeSave ensures UpdatedAt is in UTC
 func (c *CheckIn) BeforeSave(tx *gorm.DB) (err error) {
+	c.UpdatedAt = time.Now().UTC()
+	return
+}
+
+func (Comment) TableName() string {
+	return "fyp_scrum_comments"
+}
+
+// BeforeCreate ensures the CreatedAt is in UTC
+func (c *Comment) BeforeCreate(tx *gorm.DB) (err error) {
+	c.CreatedAt = time.Now().UTC()
+	return
+}
+
+// BeforeSave ensures UpdatedAt is in UTC
+func (c *Comment) BeforeSave(tx *gorm.DB) (err error) {
 	c.UpdatedAt = time.Now().UTC()
 	return
 }

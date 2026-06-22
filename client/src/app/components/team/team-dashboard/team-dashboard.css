@@ -1,6 +1,6 @@
-/* ======================
+/* ==========================================================================
    TOP BAR
-   ====================== */
+   ========================================================================== */
 .top-bar {
   max-width: 1100px;
   margin: 0 auto 2.4rem;
@@ -56,9 +56,53 @@
   transform: rotate(180deg);
 }
 
-/* ======================
-   MAIN CONTENT
-   ====================== */
+/* ==========================================================================
+   DATE CONTROLS
+   ========================================================================== */
+.date-controls {
+  max-width: 1100px;
+  margin: 0 auto 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.date-controls input[type="date"] {
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  border: 1px solid var(--border-soft);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+}
+
+.date-controls input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.8;
+  cursor: pointer;
+  transform: scale(1.2);
+  padding-left: 12px;
+}
+
+.date-controls button {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.date-controls button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================================================================
+   MAIN CONTENT & FEED PLACEHOLDER
+   ========================================================================== */
 .content {
   max-width: 1100px;
   margin: 0 auto;
@@ -84,26 +128,327 @@
   font-size: 1rem;
 }
 
-/* ======================
-   SIDEBAR
-   ====================== */
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+/* ==========================================================================
+   CHECK-IN CARD & FEED LISTS
+   ========================================================================== */
+.checkin-card {
+  padding: 1.8rem;
+  border-radius: 20px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.checkin-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+}
+
+.checkin-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.4rem;
+}
+
+.checkin-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.checkin-header .date {
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+.checkin-section {
+  margin-bottom: 1.4rem;
+}
+
+.checkin-section:last-child {
+  margin-bottom: 0;
+}
+
+.checkin-section h4 {
+  margin: 0 0 0.6rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.checkin-section ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Base list item setup for yesterday/today/blockers entries */
+.checkin-feed-item {
+  position: relative;
+  padding-left: 1.2rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.checkin-feed-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Custom indicator bullets */
+.checkin-feed-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-secondary);
+}
+
+/* Blockers specific styling overrides */
+.checkin-section.blockers h4 {
+  color: var(--accent-primary);
+}
+
+.checkin-section.blockers .checkin-feed-item::before {
+  background: var(--accent-primary);
+}
+
+/* ==========================================================================
+   ITEM CONTENT LINE & ACTIONS (JIRA / INLINE TOGGLE)
+   ========================================================================== */
+.checkin-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.item-text {
+  flex: 1;
+}
+
+.item-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Inline Comment Toggle Button */
+.comment-inline-toggle {
+  background: none;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--text-main);
+  cursor: pointer;
+  opacity: 0.7;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.comment-inline-toggle:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.comment-inline-toggle .arrow {
+  font-size: 0.65rem;
+  width: 10px;
+  display: inline-block;
+}
+
+.comment-inline-toggle .comment-icon {
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+}
+
+.comment-inline-toggle .count {
+  font-weight: 600;
+}
+
+/* Jira Badges */
+.jira-link {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-soft);
+  text-decoration: none;
+  color: var(--accent-secondary);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.jira-link:hover {
+  background: var(--accent-secondary);
+  color: #000;
+  transform: translateY(-1px);
+}
+
+.checkin-section.blockers .jira-link {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.checkin-section.blockers .jira-link:hover {
+  background: var(--accent-primary);
+  color: #000;
+}
+
+/* ==========================================================================
+   COMMENTS EXPANSION DRAWER
+   ========================================================================== */
+.comment-container {
+  display: block;
+  width: 100%;
+}
+
+.comment-section {
+  margin-top: 1rem;
+}
+
+.comment-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.comment-list .comment-item {
+  padding: 0.9rem 1rem !important; /* Ensure correct custom padding box layout */
+  margin-bottom: 0.75rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-soft);
+}
+
+/* Prevent parent list dots from showing inside comment rows */
+.comment-list .comment-item::before {
+  content: none !important;
+}
+
+.comment-list .comment-item:hover {
+  background: rgba(255, 255, 255, 0.10);
+}
+
+.comment-item:last-child {
+  margin-bottom: 0;
+}
+
+.comment-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.comment-meta .author {
+  font-weight: 600;
+}
+
+.comment-meta .timestamp {
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+.comment-body {
+  line-height: 1.5;
+  opacity: 0.95;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Comment Editor Form */
+.comment-form {
+  margin-top: 1rem;
+}
+
+.comment-form textarea {
+  width: 100%;
+  min-height: 90px;
+  resize: vertical;
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--border-soft);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  font: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.comment-form textarea:focus {
+  outline: none;
+  border-color: var(--accent-secondary);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(100, 120, 255, 0.2);
+}
+
+.comment-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.comment-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.comment-actions button {
+  padding: 0.65rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+  color: #000;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.comment-actions button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+.comment-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   SIDEBAR COMPONENTS
+   ========================================================================== */
 .sidebar {
   position: fixed;
   inset: 0 0 0 auto;
   width: 340px;
   max-width: 90vw;
-
   background: var(--bg-panel);
   border-left: 1px solid var(--border-soft);
   backdrop-filter: blur(14px);
-
   transform: translateX(100%);
   transition: transform 0.3s ease;
   z-index: 30;
-
   display: block;
   flex-direction: column;
-
   height: 100vh;
   overflow-y: auto;
 }
@@ -130,10 +475,7 @@
   padding: 1.5rem;
 }
 
-/* ======================
-   MEMBER LIST
-   ====================== */
-
+/* Member List inside Sidebar */
 .member-section {
   display: flex;
   flex-direction: column;
@@ -151,7 +493,7 @@
   grid-template-columns: 1fr auto auto;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.6rem 0.75rem; /* 👈 add left/right padding */
+  padding: 0.6rem 0.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -183,15 +525,11 @@
   color: var(--accent-primary);
 }
 
-/* ======================
-   ADD USER (SIDEBAR)
-   ====================== */
+/* Add User Input Form inside Sidebar */
 .add-user-section {
-  /* Remove margin-top: auto */
-  padding-top: 1rem; /* small spacing after members */
+  padding-top: 1rem;
   border-top: 1px solid var(--border-soft);
 }
-
 
 .add-user-section h3 {
   font-size: 1rem;
@@ -205,7 +543,8 @@
 }
 
 .add-member input {
-  width: 80%;
+  width: 100%;
+  box-sizing: border-box;
   padding: 0.9rem 1.2rem;
   border-radius: 14px;
   border: 1px solid var(--border-soft);
@@ -214,9 +553,7 @@
   font-size: 1rem;
   backdrop-filter: blur(10px);
   outline: none;
-  transition: border-color 0.2s ease,
-              box-shadow 0.2s ease,
-              background 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .add-member input::placeholder {
@@ -229,26 +566,21 @@
   box-shadow: 0 0 0 3px rgba(100, 120, 255, 0.25);
 }
 
-/* ======================
-   DROPDOWN
-   ====================== */
+/* Dropdown Search Results Autocomplete */
 .dropdown {
   position: absolute;
   z-index: 50;
   top: calc(100% + 0.4rem);
   left: 0;
   right: 0;
-
   list-style: none;
   margin: 0;
   padding: 0.3rem 0;
-
   background: var(--bg-panel);
   border: 1px solid var(--border-soft);
   border-radius: 14px;
   backdrop-filter: blur(12px);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-
   max-height: 260px;
   overflow-y: auto;
 }
@@ -272,17 +604,36 @@
   opacity: 0.7;
 }
 
-/* ======================
-   MODAL
-   ====================== */
+/* Action Delete Cross Buttons */
+.delete-btn {
+  background: none;
+  border: none;
+  color: var(--accent-primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  padding: 0;
+}
+
+.delete-btn:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.delete-btn:focus {
+  outline: none;
+}
+
+/* ==========================================================================
+   MODAL WINDOW DIALOGS
+   ========================================================================== */
 .modal-backdrop {
   position: fixed;
   inset: 0;
   z-index: 40;
-
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(2px);
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -293,12 +644,10 @@
   width: 440px;
   max-width: 100%;
   padding: 1.8rem;
-
   background: var(--bg-panel);
   border: 1px solid var(--border-soft);
   border-radius: 18px;
   backdrop-filter: blur(14px);
-
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
 }
 
@@ -313,9 +662,6 @@
   opacity: 0.85;
 }
 
-/* ======================
-   MODAL ACTIONS
-   ====================== */
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -344,243 +690,11 @@
 }
 
 .actions .primary {
-  background: linear-gradient(
-    135deg,
-    var(--accent-secondary),
-    var(--accent-primary)
-  );
+  background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
   color: #000;
 }
 
 .actions .danger {
-  background: linear-gradient(
-    135deg,
-    var(--accent-primary),
-    #ff9aa2
-  );
+  background: linear-gradient(135deg, var(--accent-primary), #ff9aa2);
   color: #000;
-}
-
-/* ======================
-   CHECK-IN FEED
-   ====================== */
-
-.feed {
-  display: flex;
-  flex-direction: column;
-  gap: 1.8rem;
-}
-
-/* ----------------------
-   CHECK-IN CARD
-   ---------------------- */
-.checkin-card {
-  padding: 1.8rem;
-  border-radius: 20px;
-  background: var(--bg-panel);
-  border: 1px solid var(--border-soft);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.checkin-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
-}
-
-/* ----------------------
-   HEADER
-   ---------------------- */
-.checkin-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 1.4rem;
-}
-
-.checkin-header h3 {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.checkin-header .date {
-  font-size: 0.85rem;
-  opacity: 0.6;
-}
-
-/* ----------------------
-   SECTION BLOCK
-   ---------------------- */
-.checkin-section {
-  margin-bottom: 1.4rem;
-}
-
-.checkin-section:last-child {
-  margin-bottom: 0;
-}
-
-.checkin-section h4 {
-  margin: 0 0 0.6rem;
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  font-weight: 700;
-  opacity: 0.7;
-}
-
-/* ----------------------
-   LIST STYLE
-   ---------------------- */
-.checkin-section ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.checkin-section li {
-  position: relative;
-  padding-left: 1.2rem;
-  margin-bottom: 0.5rem;
-  line-height: 1.5;
-  opacity: 0.9;
-}
-
-/* Custom bullet */
-.checkin-section li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.55rem;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-secondary);
-}
-
-/* ----------------------
-   BLOCKERS STYLE
-   ---------------------- */
-.checkin-section.blockers h4 {
-  color: var(--accent-primary);
-}
-
-.checkin-section.blockers li::before {
-  background: var(--accent-primary);
-}
-
-/* ----------------------
-   ITEM WITH JIRA
-   ---------------------- */
-.checkin-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-}
-
-.item-text {
-  flex: 1;
-}
-
-/* Jira badge/link */
-.jira-link {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-soft);
-  text-decoration: none;
-  color: var(--accent-secondary);
-  white-space: nowrap;
-  transition: all 0.2s ease;
-}
-
-.jira-link:hover {
-  background: var(--accent-secondary);
-  color: #000;
-  transform: translateY(-1px);
-}
-
-/* Optional: differentiate blockers Jira */
-.checkin-section.blockers .jira-link {
-  color: var(--accent-primary);
-  border-color: var(--accent-primary);
-}
-
-.checkin-section.blockers .jira-link:hover {
-  background: var(--accent-primary);
-  color: #000;
-}
-
-/* ======================
-   DELETE BUTTON (X)
-   ====================== */
-.delete-btn {
-  background: none;
-  border: none;
-  color: var(--accent-primary);
-  font-size: 1.2rem;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  padding: 0;
-}
-
-.delete-btn:hover {
-  opacity: 1;
-  transform: scale(1.2);
-}
-
-.delete-btn:focus {
-  outline: none;
-}
-
-/* ======================
-   DATE CONTROLS
-   ====================== */
-
-.date-controls {
-  max-width: 1100px;
-  margin: 0 auto 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.date-controls input[type="date"] {
-  padding: 0.8rem 1rem;
-  border-radius: 10px;
-  font-size: 1rem;
-  border: 1px solid var(--border-soft);
-  background: rgba(255,255,255,0.05);
-  color: var(--text-main);
-}
-
-/* Make calendar icon lighter */
-.date-controls input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-  opacity: 0.8;
-  cursor: pointer;
-  /* optional: slightly enlarge icon */
-  transform: scale(1.2);
-  padding-left: 12px;
-}
-
-.date-controls button {
-  padding: 0.5rem 1rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  background: transparent;
-  color: var(--text-main);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 1rem;
-}
-
-.date-controls button:hover {
-  background: rgba(255,255,255,0.08);
 }

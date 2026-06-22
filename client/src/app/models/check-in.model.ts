@@ -1,3 +1,5 @@
+import { Comment } from "./comment";
+
 export interface CheckIn {
     id: number;
     type: string;
@@ -9,6 +11,7 @@ export interface CheckIn {
     username: string;
     team_name: string;
     created_at: string;
+    comments: Comment[];
 }
 
 export interface CheckInsAPI {

@@ -8,14 +8,9 @@
     <h1>{{ team.name }}</h1>
 
     @if (isToday) {
-      <button
-        class="refresh-btn"
-        (click)="loadDate(todayDate)"
-        aria-label="Refresh"
-        title="Refresh"
-      >
-        ↻
-      </button>
+    <button class="refresh-btn" (click)="loadDate(todayDate)" aria-label="Refresh" title="Refresh">
+      ↻
+    </button>
     }
   </div>
 
@@ -68,7 +63,7 @@
         <h4>Yesterday</h4>
         <ul>
           @for (item of user.yesterday; track item.id) {
-          <li>
+          <li class="checkin-feed-item">
             <div class="checkin-item">
               <span class="item-text">{{ item.item }}</span>
 
@@ -77,7 +72,63 @@
                 {{ item.jira }}
               </a>
               }
+
+              <!-- New Comment Toggle Layout -->
+              <button class="comment-inline-toggle" type="button" (click)="toggleComments(item.id)"
+                title="View Comments">
+                <span class="arrow">{{ expandedComments.has(item.id) ? '▼' : '▶' }}</span>
+                <svg class="comment-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span class="count">({{ item.comments ? item.comments.length : 0 }})</span>
+              </button>
+
             </div>
+
+            <!-- COMMENT DRAWER (Sits comfortably underneath) -->
+            <div class="comment-container">
+              @if (expandedComments.has(item.id)) {
+              <div class="comment-section">
+
+                @if (item.comments && item.comments.length > 0) {
+                <ul class="comment-list">
+                  @for (comment of item.comments; track comment.id) {
+                  <li class="comment-item">
+                    <div class="comment-meta">
+                      <span class="author">{{ comment.username }}</span>
+                      <span class="timestamp">{{ comment.created_at | date:'medium' }}</span>
+                    </div>
+                    <div class="comment-body">
+                      {{ comment.item }}
+                    </div>
+                  </li>
+                  }
+                </ul>
+                }
+
+                @if (isToday) {
+
+                <div class="comment-form">
+
+                  <textarea [(ngModel)]="draftComments[item.id]" rows="3" placeholder="Add a comment..."></textarea>
+
+                  <div class="comment-actions">
+                    <button type="button" (click)="submitComment(item.id)"
+                      [disabled]="!draftComments[item.id]?.trim() || submitting[item.id]">
+                      {{ submitting[item.id] ? 'Submitting...' : 'Submit' }}
+                    </button>
+                  </div>
+
+                </div>
+
+                }
+
+              </div>
+
+              }
+
+            </div>
+
           </li>
           }
         </ul>
@@ -90,7 +141,7 @@
         <h4>Today</h4>
         <ul>
           @for (item of user.today; track item.id) {
-          <li>
+          <li class="checkin-feed-item">
             <div class="checkin-item">
               <span class="item-text">{{ item.item }}</span>
 
@@ -99,7 +150,63 @@
                 {{ item.jira }}
               </a>
               }
+
+              <!-- New Comment Toggle Layout -->
+              <button class="comment-inline-toggle" type="button" (click)="toggleComments(item.id)"
+                title="View Comments">
+                <span class="arrow">{{ expandedComments.has(item.id) ? '▼' : '▶' }}</span>
+                <svg class="comment-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span class="count">({{ item.comments ? item.comments.length : 0 }})</span>
+              </button>
+
             </div>
+
+            <!-- COMMENT DRAWER (Sits comfortably underneath) -->
+            <div class="comment-container">
+              @if (expandedComments.has(item.id)) {
+              <div class="comment-section">
+
+                @if (item.comments && item.comments.length > 0) {
+                <ul class="comment-list">
+                  @for (comment of item.comments; track comment.id) {
+                  <li class="comment-item">
+                    <div class="comment-meta">
+                      <span class="author">{{ comment.username }}</span>
+                      <span class="timestamp">{{ comment.created_at | date:'medium' }}</span>
+                    </div>
+                    <div class="comment-body">
+                      {{ comment.item }}
+                    </div>
+                  </li>
+                  }
+                </ul>
+                }
+
+                @if (isToday) {
+
+                <div class="comment-form">
+
+                  <textarea [(ngModel)]="draftComments[item.id]" rows="3" placeholder="Add a comment..."></textarea>
+
+                  <div class="comment-actions">
+                    <button type="button" (click)="submitComment(item.id)"
+                      [disabled]="!draftComments[item.id]?.trim() || submitting[item.id]">
+                      {{ submitting[item.id] ? 'Submitting...' : 'Submit' }}
+                    </button>
+                  </div>
+
+                </div>
+
+                }
+
+              </div>
+
+              }
+
+            </div>
+
           </li>
           }
         </ul>
@@ -112,7 +219,7 @@
         <h4>Blockers</h4>
         <ul>
           @for (item of user.blockers; track item.id) {
-          <li>
+          <li class="checkin-feed-item">
             <div class="checkin-item">
               <span class="item-text">{{ item.item }}</span>
 
@@ -121,7 +228,63 @@
                 {{ item.jira }}
               </a>
               }
+
+              <!-- New Comment Toggle Layout -->
+              <button class="comment-inline-toggle" type="button" (click)="toggleComments(item.id)"
+                title="View Comments">
+                <span class="arrow">{{ expandedComments.has(item.id) ? '▼' : '▶' }}</span>
+                <svg class="comment-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span class="count">({{ item.comments ? item.comments.length : 0 }})</span>
+              </button>
+
             </div>
+
+            <!-- COMMENT DRAWER (Sits comfortably underneath) -->
+            <div class="comment-container">
+              @if (expandedComments.has(item.id)) {
+              <div class="comment-section">
+
+                @if (item.comments && item.comments.length > 0) {
+                <ul class="comment-list">
+                  @for (comment of item.comments; track comment.id) {
+                  <li class="comment-item">
+                    <div class="comment-meta">
+                      <span class="author">{{ comment.username }}</span>
+                      <span class="timestamp">{{ comment.created_at | date:'medium' }}</span>
+                    </div>
+                    <div class="comment-body">
+                      {{ comment.item }}
+                    </div>
+                  </li>
+                  }
+                </ul>
+                }
+
+                @if (isToday) {
+
+                <div class="comment-form">
+
+                  <textarea [(ngModel)]="draftComments[item.id]" rows="3" placeholder="Add a comment..."></textarea>
+
+                  <div class="comment-actions">
+                    <button type="button" (click)="submitComment(item.id)"
+                      [disabled]="!draftComments[item.id]?.trim() || submitting[item.id]">
+                      {{ submitting[item.id] ? 'Submitting...' : 'Submit' }}
+                    </button>
+                  </div>
+
+                </div>
+
+                }
+
+              </div>
+
+              }
+
+            </div>
+
           </li>
           }
         </ul>
@@ -139,9 +302,9 @@
   <div class="feed-placeholder">
     <h2>Team Updates</h2>
     @if (isToday) {
-      <p>Status updates from team members will appear here.</p>
+    <p>Status updates from team members will appear here.</p>
     } @else {
-      <p>No updates available for date {{selectedDate}}.</p>
+    <p>No updates available for date {{selectedDate}}.</p>
     }
   </div>
 
@@ -161,6 +324,7 @@
   <!-- Members -->
   <section class="member-section">
     <h3>Members</h3>
+    @if (members) {
     @if (members.length > 0) {
     <ul class="member-list">
       @for (m of members; track m.userID) {
@@ -185,6 +349,7 @@
     </ul>
     } @else {
     <p class="hint">No members yet.</p>
+    }
     }
   </section>
 

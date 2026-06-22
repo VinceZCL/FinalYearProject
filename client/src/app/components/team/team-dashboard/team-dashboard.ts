@@ -12,6 +12,8 @@ import { CheckIns } from '../../../models/check-in.model';
 import { DatePipe } from '@angular/common';
 import { environment } from '../../../../environments/environments';
 import { Title } from '@angular/platform-browser';
+import { CommentService } from '../../../services/comment';
+import { NewComment } from '../../../models/comment';
 
 @Component({
   selector: 'app-team-dashboard',
@@ -27,6 +29,7 @@ export class TeamDashboard implements OnInit {
   private auth = inject(AuthService);
   private userSvc = inject(UserService);
   private ciSvc = inject(CheckInService);
+  private comSvc = inject(CommentService);
   private route = inject(ActivatedRoute);
   private cd = inject(ChangeDetectorRef);
   private router = inject(Router);
@@ -59,6 +62,10 @@ export class TeamDashboard implements OnInit {
   selectedDate: string = this.todayDate;
   isToday: boolean = true;
 
+  expandedComments = new Set<number>();
+  draftComments: Record<number, string> = {};
+  submitting: { [cid: number]: boolean} = {}
+
   ngOnInit(): void {
     this.teamID = Number(this.route.snapshot.paramMap.get("teamID"));
     this.auth.claim$.subscribe(claims => {
@@ -67,30 +74,31 @@ export class TeamDashboard implements OnInit {
     this.loadDate(this.selectedDate);
 
     this.dateControl = new FormControl(this.selectedDate);
-        this.dateControl.valueChanges.subscribe(value => {
-          this.isToday = false;
-          this.selectedDate = value;
-          this.loadDate(value);
-          this.cd.detectChanges();
-        });
+    this.dateControl.valueChanges.subscribe(value => {
+      this.isToday = false;
+      this.selectedDate = value;
+      this.loadDate(value);
+      this.cd.detectChanges();
+    });
 
+  }
+
+  loadDate(date: string): void {
+    this.isToday = (date == this.todayDate);
+    this.teamSvc.getTeam(this.teamID).subscribe({
+      next: (resp: Team) => {
+        this.team = resp;
+        this.title.setTitle(`${this.team.name} | Team`)
+        this.getCIs(date);
+        this.getMembers();
+        this.cd.detectChanges();
+      },
+      error: (err: Error) => {
+        console.log(err.details);
+        this.router.navigate(["/404"]);
       }
-
-    loadDate(date: string): void {
-      this.isToday = (date == this.todayDate);
-      this.teamSvc.getTeam(this.teamID).subscribe({
-        next: (resp: Team) => {
-          this.team = resp;
-          this.title.setTitle(`${this.team.name} | Team`)
-          this.getCIs(date);
-          this.getMembers();
-        },
-        error: (err: Error) => {
-          console.log(err.details);
-          this.router.navigate(["/404"]);
-        }
-      });
-    }
+    });
+  }
 
   getMembers(): void {
     this.teamSvc.getMembers(this.teamID).subscribe({
@@ -120,9 +128,43 @@ export class TeamDashboard implements OnInit {
       next: (resp: CheckIns[]) => {
         this.cis = resp.sort(
           (a, b) => {
-            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+            return Date.parse(b.created_at) - Date.parse(a.created_at);
           }
         );
+
+        this.cis.forEach( (ci) => {
+          
+          ci.yesterday?.forEach((ytd) => {
+            if (ytd.comments?.length) {
+              ytd.comments.sort(
+                (a, b) => {
+                return Date.parse(a.created_at) - Date.parse(b.created_at)
+              }
+              )
+            }
+          });
+
+          ci.today?.forEach((td) => {
+            if (td.comments?.length) {
+              td.comments.sort(
+                (a, b) => {
+                return Date.parse(a.created_at) - Date.parse(b.created_at)
+              }
+              )
+            }
+          });
+
+          ci.blockers?.forEach((bl) => {
+            if (bl.comments?.length) {
+              bl.comments.sort(
+                (a, b) => {
+                return Date.parse(a.created_at) - Date.parse(b.created_at)
+              }
+              )
+            }
+          });
+
+        });
         this.ciUID = new Set(resp.map(ci => ci.userID));
       },
       error: (err: Error) => {
@@ -184,6 +226,7 @@ export class TeamDashboard implements OnInit {
     this.teamSvc.newMember(payload).subscribe({
       next: (resp: MemberAPI) => {
         this.getMembers();
+        this.loadDate(this.selectedDate);
       },
       error: (err: Error) => {
         console.log(err.details);
@@ -223,6 +266,40 @@ export class TeamDashboard implements OnInit {
   goToToday(): void {
     this.isToday = true;
     this.dateControl.setValue(this.todayDate);
+  }
+
+  toggleComments(cid: number): void {
+    if (this.expandedComments.has(cid)) {
+      this.expandedComments.delete(cid);
+      return;
+    }
+    this.expandedComments.add(cid);
+  }
+
+  submitComment(cid: number): void {
+    let item = this.draftComments[cid].trim() ?? "";
+    if (!item || this.submitting[cid]) return;
+
+    this.submitting[cid] = true;
+
+    let comment: NewComment = {
+      userID: this.uid,
+      checkinID: cid,
+      teamID: this.teamID,
+      item: item,
+    };
+
+    this.comSvc.newCommment(comment).subscribe({
+      next: () => {
+        this.draftComments[cid] = "";
+        this.submitting[cid] = false;
+        this.loadDate(this.todayDate);
+      },
+      error: (err: Error) => {
+        console.error(err);
+        this.submitting[cid] = false;
+      }
+    });
   }
 
 }

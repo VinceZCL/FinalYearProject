@@ -18,7 +18,7 @@ ALTER TABLE fyp_scrum_teams
         REFERENCES fyp_scrum_users(id)
         ON UPDATE CASCADE
         ON DELETE SET NULL;
---rollback ALTER TABLE fyp_scrum_teams DROP CONSTRAINT uq_fyp_scrum_team_name_creator;
+--rollback ALTER TABLE fyp_scrum_teams DROP CONSTRAINT fk_fyp_scrum_team_name_creator;
 
 --changeset fyp-scrum:004-fyp-scrum-teams-table-unique-constraint runOnChange:false
 --comment: Create fyp scrum teams table unique constraint
@@ -38,7 +38,7 @@ ALTER TABLE fyp_scrum_user_teams
 --rollback ALTER TABLE fyp_scrum_user_teams DROP CONSTRAINT fk_fyp_scrum_user_teams_user;
 
 --changeset fyp-scrum:006-fyp-scrum-user-teams-table-fk-team-constraint runOnChange:false
---comment: Create fyp scrum teams table fk user constraint
+--comment: Create fyp scrum teams table fk team constraint
 ALTER TABLE fyp_scrum_user_teams
     ADD CONSTRAINT fk_fyp_scrum_user_teams_team
         FOREIGN KEY (team_id)
@@ -81,4 +81,57 @@ CREATE INDEX idx_fyp_scrum_checkins_team_id ON fyp_scrum_checkins(team_id);
 --comment: Create fyp scrum checkin table deleted index
 CREATE INDEX idx_fyp_scrum_checkins_deleted_at ON fyp_scrum_checkins(deleted_at);
 --rollback DROP INDEX idx_fyp_scrum_checkins_deleted_at;
---liquibase formatted sql
+
+--changeset fyp-scrum:012-fyp-scrum-comments-table-fk-user-constraint runOnChange:false
+--comment: Create fyp scrum comments table fk user constraint
+ALTER TABLE fyp_scrum_comments
+    ADD CONSTRAINT fk_fyp_scrum_comments_user
+        FOREIGN KEY (user_id)
+        REFERENCES fyp_scrum_users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE;
+--rollback ALTER TABLE fyp_scrum_comments DROP CONSTRAINT fk_fyp_scrum_comments_user;
+
+--changeset fyp-scrum:013-fyp-scrum-comments-table-fk-checkin-user-constraint runOnChange:false
+--comment: Create fyp scrum comments table fk checkin user constraint
+ALTER TABLE fyp_scrum_comments
+    ADD CONSTRAINT fk_fyp_scrum_comments_checkin
+        FOREIGN KEY (checkin_id)
+        REFERENCES fyp_scrum_checkins(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE;
+--rollback ALTER TABLE fyp_scrum_comments DROP CONSTRAINT fk_fyp_scrum_comments_checkin_user;
+
+--changeset fyp-scrum:014-fyp-scrum-comments-table-fk-team-constraint runOnChange:false
+--comment: Create fyp scrum comments table fk team constraint
+ALTER TABLE fyp_scrum_comments
+    ADD CONSTRAINT fk_fyp_scrum_comments_team
+        FOREIGN KEY (team_id)
+        REFERENCES fyp_scrum_teams(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE;
+--rollback ALTER TABLE fyp_scrum_comments DROP CONSTRAINT fk_fyp_scrum_comments_team;
+
+--changeset fyp-scrum:015-fyp-scrum-comments-table-user-index runOnChange:false
+--comment: Create fyp scrum comments table user id index
+CREATE INDEX idx_fyp_scrum_comments_user_id
+    ON fyp_scrum_comments(user_id);
+--rollback DROP INDEX idx_fyp_scrum_comments_user_id;
+
+--changeset fyp-scrum:016-fyp-scrum-comments-table-checkin-user-index runOnChange:false
+--comment: Create fyp scrum comments table checkin user id index
+CREATE INDEX idx_fyp_scrum_comments_checkin_id
+    ON fyp_scrum_comments(checkin_id);
+--rollback DROP INDEX idx_fyp_scrum_comments_checkin_user_id;
+
+--changeset fyp-scrum:017-fyp-scrum-comments-table-team-index runOnChange:false
+--comment: Create fyp scrum comments table team id index
+CREATE INDEX idx_fyp_scrum_comments_team_id
+    ON fyp_scrum_comments(team_id);
+--rollback DROP INDEX idx_fyp_scrum_comments_team_id;
+
+--changeset fyp-scrum:018-fyp-scrum-comments-table-deleted-index runOnChange:false
+--comment: Create fyp scrum comments table deleted index
+CREATE INDEX idx_fyp_scrum_comments_deleted_at
+    ON fyp_scrum_comments(deleted_at);
+--rollback DROP INDEX idx_fyp_scrum_comments_deleted_at;

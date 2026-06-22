@@ -97,7 +97,7 @@ func NewCheckIn(c echo.Context) error {
 		return tools.ErrBadRequest(err.Error())
 	}
 	if err := req.Validate(); err != nil {
-		c.Logger().Errorf("Handler | UserTeamHandler | Invalid Request: %w", err)
+		c.Logger().Errorf("Handler | CheckInHandler | Invalid Request: %w", err)
 		return tools.ErrBadRequest(err.Error())
 	}
 

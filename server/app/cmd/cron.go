@@ -16,9 +16,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// 11 AM
-// 3 PM
-
 // TeamsMessage represents the payload for Teams workflow webhook
 type TeamsMessage struct {
 	Type        string `json:"type"`
@@ -47,6 +44,15 @@ var empty = []string{
 	"Are we cooking or are we cooked?",
 }
 
+type block struct {
+	user    string
+	blocker string
+}
+
+var blocks []block
+var txt string
+var subtxt string
+
 func init() {
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "cron",
@@ -72,11 +78,28 @@ func init() {
 
 			numCI := len(cis)
 
-			txt := ""
 			if numCI < 1 {
 				txt = fmt.Sprintf("Nobody submitted their Daily Check-Ins.\n%s\n", empty[rand.Intn(len(empty))])
 			} else {
-				txt = fmt.Sprintf("Only %d has submitted their Daily Check-Ins.\nIf you are not one of them, it is time to submit yours.\n", numCI)
+				for _, v := range cis {
+					if len(v.Blockers) >= 1 {
+						for _, b := range v.Blockers {
+							blocks = append(blocks, block{
+								user:    v.Username,
+								blocker: b.Item,
+							})
+						}
+					}
+				}
+				if len(blocks) < 1 {
+					subtxt = "No blockers found.\n"
+				} else {
+					subtxt = fmt.Sprintf("\n%d blockers found:\n", len(blocks))
+					for _, v := range blocks {
+						subtxt += fmt.Sprintf("• %s: %s\n", v.user, v.blocker)
+					}
+				}
+				txt = fmt.Sprintf("%d has submitted their Daily Check-Ins.\n%s", numCI, subtxt)
 			}
 
 			// Build the card
@@ -105,7 +128,6 @@ func init() {
 						"wrap": true,
 					},
 				},
-				// 👇 Button goes here (IMPORTANT: outside Body)
 				Actions: []interface{}{
 					map[string]interface{}{
 						"type":  "Action.OpenUrl",

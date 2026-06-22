@@ -51,14 +51,15 @@ func RegisterRoutes(e echo.Echo) {
 	protected.POST("/checkins", handler.NewCheckIn)
 	protected.POST("/checkins/bulk", handler.BulkCheckIn)
 
+	// ADMIN USER HANDLING
 	protected.POST("/users", handler.NewUser)
-
 	protected.PUT("/users/:id", handler.UpdateUser)
 	protected.PATCH("/users/:id/delete", handler.DeactivateUser)
-
 	protected.DELETE("/teams/:tid/member/:mid", handler.DeleteMember)
 
 	protected.PUT("/checkins/user/:id", handler.EditCheckIns)
+
+	protected.POST("/comments", handler.NewComment)
 
 	setupStatic(e)
 }

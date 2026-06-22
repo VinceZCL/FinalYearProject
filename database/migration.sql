@@ -56,3 +56,18 @@ CREATE TABLE IF NOT EXISTS fyp_scrum_checkins (
     team_id BIGINT
 );
 --rollback DROP TABLE IF EXISTS fyp_scrum_checkins;
+
+--changeset fyp-scrum:007-create-fyp-scrum-comments-table runOnChange:false
+--comment: Create fyp scrum comments table
+CREATE TABLE IF NOT EXISTS fyp_scrum_comments (
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
+    deleted_at TIMESTAMP,
+
+    user_id BIGINT NOT NULL,
+    checkin_id BIGINT NOT NULL,
+    team_id BIGINT NOT NULL,
+    item VARCHAR(255) NOT NULL
+);
+--rollback DROP TABLE IF EXISTS fyp_scrum_comments

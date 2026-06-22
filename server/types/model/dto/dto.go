@@ -29,16 +29,17 @@ type Team struct {
 }
 
 type CheckIn struct {
-	ID         uint      `json:"id"`
-	Type       string    `json:"type"`
-	Item       string    `json:"item"`
-	Jira       *string   `json:"jira"`
-	Visibility string    `json:"visibility"`
-	TeamID     *uint     `json:"teamID"`
-	UserID     uint      `json:"userID"`
-	Username   string    `json:"username"`
-	TeamName   *string   `json:"team_name"`
-	CreatedAt  time.Time `json:"created_at"`
+	ID         uint       `json:"id"`
+	Type       string     `json:"type"`
+	Item       string     `json:"item"`
+	Jira       *string    `json:"jira"`
+	Visibility string     `json:"visibility"`
+	TeamID     *uint      `json:"teamID"`
+	UserID     uint       `json:"userID"`
+	Username   string     `json:"username"`
+	TeamName   *string    `json:"team_name"`
+	CreatedAt  time.Time  `json:"created_at"`
+	Comments   []*Comment `json:"comments"`
 }
 
 type DailyCheckIn struct {
@@ -48,4 +49,14 @@ type DailyCheckIn struct {
 	Yesterday []*CheckIn `json:"yesterday,omitempty"`
 	Today     []*CheckIn `json:"today,omitempty"`
 	Blockers  []*CheckIn `json:"blockers,omitempty"`
+}
+
+type Comment struct {
+	ID        uint      `json:"id"`
+	UserID    uint      `json:"userID"`
+	Username  string    `json:"username"`
+	Item      string    `json:"item"`
+	CheckinID uint      `json:"checkinID"`
+	TeamID    uint      `json:"teamID"`
+	CreatedAt time.Time `json:"created_at"`
 }

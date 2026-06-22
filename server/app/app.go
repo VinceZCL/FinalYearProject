@@ -69,6 +69,7 @@ func SetupApp(a *app) *app {
 			Team:     repository.NewTeamRepository(a.Client.DBClient),
 			CheckIn:  repository.NewCheckInRepository(a.Client.DBClient),
 			Auth:     repository.NewAuthRepository(a.Client.DBClient),
+			Comment:  repository.NewCommentRepository(a.Client.DBClient),
 		}
 	}
 
@@ -79,6 +80,7 @@ func SetupApp(a *app) *app {
 			UserTeam: *service.NewUserTeamService(a.Repos.UserTeam),
 			Team:     *service.NewTeamService(a.Repos.Team),
 			CheckIn:  *service.NewCheckInService(a.Repos.CheckIn),
+			Comment:  *service.NewCommentService(a.Repos.Comment),
 			Auth:     *service.NewAuthService(a.Repos.Auth, a.Repos.User),
 		}
 	}

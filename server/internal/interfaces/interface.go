@@ -11,6 +11,7 @@ type Repositories struct {
 	Team     repository.TeamRepository
 	CheckIn  repository.CheckInRepository
 	Auth     repository.AuthRepository
+	Comment  repository.CommentRepository
 }
 
 type Services struct {
@@ -19,4 +20,5 @@ type Services struct {
 	Team     service.TeamService
 	CheckIn  service.CheckInService
 	Auth     service.AuthService
+	Comment  service.CommentService
 }
