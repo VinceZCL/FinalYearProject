@@ -323,6 +323,7 @@
 
 .user-info .statusActive {
   color: var(--teal);
+  border-color: rgba(139, 213, 202, 0.25);
 }
 
 .user-info .statusDeactivated {
