@@ -1,35 +1,50 @@
 :host {
-  --bg: #0b1026;
-  --accent: #ff6f91;
-  --accent-2: #4dd599;
-  --text: #f5f7ff;
+  /* Catppuccin Macchiato core */
+  --bg: #24273a;          /* base */
+  --surface: #363a4f;     /* surface0 */
+  --surface-2: #1e2030;   /* mantle */
+
+  --accent: #c6a0f6;      /* mauve */
+  --accent-2: #8bd5ca;    /* teal */
+
+  --text: #cad3f5;        /* text */
+  --muted: #a5adcb;       /* subtext0 */
 
   display: block;
-  height: 80vh;  /* Ensures the host component height is strictly limited to the viewport height */
+  height: 80vh;
   width: 100%;
-  background: radial-gradient(circle at top, #1a1f4a, var(--bg));
+  /* background: radial-gradient(circle at top, #1e2030, var(--bg)); */
   color: var(--text);
-  overflow: hidden;  /* Hide overflow to prevent vertical scrolling */
+  overflow: hidden;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-family: "Comic Sans MS", "Segoe UI", sans-serif;
+  font-family:
+    "Comic Sans MS",
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
 }
 
-/* Star background */
+/* Star background (softened Catppuccin glow) */
 .stars {
   position: absolute;
   inset: 0;
   pointer-events: none;
+
   background:
-    radial-gradient(2px 2px at 20% 30%, #fff, transparent),
-    radial-gradient(2px 2px at 70% 80%, #fff, transparent),
-    radial-gradient(1.5px 1.5px at 40% 60%, #fff, transparent),
-    radial-gradient(1.5px 1.5px at 90% 20%, #fff, transparent),
-    radial-gradient(1px 1px at 10% 90%, #fff, transparent);
-  opacity: 0.6;
+    radial-gradient(2px 2px at 20% 30%, rgba(202, 211, 245, 0.7), transparent),
+    radial-gradient(2px 2px at 70% 80%, rgba(198, 160, 246, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 40% 60%, rgba(139, 213, 202, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 90% 20%, rgba(202, 211, 245, 0.4), transparent),
+    radial-gradient(1px 1px at 10% 90%, rgba(165, 173, 203, 0.4), transparent);
+
+  opacity: 0.5;
+
   animation: drift 25s linear infinite;
 }
 
@@ -45,10 +60,16 @@
 .container {
   position: relative;
   text-align: center;
-  padding: 1rem; /* Reduced padding to ensure no overflow */
+  padding: 1rem;
   max-width: 600px;
-  box-sizing: border-box; /* Ensures padding is part of the total width/height */
-  overflow: hidden;  /* Prevent any overflow within the container */
+  box-sizing: border-box;
+  /* background: rgba(54, 58, 79, 0.55);
+  border: 1px solid rgba(73, 77, 100, 0.6);
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(202, 211, 245, 0.03); */
 }
 
 /* 404 heading */
@@ -56,10 +77,12 @@ h1 {
   font-size: clamp(3.5rem, 10vw, 6rem);
   margin-bottom: 0.5rem;
   animation: wobble 3s ease-in-out infinite;
+  color: var(--text);
 }
 
 h1 span {
   color: var(--accent);
+  text-shadow: 0 0 18px rgba(198, 160, 246, 0.25);
 }
 
 @keyframes wobble {
@@ -79,6 +102,7 @@ h1 span {
   font-size: 4rem;
   margin: 1rem 0;
   animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.4));
 }
 
 @keyframes float {
@@ -86,21 +110,24 @@ h1 span {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-10px); /* Adjusted to keep the astronaut within bounds */
+    transform: translateY(-10px);
   }
 }
 
-/* Adjust subtitle and joke styles */
+/* Subtitle */
 .subtitle {
   font-size: 1.2rem;
+  color: var(--text);
   opacity: 0.9;
   margin-bottom: 0.5rem;
 }
 
+/* Joke */
 .joke {
   font-size: 1rem;
-  opacity: 0.75;
-  margin-bottom: 1rem; /* Reduced margin to prevent excessive space */
+  color: var(--muted);
+  opacity: 0.9;
+  margin-bottom: 1rem;
 }
 
 /* Button */
@@ -109,14 +136,22 @@ h1 span {
   padding: 0.9rem 1.6rem;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color: #000;
-  font-weight: bold;
+  color: #1e2030;
+  font-weight: 700;
   text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(198, 160, 246, 0.15);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
 }
 
 .home-btn:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45);
+  transform: translateY(-3px);
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.45),
+    0 0 18px rgba(198, 160, 246, 0.25);
+  filter: brightness(1.05);
 }

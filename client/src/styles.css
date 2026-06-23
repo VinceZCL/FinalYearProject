@@ -1,38 +1,69 @@
-/* You can add global styles to this file, and also import other style files */
-/* src/styles.css or styles.scss */
 :root {
-  /* Background colors */
-  --bg-main: #0b1026;
-  --bg-soft: #121742;
-  --bg-panel: rgba(255, 255, 255, 0.05);
+  /* ==========================================================================
+     Backgrounds & Panels (Deeper, inkier blacks with rich indigo undertones)
+     ========================================================================== */
+  --bg-main:   #070510; /* Deeper, inkier abyss for massive contrast */
+  --bg-soft:   #100c22; /* Sharp, clean card/container backing */
+  --bg-panel:  rgba(29, 21, 56, 0.70); /* Increased opacity for glassmorphism readability */
 
-  /* Accent colors */
-  --accent-primary: #ff6f91;
-  --accent-secondary: #4dd599;
+  /* ==========================================================================
+     Semantic Accents (Realigned to your Red/Green intent with maximum pop)
+     ========================================================================== */
+  --accent-primary:   #ff5572; /* Neon Coral-Red (Alerts, Errors, Primary Callouts) */
+  --accent-secondary: #2ef0be; /* Hyper-Vivid Mint Green (Success, Validation, Secondary Actions) */
 
-  /* Text colors */
-  --text-main: #f5f7ff;
-  --text-muted: rgba(245, 247, 255, 0.7);
+  /* ==========================================================================
+     Text & Typography (Crisp, glowy, ultra-readable)
+     ========================================================================== */
+  --text-main:  #f0f2ff; /* Piercing, bright off-white */
+  --text-muted: #9ba3cf; /* Shifted slightly cooler for beautiful hierarchy */
 
-  /* Borders */
-  --border-soft: rgba(255, 255, 255, 0.12);
+  /* ==========================================================================
+     Borders & Dividers
+     ========================================================================== */
+  --border-soft: #44476a; /* High-contrast structural line */
+
+  /* ==========================================================================
+     Core Catppuccin Palette — Electrified & Boosted
+     ========================================================================== */
+  --rosewater: #ffc4bc; /* Warm, creamy pastel red */
+  --flamingo:  #ff9ebb; /* Saturated, vibrant pink-rose */
+  --pink:      #ff7be5; /* Hot cyberpunk pink */
+  --mauve:     #d79eff; /* Electric violet */
+  --red:       #ff5572; /* Tied to your primary accent */
+  --maroon:    #ff6b8b; /* Intense, rich crimson */
+  --peach:     #ff9e64; /* Energetic neon orange */
+  --yellow:    #ffea7f; /* Laser-beam yellow */
+  --green:     #86ff86; /* Radioactive green */
+  --teal:      #2ef0be; /* Tied to your secondary accent */
+  --sky:       #6ae3ff; /* Vivid electric sky blue */
+  --sapphire:  #4baeff; /* Deep, glowing sapphire */
+  --blue:      #7aa2ff; /* Crisp digital blue */
+  --lavender:  #b0b7ff; /* Hyper-clean periwinkle */
 }
 
-/* Global reset for body and html */
-body, html {
+/* Global reset */
+html,
+body {
+  height: 100%;
   margin: 0;
   padding: 0;
-  height: 100%;
-  width: 100%;
-  /* overflow: hidden; */
+  overscroll-behavior: none;
 }
 
-html, body {
-  height: 100%;
-  margin: 0;
-  overscroll-behavior: none; /* prevents bounce */
+body {
+  color: var(--text-main);
+  background: var(--bg-main);
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
+/* Subtle Macchiato background */
 body::before {
   content: "";
   position: fixed;
@@ -41,11 +72,21 @@ body::before {
   z-index: -1;
 
   background:
-    radial-gradient(circle at top, #1a1f4a, var(--bg-main)),
-    radial-gradient(1px 1px at 15% 20%, #ffffff, transparent),
-    radial-gradient(1px 1px at 80% 60%, #ffffff, transparent),
-    radial-gradient(1px 1px at 40% 90%, #ffffff, transparent);
-  opacity: 1;
+    radial-gradient(
+      circle at top,
+      var(--bg-main),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      var(--bg-soft),
+      transparent 40%
+    ),
+    linear-gradient(
+      180deg,
+      #1e2030 0%,
+      #24273a 100%
+    );
 }
 
 app-root {

@@ -1,3 +1,7 @@
+/* =========================================================
+   MACCHIATO GLASS FORM (REFINED)
+   ========================================================= */
+
 /* Container to center the form nicely */
 .formContainer {
   display: flex;
@@ -18,55 +22,78 @@ form {
   background: var(--bg-panel);
   border: 1px solid var(--border-soft);
   border-radius: 16px;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
 
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
 
   color: var(--text-main);
   font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+  position: relative;
+  overflow: hidden;
 }
 
-/* Text & password inputs */
+/* subtle glass glow layer */
+form::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at top left,
+    rgba(245, 189, 230, 0.08),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+/* Inputs */
 form input[type="text"],
 form input[type="email"],
 form input[type="password"] {
   padding: 0.85rem 1rem;
   border-radius: 12px;
   border: 1px solid var(--border-soft);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(30, 32, 48, 0.5);
   color: var(--text-main);
   font-size: 1rem;
   outline: none;
 
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 /* Placeholder */
 form input::placeholder {
-  color: rgba(245, 247, 255, 0.6);
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
 /* Focus state */
 form input:focus {
   border-color: var(--accent-secondary);
-  box-shadow: 0 0 6px rgba(77, 213, 153, 0.5);
-  background: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 0 3px rgba(139, 213, 202, 0.15),
+    0 0 12px rgba(139, 213, 202, 0.25);
+
+  background: rgba(36, 39, 58, 0.75);
 }
 
-/* Invalid state (NgClass) */
+/* Invalid state */
 form input.invalid {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 8px rgba(255, 111, 145, 0.5);
+  box-shadow:
+    0 0 0 3px rgba(245, 189, 230, 0.15),
+    0 0 12px rgba(245, 189, 230, 0.25);
 }
 
 /* Radio group container */
 .radio-group {
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
   margin: 0.5rem 0 0.8rem;
+  flex-wrap: wrap;
 }
 
-/* Radio label (clickable card style) */
+/* Radio label */
 .radio-group label {
   display: flex;
   align-items: center;
@@ -75,23 +102,28 @@ form input.invalid {
   padding: 0.6rem 1rem;
   border-radius: 999px;
   border: 1px solid var(--border-soft);
-  background: rgba(255, 255, 255, 0.05);
-
+  background: rgba(36, 39, 58, 0.4);
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.2s ease;
 }
 
-/* Hide native radio */
+.radio-group label:hover {
+  border-color: var(--accent-secondary);
+  background: rgba(139, 213, 202, 0.08);
+}
+
+/* Native radio */
 .radio-group input[type="radio"] {
   accent-color: var(--accent-secondary);
   cursor: pointer;
 }
 
-/* Hover effect */
-.radio-group label:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--accent-secondary);
+.radio-group input[value="admin"] {
+  accent-color: var(--maroon);
+}
+.radio-group label:has(input[value="admin"]):hover {
+  border-color: var(--maroon);
 }
 
 /* Submit button */
@@ -99,33 +131,28 @@ form button {
   margin-top: 0.8rem;
   padding: 0.9rem 1.6rem;
   border-radius: 999px;
+  border: none;
 
-  background: linear-gradient(
-    135deg,
-    var(--accent-primary),
-    var(--accent-secondary)
-  );
+  background: linear-gradient(135deg, var(--mauve), var(--blue));
 
-  color: #000;
-  font-weight: bold;
+  color: #1e2030;
+  font-weight: 700;
   font-size: 1rem;
 
-  border: none;
   cursor: pointer;
 
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Button hover */
 form button:hover {
   transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
 }
 
 /* Error message */
 form p {
-  color: var(--accent-primary);
+  color: var(--maroon);
   font-size: 0.9rem;
   opacity: 0.85;
   margin-top: 0.4rem;

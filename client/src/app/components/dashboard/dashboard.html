@@ -56,12 +56,19 @@
                             </a>
                         }
 
-                        <span class="tag visibility" 
-                            [class.all]="ytd.visibility === 'all'"
-                            [class.private]="ytd.visibility === 'private'"
-                            [class.team]="ytd.visibility === 'team'">
-                            {{ ytd.visibility === 'team' ? ytd.team_name : ytd.visibility }}
-                        </span>
+                        @if (ytd.visibility === 'team') {
+                            <a href="/teams/{{ytd.teamID}}" class="tag-link">
+                                <span class="tag visibility team">
+                                    {{ ytd.team_name }}
+                                </span>
+                            </a>
+                        } @else {
+                            <span class="tag visibility" 
+                                [class.all]="ytd.visibility === 'all'"
+                                [class.private]="ytd.visibility === 'private'">
+                                {{ ytd.visibility }}
+                            </span>
+                        }
                     </div>
                 </div>
                 } @empty {
@@ -94,12 +101,19 @@
                             </a>
                         }
 
-                        <span class="tag visibility" 
-                            [class.all]="td.visibility === 'all'"
-                            [class.private]="td.visibility === 'private'"
-                            [class.team]="td.visibility === 'team'">
-                            {{ td.visibility === 'team' ? td.team_name : td.visibility }}
-                        </span>
+                        @if (td.visibility === 'team') {
+                            <a href="/teams/{{td.teamID}}" class="tag-link">
+                                <span class="tag visibility team">
+                                    {{ td.team_name }}
+                                </span>
+                            </a>
+                        } @else {
+                            <span class="tag visibility" 
+                                [class.all]="td.visibility === 'all'"
+                                [class.private]="td.visibility === 'private'">
+                                {{ td.visibility }}
+                            </span>
+                        }
                     </div>
                 </div>
                 } @empty {
@@ -132,12 +146,19 @@
                             </a>
                         }
 
-                        <span class="tag visibility" 
-                            [class.all]="blk.visibility === 'all'"
-                            [class.private]="blk.visibility === 'private'"
-                            [class.team]="blk.visibility === 'team'">
-                            {{ blk.visibility === 'team' ? blk.team_name : blk.visibility }}
-                        </span>
+                        @if (blk.visibility === 'team') {
+                            <a href="/teams/{{blk.teamID}}" class="tag-link">
+                                <span class="tag visibility team">
+                                    {{ blk.team_name }}
+                                </span>
+                            </a>
+                        } @else {
+                            <span class="tag visibility" 
+                                [class.all]="blk.visibility === 'all'"
+                                [class.private]="blk.visibility === 'private'">
+                                {{ blk.visibility }}
+                            </span>
+                        }
                     </div>
                 </div>
                 } @empty {
