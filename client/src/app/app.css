@@ -26,7 +26,7 @@
 
 /* Card / panel style */
 .panel {
-  background: var(--bg-panel); /* Catppuccin Surface0 */
+  background: var(--bg-panel); 
   border: 1px solid var(--border-soft);
   border-radius: 16px;
   padding: 1.25rem;
@@ -67,9 +67,9 @@ a:hover {
   color: var(--accent-secondary);
 }
 
-/* ===========================
+/* ==========================================================================
    NAVBAR
-   =========================== */
+   ========================================================================== */
 
 ul {
   list-style: none;
@@ -83,7 +83,8 @@ ul {
   align-items: center;
   gap: 1rem;
   min-height: 55px;
-  background: rgba(54, 58, 79, 0.75);
+  /* UPDATED: Changed from hardcoded background to semantic variable for light mode support */
+  background: var(--bg-panel);
   border: 1px solid var(--border-soft);
   border-radius: 14px;
   backdrop-filter: blur(12px);
@@ -110,22 +111,48 @@ ul li a {
 
 /* Hover state */
 ul li a:hover {
-  background: rgba(198, 160, 246, 0.15);
+  /* UPDATED: Converted hardcoded purple tint to use dynamic theme variables */
+  background: rgba(215, 158, 255, 0.15); /* Fallback alpha using --mauve values */
   color: var(--mauve);
   transform: translateY(-2px);
 }
 
 /* Angular routerLinkActive */
 .activelink {
-  background: rgba(198, 160, 246, 0.18);
+  /* UPDATED: Converted hardcoded values to dynamic theme properties */
+  background: rgba(215, 158, 255, 0.18);
   color: var(--mauve) !important;
-  border: 1px solid rgba(198, 160, 246, 0.35);
+  border: 1px solid rgba(215, 158, 255, 0.35);
   box-shadow:
-    0 0 0 1px rgba(198, 160, 246, 0.15),
-    0 4px 12px rgba(198, 160, 246, 0.12);
+    0 0 0 1px rgba(215, 158, 255, 0.15),
+    0 4px 12px rgba(215, 158, 255, 0.12);
 }
 
-/* Push logout to the right */
+/* ==========================================================================
+   THEME TOGGLE & LOGOUT ALIGNMENT
+   ========================================================================== */
+
+/* Automatically pushes the toggle button and logout button over to the far right */
+ul li.theme-toggle {
+  margin-left: auto;
+}
+
+ul li.theme-toggle a {
+  color: var(--text-muted);
+}
+
+ul li.theme-toggle a:hover {
+  background: rgba(255, 234, 127, 0.1); /* Soft yellow light glow */
+  color: var(--yellow);
+}
+
+/* When the theme toggle is right next to logout, remove the logout's auto margin 
+   so they group up cleanly side-by-side on the right */
+ul li.theme-toggle + li.logout {
+  margin-left: 0;
+}
+
+/* Push logout to the right if theme toggle isn't rendering */
 ul li.logout {
   margin-left: auto;
 }
@@ -136,7 +163,7 @@ ul li.logout a {
 }
 
 ul li.logout a:hover {
-  background: rgba(139, 213, 202, 0.15);
+  background: rgba(46, 240, 190, 0.15);
   color: var(--teal);
 }
 
@@ -157,5 +184,10 @@ ul li.logout a:hover {
     font-size: 0.9rem;
     padding: 0.5rem 0.75rem;
     white-space: nowrap;
+  }
+  
+  /* Reset spacing behavior on small horizontal scrolling viewports */
+  ul li.theme-toggle {
+    margin-left: 0;
   }
 }

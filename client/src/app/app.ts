@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth';
+import { ThemeService } from './services/theme';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ export class App implements OnInit {
   uid! : number;
 
   private auth = inject(AuthService);
+  public themeSvc = inject(ThemeService);
 
   ngOnInit(): void {
     this.auth.logged$.subscribe(isLogged => {

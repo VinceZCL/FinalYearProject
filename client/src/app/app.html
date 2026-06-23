@@ -9,6 +9,16 @@
           <li><a href="#" routerLink="/admin/users" routerLinkActive="activelink">Admin</a></li>
         }
 
+        <li class="theme-toggle">
+          <a href="#" (click)="$event.preventDefault(); themeSvc.toggleTheme()">
+            @if (themeSvc.currentTheme() === 'dark') {
+              ☀️ Light Mode
+            } @else {
+              🌙 Dark Mode
+            }
+          </a>
+        </li>
+
         <li class="logout"><a href="#" (click)="logout()">Logout</a></li>
     </ul>
 }

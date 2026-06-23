@@ -104,7 +104,6 @@
   justify-content: space-between;
   padding: 0.8rem;
   border-bottom: 1px solid var(--border-soft);
-  transition: background 0.2s ease;
 }
 
 .profile-item:hover {
@@ -131,7 +130,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(54, 58, 79, 0.6);
+  background: var(--bg-main);
   border: 1px solid var(--border-soft);
   color: var(--teal);
   font-weight: 600;
@@ -140,13 +139,11 @@
   border-radius: 12px;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.2s ease, transform 0.2s ease;
   margin-bottom: 1.5rem;
   align-self: flex-start; /* stick to left in flex container */
 }
 
 .back-button:hover {
-  background: rgba(73, 77, 100, 0.7);
   transform: translateY(-2px);
 }
 
@@ -246,19 +243,16 @@
 
   border-radius: 12px;
 
-  background: rgba(54, 58, 79, 0.6);
+  background: var(--bg-soft);
 
   border: 1px solid var(--border-soft);
 
   transition:
     transform 0.2s ease,
-    background 0.2s ease;
 }
 
 .team-item:hover {
   transform: translateY(-2px);
-
-  background: rgba(73, 77, 100, 0.7);
 }
 
 .team-name {
@@ -331,7 +325,7 @@
 
   border: 1px solid var(--border-soft);
 
-  background: rgba(54, 58, 79, 0.8);
+  background: var(--bg-soft);
 
   color: var(--text-main);
 
@@ -340,14 +334,10 @@
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease,
-    background 0.2s ease;
 }
 
 .form-group input:focus {
   border-color: var(--teal);
-
-  background: rgba(73, 77, 100, 0.9);
-
   box-shadow: 0 0 0 3px rgba(139, 213, 202, 0.18);
 }
 

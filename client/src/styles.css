@@ -1,45 +1,57 @@
-:root {
-  /* ==========================================================================
-     Backgrounds & Panels (Deeper, inkier blacks with rich indigo undertones)
-     ========================================================================== */
-  --bg-main:   #070510; /* Deeper, inkier abyss for massive contrast */
-  --bg-soft:   #100c22; /* Sharp, clean card/container backing */
-  --bg-panel:  rgba(29, 21, 56, 0.70); /* Increased opacity for glassmorphism readability */
+/* ==========================================================================
+   DARK THEME (Original Inkier Cyberpunk)
+   ========================================================================== */
+:root, [data-theme="dark"] {
+  --bg-main:   #070510; 
+  --bg-soft:   #100c22; 
+  --bg-panel:  rgba(29, 21, 56, 0.70); 
 
-  /* ==========================================================================
-     Semantic Accents (Realigned to your Red/Green intent with maximum pop)
-     ========================================================================== */
-  --accent-primary:   #ff5572; /* Neon Coral-Red (Alerts, Errors, Primary Callouts) */
-  --accent-secondary: #2ef0be; /* Hyper-Vivid Mint Green (Success, Validation, Secondary Actions) */
+  /* Dynamic Gradient Colors */
+  --bg-grad-start: #1e2030;
+  --bg-grad-end:   #24273a;
 
-  /* ==========================================================================
-     Text & Typography (Crisp, glowy, ultra-readable)
-     ========================================================================== */
-  --text-main:  #f0f2ff; /* Piercing, bright off-white */
-  --text-muted: #9ba3cf; /* Shifted slightly cooler for beautiful hierarchy */
+  --accent-primary:   #ff5572; /* Neon Coral Red */
+  --accent-secondary: #2ef0be; /* Cyber Mint Green */
 
-  /* ==========================================================================
-     Borders & Dividers
-     ========================================================================== */
-  --border-soft: #44476a; /* High-contrast structural line */
+  --text-main:  #f0f2ff; 
+  --text-muted: #9ba3cf; 
+  --border-soft: #44476a; 
 
-  /* ==========================================================================
-     Core Catppuccin Palette — Electrified & Boosted
-     ========================================================================== */
-  --rosewater: #ffc4bc; /* Warm, creamy pastel red */
-  --flamingo:  #ff9ebb; /* Saturated, vibrant pink-rose */
-  --pink:      #ff7be5; /* Hot cyberpunk pink */
-  --mauve:     #d79eff; /* Electric violet */
-  --red:       #ff5572; /* Tied to your primary accent */
-  --maroon:    #ff6b8b; /* Intense, rich crimson */
-  --peach:     #ff9e64; /* Energetic neon orange */
-  --yellow:    #ffea7f; /* Laser-beam yellow */
-  --green:     #86ff86; /* Radioactive green */
-  --teal:      #2ef0be; /* Tied to your secondary accent */
-  --sky:       #6ae3ff; /* Vivid electric sky blue */
-  --sapphire:  #4baeff; /* Deep, glowing sapphire */
-  --blue:      #7aa2ff; /* Crisp digital blue */
-  --lavender:  #b0b7ff; /* Hyper-clean periwinkle */
+  /* Core Catppuccin Palette */
+  --rosewater: #ffc4bc; --flamingo: #ff9ebb; --pink: #ff7be5; --mauve: #d79eff; 
+  --red: #ff5572; --maroon: #ff6b8b; --peach: #ff9e64; --yellow: #ffea7f; 
+  --green: #86ff86; --teal: #2ef0be; --sky: #6ae3ff; --sapphire: #4baeff; 
+  --blue: #7aa2ff; --lavender: #b0b7ff;
+
+  --calendar-filter: invert(1);
+}
+
+/* ==========================================================================
+   LIGHT THEME (Corrected & Structured)
+   ========================================================================== */
+[data-theme="light"] {
+  --bg-main:   #f4f5f8; /* Crisp light gray background */
+  --bg-soft:   #ffffff; /* Pure white panels */
+  --bg-panel:  rgba(235, 237, 245, 0.70); 
+
+  /* Dynamic Gradient Colors (Light Latte base) */
+  --bg-grad-start: #e6e9ef;
+  --bg-grad-end:   #dce0e8;
+
+  --accent-primary:   #d91b43; /* Rich Crimson Red (Accessible contrast) */
+  --accent-secondary: #00875a; /* Deep Mint Green */
+
+  --text-main:  #1a1b26; /* Dark ink text */
+  --text-muted: #565f89; /* Muted gray hierarchy */
+  --border-soft: #ced2e0;
+
+  /* Pastelized Light Palette equivalents (Catppuccin Latte-inspired) */
+  --rosewater: #da7065; --flamingo: #dd6e8e; --pink: #c642b1; --mauve: #8a42c6; 
+  --red: #d91b43; --maroon: #b83350; --peach: #c65d1d; --yellow: #8c7600; 
+  --green: #1b8a1b; --teal: #00875a; --sky: #007fa3; --sapphire: #005fa3; 
+  --blue: #2652b3; --lavender: #535cb3;
+
+  --calendar-filter: invert(0);
 }
 
 /* Global reset */
@@ -61,9 +73,10 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
+  transition: background 0.3s ease, color 0.3s ease; /* Smooth theme transitions */
 }
 
-/* Subtle Macchiato background */
+/* Dynamic theme background */
 body::before {
   content: "";
   position: fixed;
@@ -75,17 +88,17 @@ body::before {
     radial-gradient(
       circle at top,
       var(--bg-main),
-      transparent 45%
+      transparent 55%
     ),
     radial-gradient(
       circle at bottom right,
       var(--bg-soft),
-      transparent 40%
+      transparent 50%
     ),
     linear-gradient(
       180deg,
-      #1e2030 0%,
-      #24273a 100%
+      var(--bg-grad-start) 0%,
+      var(--bg-grad-end) 100-percent /* Fixed: Uses variables instead of hardcoded hex */
     );
 }
 
