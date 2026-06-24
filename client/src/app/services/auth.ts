@@ -9,6 +9,7 @@ import { environment } from '../../environments/environments';
   providedIn: 'root',
 })
 export class AuthService {
+  private readonly TOKEN_KEY = 'fyp-scrum-token';
 
   private url: string = `${environment.apiBase}/api/auth`;
   private http = inject(HttpClient)
@@ -47,11 +48,11 @@ export class AuthService {
 
   logout(): void {
     this.clearAuthState();
-    localStorage.removeItem("token");
+    localStorage.removeItem(this.TOKEN_KEY);
   }
 
   getToken(): string | null {
-    return localStorage.getItem("token");
+    return localStorage.getItem(this.TOKEN_KEY);
   }
 
   hasToken(): boolean {
@@ -59,7 +60,7 @@ export class AuthService {
   }
 
   setToken(token: string): void {
-    localStorage.setItem("token", token);
+    localStorage.setItem(this.TOKEN_KEY, token);
   }
 
   testToken(): Observable<AuthApi> {

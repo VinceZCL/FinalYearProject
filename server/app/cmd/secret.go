@@ -24,14 +24,14 @@ func init() {
 			envPath := ".env.local"
 
 			// Open file for writing (will create the file if it doesn't exist)
-			f, err := os.OpenFile(envPath, os.O_CREATE|os.O_WRONLY, 0644)
+			f, err := os.OpenFile(envPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 			if err != nil {
 				log.Fatalf("Failed to open %s: %v", envPath, err)
 			}
 			defer f.Close()
 
 			// Write the SECURITY_SECRETKEY line into the file
-			line := fmt.Sprintf("export SECURITY_SECRETKEY=%s\n", key)
+			line := fmt.Sprintf("\nexport SECURITY_SECRETKEY=%s\n", key)
 			if _, err := f.WriteString(line); err != nil {
 				log.Fatalf("Failed to write secret: %v", err)
 			}
